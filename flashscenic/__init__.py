@@ -1,1 +1,1 @@
-from aucell import get_aucell
+from .aucell import get_aucell
