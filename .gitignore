@@ -1,0 +1,15 @@
+dist/
+/data/
+results/
+result_logs/
+__pycache__/
+.ipynb_checkpoints
+.DS_Store
+experiment_used_scripts/
+lib
+view.html
+test.html
+Untitled.ipynb
+demo_mESC_grn.hdf5
+fetal-mac-edlow_grn.ipynb
+fetal-mac-edlow_preprocess.ipynb

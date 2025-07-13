@@ -1,0 +1,28 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "flashscenic"
+authors = [
+    { name = "Hao Zhu", email="haozhu233@gmail.com"},
+    { name = "Donna Slonim", email="donna.slonim@tufts.edu"}
+]
+maintainers = [
+    { name = "Hao Zhu", email = "haozhu233@gmail.com" }
+]
+readme = "README.md"
+license = "MIT"
+version = "0.0.1"
+description = "GPU based SCENIC analysis with RegDiffusion and accelerated AUCell analysis"
+
+dependencies = [
+    "numpy>=1.16.5",
+    "torch",
+]
+
+[project.urls]
+Home = "https://github.com/haozhu233/flashscenic"
+
+[tool.flit.module]
+name = "flashscenic"
