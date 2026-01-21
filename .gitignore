@@ -1,4 +1,6 @@
 dist/
+pySCENIC/
+experiments/
 /data/
 results/
 result_logs/
