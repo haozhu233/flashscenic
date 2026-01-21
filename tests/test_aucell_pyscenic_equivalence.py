@@ -57,7 +57,7 @@ def test_aucell_equivalence(
     Returns:
         Dictionary with test results and timing information
     """
-    from flashscenic.aucell import get_aucell, get_aucell_vectorized, get_aucell_fast
+    from flashscenic.aucell import get_aucell
     from ctxcore.recovery import aucs as pyscenic_aucs, derive_rank_cutoff
     from pyscenic.aucell import create_rankings
     
@@ -96,18 +96,18 @@ def test_aucell_equivalence(
     # Test flashscenic get_aucell
     print(f"\nTesting flashscenic get_aucell on {device}...")
     
-    # Warm-up run for GPU
+    # Warm-up
     if device == 'cuda':
-        _ = get_aucell(exp_array[:10], adj_array, k=k, auc_threshold=auc_threshold, 
-                       device=device, batch_size=batch_size, seed=seed)
+        _ = get_aucell(exp_array[:10], adj_array, k=k, auc_threshold=auc_threshold,
+                                   device=device, batch_size=batch_size, seed=seed)
         if CUDA_AVAILABLE:
             import torch
             torch.cuda.synchronize()
     
     t0 = time.time()
     flash_aucs = get_aucell(
-        exp_array, adj_array, 
-        k=k, auc_threshold=auc_threshold, 
+        exp_array, adj_array,
+        k=k, auc_threshold=auc_threshold,
         device=device, batch_size=batch_size,
         seed=seed
     )
@@ -117,59 +117,6 @@ def test_aucell_equivalence(
     results['timings']['get_aucell'] = time.time() - t0
     print(f"  Shape: {flash_aucs.shape}")
     print(f"  Time: {results['timings']['get_aucell']:.3f}s")
-    
-    # Test flashscenic get_aucell_vectorized
-    print(f"\nTesting flashscenic get_aucell_vectorized on {device}...")
-    
-    # Warm-up
-    if device == 'cuda':
-        _ = get_aucell_vectorized(exp_array[:10], adj_array, k=k, auc_threshold=auc_threshold,
-                                   device=device, batch_size=batch_size, seed=seed)
-        if CUDA_AVAILABLE:
-            import torch
-            torch.cuda.synchronize()
-    
-    t0 = time.time()
-    flash_aucs_vec = get_aucell_vectorized(
-        exp_array, adj_array,
-        k=k, auc_threshold=auc_threshold,
-        device=device, batch_size=batch_size,
-        seed=seed
-    )
-    if device == 'cuda' and CUDA_AVAILABLE:
-        import torch
-        torch.cuda.synchronize()
-    results['timings']['get_aucell_vectorized'] = time.time() - t0
-    print(f"  Shape: {flash_aucs_vec.shape}")
-    print(f"  Time: {results['timings']['get_aucell_vectorized']:.3f}s")
-    
-    # Compare the two flashscenic implementations
-    diff_internal = np.abs(flash_aucs - flash_aucs_vec).max()
-    print(f"  Max diff between get_aucell and get_aucell_vectorized: {diff_internal:.6e}")
-    
-    # Test flashscenic get_aucell_fast (approximate)
-    print(f"\nTesting flashscenic get_aucell_fast on {device}...")
-    
-    # Warm-up
-    if device == 'cuda':
-        _ = get_aucell_fast(exp_array[:10], adj_array, k=k, auc_threshold=auc_threshold,
-                            device=device, batch_size=batch_size)
-        if CUDA_AVAILABLE:
-            import torch
-            torch.cuda.synchronize()
-    
-    t0 = time.time()
-    flash_aucs_fast = get_aucell_fast(
-        exp_array, adj_array,
-        k=k, auc_threshold=auc_threshold,
-        device=device, batch_size=batch_size
-    )
-    if device == 'cuda' and CUDA_AVAILABLE:
-        import torch
-        torch.cuda.synchronize()
-    results['timings']['get_aucell_fast'] = time.time() - t0
-    print(f"  Shape: {flash_aucs_fast.shape}")
-    print(f"  Time: {results['timings']['get_aucell_fast']:.3f}s")
     
     # Test pySCENIC (CPU only, for reference)
     print("\nTesting pySCENIC (CPU baseline)...")
@@ -200,36 +147,16 @@ def test_aucell_equivalence(
     print(f"\n{'='*60}")
     print("Accuracy Comparison:")
     print(f"{'='*60}")
-    
+
     # get_aucell vs pySCENIC
-    diff = np.abs(flash_aucs - pyscenic_aucs_arr)
-    results['get_aucell_max_diff'] = diff.max()
-    results['get_aucell_mean_diff'] = diff.mean()
+    diff_fast = np.abs(flash_aucs - pyscenic_aucs_arr)
+    results['get_aucell_max_diff'] = diff_fast.max()
+    results['get_aucell_mean_diff'] = diff_fast.mean()
     results['get_aucell_correlation'] = np.corrcoef(flash_aucs.flatten(), pyscenic_aucs_arr.flatten())[0, 1]
     print(f"\nget_aucell vs pySCENIC:")
     print(f"  Max absolute difference: {results['get_aucell_max_diff']:.6e}")
     print(f"  Mean absolute difference: {results['get_aucell_mean_diff']:.6e}")
     print(f"  Correlation: {results['get_aucell_correlation']:.6f}")
-    
-    # get_aucell_fast vs pySCENIC
-    diff_fast = np.abs(flash_aucs_fast - pyscenic_aucs_arr)
-    results['get_aucell_fast_max_diff'] = diff_fast.max()
-    results['get_aucell_fast_mean_diff'] = diff_fast.mean()
-    results['get_aucell_fast_correlation'] = np.corrcoef(flash_aucs_fast.flatten(), pyscenic_aucs_arr.flatten())[0, 1]
-    print(f"\nget_aucell_fast vs pySCENIC:")
-    print(f"  Max absolute difference: {results['get_aucell_fast_max_diff']:.6e}")
-    print(f"  Mean absolute difference: {results['get_aucell_fast_mean_diff']:.6e}")
-    print(f"  Correlation: {results['get_aucell_fast_correlation']:.6f}")
-
-    # get_aucell_vectorized vs pySCENIC
-    diff_fast = np.abs(flash_aucs_vec - pyscenic_aucs_arr)
-    results['get_aucell_vectorized_max_diff'] = diff_fast.max()
-    results['get_aucell_vectorized_mean_diff'] = diff_fast.mean()
-    results['get_aucell_vectorized_correlation'] = np.corrcoef(flash_aucs_vec.flatten(), pyscenic_aucs_arr.flatten())[0, 1]
-    print(f"\nget_aucell_vectorized vs pySCENIC:")
-    print(f"  Max absolute difference: {results['get_aucell_vectorized_max_diff']:.6e}")
-    print(f"  Mean absolute difference: {results['get_aucell_vectorized_mean_diff']:.6e}")
-    print(f"  Correlation: {results['get_aucell_vectorized_correlation']:.6f}")
     
     # Check if results match
     results['all_close'] = np.allclose(flash_aucs, pyscenic_aucs_arr, rtol=1e-4, atol=1e-5)
@@ -243,7 +170,7 @@ def test_aucell_equivalence(
     print("-" * 62)
     
     pyscenic_time = results['timings']['pyscenic_total']
-    for method in ['get_aucell', 'get_aucell_vectorized', 'get_aucell_fast']:
+    for method in ['get_aucell']:
         t = results['timings'][method]
         speedup = pyscenic_time / t if t > 0 else float('inf')
         print(f"{method:<30} {t:<12.3f} {speedup:<20.2f}x")
@@ -294,7 +221,7 @@ def test_edge_cases(device: str = 'cpu'):
 
 def benchmark_scaling(device: str = 'cuda', max_cells: int = 10000):
     """Benchmark how performance scales with data size."""
-    from flashscenic.aucell import get_aucell, get_aucell_fast
+    from flashscenic.aucell import get_aucell
     
     if device == 'cuda' and not CUDA_AVAILABLE:
         print("CUDA not available, skipping GPU scaling benchmark")
@@ -308,11 +235,11 @@ def benchmark_scaling(device: str = 'cuda', max_cells: int = 10000):
     n_tfs = 20
     k = 50
     
-    cell_sizes = [100, 500, 1000, 2000, 5000]
+    cell_sizes = [100, 500, 1000, 2000, 5000, 10000]
     cell_sizes = [c for c in cell_sizes if c <= max_cells]
     
     print(f"\nFixed: n_genes={n_genes}, n_tfs={n_tfs}, k={k}")
-    print(f"{'n_cells':<10} {'get_aucell (s)':<18} {'get_aucell_fast (s)':<20} {'cells/sec':<15}")
+    print(f"{'n_cells':<10} {'get_aucell (s)':<18} {'cells/sec':<15}")
     print("-" * 65)
     
     for n_cells in cell_sizes:
@@ -334,16 +261,8 @@ def benchmark_scaling(device: str = 'cuda', max_cells: int = 10000):
             torch.cuda.synchronize()
         t_aucell = time.time() - t0
         
-        # Benchmark get_aucell_fast
-        t0 = time.time()
-        _ = get_aucell_fast(exp_array, adj_array, k=k, device=device)
-        if device == 'cuda':
-            import torch
-            torch.cuda.synchronize()
-        t_fast = time.time() - t0
-        
-        cells_per_sec = n_cells / t_fast
-        print(f"{n_cells:<10} {t_aucell:<18.4f} {t_fast:<20.4f} {cells_per_sec:<15.0f}")
+        cells_per_sec = n_cells / t_aucell
+        print(f"{n_cells:<10} {t_aucell:<18.4f} {cells_per_sec:<15.0f}")
 
 
 def main():
