@@ -55,7 +55,7 @@ Selects top target genes per TF and filters out TFs with too few targets.
 |-----------|---------|-------------|
 | `module_k` | 50 | Top k target genes per TF |
 | `module_min_targets` | 20 | Minimum absolute target count |
-| `module_min_fraction` | 0.8 | Minimum fraction of targets required (pySCENIC 80% rule) |
+| `module_min_fraction` | None | Minimum fraction of targets required (pySCENIC 80% rule) |
 | `module_include_tf` | True | Include TF in its own module |
 
 **Tuning tips:**

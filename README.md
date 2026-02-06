@@ -21,6 +21,7 @@ pip install flashscenic[docs]
 **Requirements:** Python 3.9+, PyTorch with CUDA support (CPU fallback available).
 
 ## Quick Start
+We provide a pipeline function `run_flashscenic` that is capable to cover 90% of use cases. 
 
 ```python
 import flashscenic as fs
