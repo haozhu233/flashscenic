@@ -29,7 +29,7 @@ def run_flashscenic(
     # --- Module filtering ---
     module_k: int = 50,
     module_min_targets: int = 20,
-    module_min_fraction: float = 0.8,
+    module_min_fraction: float = None,
     module_include_tf: bool = True,
     # --- cisTarget pruning ---
     pruning_rank_threshold: int = 5000,

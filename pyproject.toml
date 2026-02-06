@@ -13,7 +13,7 @@ maintainers = [
 ]
 readme = "README.md"
 license = "MIT"
-version = "0.0.2"
+version = "0.1.0"
 description = "GPU based SCENIC analysis with RegDiffusion and accelerated AUCell analysis"
 
 dependencies = [

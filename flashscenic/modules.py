@@ -139,7 +139,7 @@ def select_threshold_targets(
 def filter_by_min_targets(
     adj: ArrayLike,
     min_targets: int = 20,
-    min_fraction: Optional[float] = 0.8,
+    min_fraction: Optional[float] = None,
     device: str = 'cuda'
 ) -> Tuple[torch.Tensor, torch.Tensor]:
     """
