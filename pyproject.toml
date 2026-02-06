@@ -13,12 +13,21 @@ maintainers = [
 ]
 readme = "README.md"
 license = "MIT"
-version = "0.0.1"
+version = "0.0.2"
 description = "GPU based SCENIC analysis with RegDiffusion and accelerated AUCell analysis"
 
 dependencies = [
     "numpy>=1.16.5",
     "torch",
+    "regdiffusion",
+]
+
+[project.optional-dependencies]
+docs = [
+    "sphinx",
+    "sphinx-book-theme",
+    "sphinx-autodoc2",
+    "myst-parser",
 ]
 
 [project.urls]

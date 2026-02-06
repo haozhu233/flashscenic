@@ -1,4 +1,5 @@
 dist/
+ctxcore/
 pySCENIC/
 experiments/
 /data/
@@ -13,5 +14,10 @@ view.html
 test.html
 Untitled.ipynb
 demo_mESC_grn.hdf5
+docs/_build/
+flashscenic_data/
 fetal-mac-edlow_grn.ipynb
 fetal-mac-edlow_preprocess.ipynb
+CLAUDE.md
+.claude/
+TODO.md
