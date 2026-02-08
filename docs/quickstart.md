@@ -55,6 +55,8 @@ sc.tl.umap(adata)
 sc.pl.umap(adata, color='cell_type')
 ```
 
+For a comprehensive guide to downstream analyses—including binary regulon activity, regulon specificity scoring, differential regulon activity, co-regulation modules, GRN visualization, and export to other tools—see the [Recommended Downstream Tasks](downstream.md) page.
+
 ## Pre-Downloading Data
 
 To download resource files ahead of time (useful for cluster environments without internet):
