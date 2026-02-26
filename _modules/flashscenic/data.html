@@ -1,0 +1,914 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>flashscenic.data &#8212; flashscenic</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/flashscenic/data';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">flashscenic</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Downstream Analysis with flashscenic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pipeline.html">Pipeline Guide</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/haozhu233/flashscenic" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/haozhu233/flashscenic/issues/new?title=Issue%20on%20page%20%2F_modules/flashscenic/data.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for flashscenic.data</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Download utilities for flashscenic cistarget resource files.</span>
+
+<span class="sd">Supports downloading TF lists, motif ranking databases, and motif annotation</span>
+<span class="sd">files from configurable data sources (default: Aertslab SCENIC resources).</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">urllib.request</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">urllib.error</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
+
+<span class="n">AERTSLAB_BASE</span> <span class="o">=</span> <span class="s2">&quot;https://resources.aertslab.org/cistarget/&quot;</span>
+
+
+<div class="viewcode-block" id="ResourceFile">
+<a class="viewcode-back" href="../../apidocs/flashscenic/flashscenic.data.html#flashscenic.data.ResourceFile">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ResourceFile</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Describes a single downloadable resource file.&quot;&quot;&quot;</span>
+    <span class="n">url</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">category</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># &#39;tf_list&#39;, &#39;ranking_db&#39;, &#39;motif_annotation&#39;</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">expected_size_mb</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+
+
+<div class="viewcode-block" id="ResourceSet">
+<a class="viewcode-back" href="../../apidocs/flashscenic/flashscenic.data.html#flashscenic.data.ResourceSet">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ResourceSet</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Complete set of resources for a species/version/datasource combination.&quot;&quot;&quot;</span>
+    <span class="n">species</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">version</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">datasource</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">files</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ResourceFile</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tf_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ResourceFile</span><span class="p">]:</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">category</span> <span class="o">==</span> <span class="s1">&#39;tf_list&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">matches</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ranking_dbs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ResourceFile</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">category</span> <span class="o">==</span> <span class="s1">&#39;ranking_db&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">motif_annotation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ResourceFile</span><span class="p">]:</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">category</span> <span class="o">==</span> <span class="s1">&#39;motif_annotation&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">matches</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="DownloadedResources">
+<a class="viewcode-back" href="../../apidocs/flashscenic/flashscenic.data.html#flashscenic.data.DownloadedResources">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DownloadedResources</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Paths to downloaded resource files.&quot;&quot;&quot;</span>
+    <span class="n">tf_list</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">ranking_dbs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">motif_annotation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">cache_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">))</span>
+
+<div class="viewcode-block" id="DownloadedResources.__repr__">
+<a class="viewcode-back" href="../../apidocs/flashscenic/flashscenic.data.html#flashscenic.data.DownloadedResources.__repr__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">dbs</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ranking_dbs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;DownloadedResources(</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;  cache_dir=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_dir</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;  tf_list=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tf_list</span><span class="o">.</span><span class="n">name</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">tf_list</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;  ranking_dbs=[</span><span class="si">{</span><span class="n">dbs</span><span class="si">}</span><span class="s2">],</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;  motif_annotation=&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">motif_annotation</span><span class="o">.</span><span class="n">name</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">motif_annotation</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;)&quot;</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># Resource registry</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+
+<span class="n">_RESOURCE_REGISTRY</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">ResourceSet</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+<div class="viewcode-block" id="_register_scenic_resources">
+<a class="viewcode-back" href="../../apidocs/flashscenic/flashscenic.data.html#flashscenic.data._register_scenic_resources">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_register_scenic_resources</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register all known Aertslab SCENIC resources.&quot;&quot;&quot;</span>
+
+    <span class="c1"># ---- Human v10 ----</span>
+    <span class="n">_RESOURCE_REGISTRY</span><span class="p">[(</span><span class="s2">&quot;scenic&quot;</span><span class="p">,</span> <span class="s2">&quot;human&quot;</span><span class="p">,</span> <span class="s2">&quot;v10&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">ResourceSet</span><span class="p">(</span>
+        <span class="n">species</span><span class="o">=</span><span class="s2">&quot;human&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v10&quot;</span><span class="p">,</span> <span class="n">datasource</span><span class="o">=</span><span class="s2">&quot;scenic&quot;</span><span class="p">,</span>
+        <span class="n">files</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">ResourceFile</span><span class="p">(</span>
+                <span class="n">url</span><span class="o">=</span><span class="n">AERTSLAB_BASE</span> <span class="o">+</span> <span class="s2">&quot;tf_lists/allTFs_hg38.txt&quot;</span><span class="p">,</span>
+                <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;allTFs_hg38.txt&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="s2">&quot;tf_list&quot;</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Human TF list (hg38)&quot;</span><span class="p">,</span>
+                <span class="n">expected_size_mb</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">ResourceFile</span><span class="p">(</span>
+                <span class="n">url</span><span class="o">=</span><span class="p">(</span><span class="n">AERTSLAB_BASE</span>
+                     <span class="o">+</span> <span class="s2">&quot;databases/homo_sapiens/hg38/refseq_r80/mc_v10_clust/&quot;</span>
+                     <span class="o">+</span> <span class="s2">&quot;gene_based/hg38_500bp_up_100bp_down_full_tx_v10_clust&quot;</span>
+                     <span class="o">+</span> <span class="s2">&quot;.genes_vs_motifs.rankings.feather&quot;</span><span class="p">),</span>
+                <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;hg38_500bp_up_100bp_down_full_tx_v10_clust&quot;</span>
+                         <span class="s2">&quot;.genes_vs_motifs.rankings.feather&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="s2">&quot;ranking_db&quot;</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Human 500bp/100bp ranking database (v10)&quot;</span><span class="p">,</span>
+                <span class="n">expected_size_mb</span><span class="o">=</span><span class="mi">298</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">ResourceFile</span><span class="p">(</span>
+                <span class="n">url</span><span class="o">=</span><span class="p">(</span><span class="n">AERTSLAB_BASE</span>
+                     <span class="o">+</span> <span class="s2">&quot;databases/homo_sapiens/hg38/refseq_r80/mc_v10_clust/&quot;</span>
+                     <span class="o">+</span> <span class="s2">&quot;gene_based/hg38_10kbp_up_10kbp_down_full_tx_v10_clust&quot;</span>
+                     <span class="o">+</span> <span class="s2">&quot;.genes_vs_motifs.rankings.feather&quot;</span><span class="p">),</span>
+                <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;hg38_10kbp_up_10kbp_down_full_tx_v10_clust&quot;</span>
+                         <span class="s2">&quot;.genes_vs_motifs.rankings.feather&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="s2">&quot;ranking_db&quot;</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Human 10kbp ranking database (v10)&quot;</span><span class="p">,</span>
+                <span class="n">expected_size_mb</span><span class="o">=</span><span class="mi">297</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">ResourceFile</span><span class="p">(</span>
+                <span class="n">url</span><span class="o">=</span><span class="n">AERTSLAB_BASE</span>
+                    <span class="o">+</span> <span class="s2">&quot;motif2tf/motifs-v10nr_clust-nr.hgnc-m0.001-o0.0.tbl&quot;</span><span class="p">,</span>
+                <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;motifs-v10nr_clust-nr.hgnc-m0.001-o0.0.tbl&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="s2">&quot;motif_annotation&quot;</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Human motif annotations (v10)&quot;</span><span class="p">,</span>
+                <span class="n">expected_size_mb</span><span class="o">=</span><span class="mi">94</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">],</span>
+    <span class="p">)</span>
+
+    <span class="c1"># ---- Mouse v10 ----</span>
+    <span class="n">_RESOURCE_REGISTRY</span><span class="p">[(</span><span class="s2">&quot;scenic&quot;</span><span class="p">,</span> <span class="s2">&quot;mouse&quot;</span><span class="p">,</span> <span class="s2">&quot;v10&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">ResourceSet</span><span class="p">(</span>
+        <span class="n">species</span><span class="o">=</span><span class="s2">&quot;mouse&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v10&quot;</span><span class="p">,</span> <span class="n">datasource</span><span class="o">=</span><span class="s2">&quot;scenic&quot;</span><span class="p">,</span>
+        <span class="n">files</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">ResourceFile</span><span class="p">(</span>
+                <span class="n">url</span><span class="o">=</span><span class="n">AERTSLAB_BASE</span> <span class="o">+</span> <span class="s2">&quot;tf_lists/allTFs_mm.txt&quot;</span><span class="p">,</span>
+                <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;allTFs_mm.txt&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="s2">&quot;tf_list&quot;</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Mouse TF list&quot;</span><span class="p">,</span>
+                <span class="n">expected_size_mb</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">ResourceFile</span><span class="p">(</span>
+                <span class="n">url</span><span class="o">=</span><span class="p">(</span><span class="n">AERTSLAB_BASE</span>
+                     <span class="o">+</span> <span class="s2">&quot;databases/mus_musculus/mm10/refseq_r80/mc_v10_clust/&quot;</span>
+                     <span class="o">+</span> <span class="s2">&quot;gene_based/mm10_500bp_up_100bp_down_full_tx_v10_clust&quot;</span>
+                     <span class="o">+</span> <span class="s2">&quot;.genes_vs_motifs.rankings.feather&quot;</span><span class="p">),</span>
+                <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;mm10_500bp_up_100bp_down_full_tx_v10_clust&quot;</span>
+                         <span class="s2">&quot;.genes_vs_motifs.rankings.feather&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="s2">&quot;ranking_db&quot;</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Mouse 500bp/100bp ranking database (v10)&quot;</span><span class="p">,</span>
+                <span class="n">expected_size_mb</span><span class="o">=</span><span class="mi">227</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">ResourceFile</span><span class="p">(</span>
+                <span class="n">url</span><span class="o">=</span><span class="p">(</span><span class="n">AERTSLAB_BASE</span>
+                     <span class="o">+</span> <span class="s2">&quot;databases/mus_musculus/mm10/refseq_r80/mc_v10_clust/&quot;</span>
+                     <span class="o">+</span> <span class="s2">&quot;gene_based/mm10_10kbp_up_10kbp_down_full_tx_v10_clust&quot;</span>
+                     <span class="o">+</span> <span class="s2">&quot;.genes_vs_motifs.rankings.feather&quot;</span><span class="p">),</span>
+                <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;mm10_10kbp_up_10kbp_down_full_tx_v10_clust&quot;</span>
+                         <span class="s2">&quot;.genes_vs_motifs.rankings.feather&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="s2">&quot;ranking_db&quot;</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Mouse 10kbp ranking database (v10)&quot;</span><span class="p">,</span>
+                <span class="n">expected_size_mb</span><span class="o">=</span><span class="mi">226</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">ResourceFile</span><span class="p">(</span>
+                <span class="n">url</span><span class="o">=</span><span class="n">AERTSLAB_BASE</span>
+                    <span class="o">+</span> <span class="s2">&quot;motif2tf/motifs-v10nr_clust-nr.mgi-m0.001-o0.0.tbl&quot;</span><span class="p">,</span>
+                <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;motifs-v10nr_clust-nr.mgi-m0.001-o0.0.tbl&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="s2">&quot;motif_annotation&quot;</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Mouse motif annotations (v10)&quot;</span><span class="p">,</span>
+                <span class="n">expected_size_mb</span><span class="o">=</span><span class="mi">108</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">],</span>
+    <span class="p">)</span>
+
+    <span class="c1"># ---- Drosophila v10 ----</span>
+    <span class="n">_RESOURCE_REGISTRY</span><span class="p">[(</span><span class="s2">&quot;scenic&quot;</span><span class="p">,</span> <span class="s2">&quot;drosophila&quot;</span><span class="p">,</span> <span class="s2">&quot;v10&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">ResourceSet</span><span class="p">(</span>
+        <span class="n">species</span><span class="o">=</span><span class="s2">&quot;drosophila&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v10&quot;</span><span class="p">,</span> <span class="n">datasource</span><span class="o">=</span><span class="s2">&quot;scenic&quot;</span><span class="p">,</span>
+        <span class="n">files</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">ResourceFile</span><span class="p">(</span>
+                <span class="n">url</span><span class="o">=</span><span class="n">AERTSLAB_BASE</span> <span class="o">+</span> <span class="s2">&quot;tf_lists/allTFs_dmel.txt&quot;</span><span class="p">,</span>
+                <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;allTFs_dmel.txt&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="s2">&quot;tf_list&quot;</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Drosophila TF list&quot;</span><span class="p">,</span>
+                <span class="n">expected_size_mb</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">ResourceFile</span><span class="p">(</span>
+                <span class="n">url</span><span class="o">=</span><span class="p">(</span><span class="n">AERTSLAB_BASE</span>
+                     <span class="o">+</span> <span class="s2">&quot;databases/drosophila_melanogaster/dm6/&quot;</span>
+                     <span class="o">+</span> <span class="s2">&quot;flybase_r6.02/mc_v10_clust/gene_based/&quot;</span>
+                     <span class="o">+</span> <span class="s2">&quot;dm6_500bp_up_100bp_down_full_tx_v10_clust&quot;</span>
+                     <span class="o">+</span> <span class="s2">&quot;.genes_vs_motifs.rankings.feather&quot;</span><span class="p">),</span>
+                <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;dm6_500bp_up_100bp_down_full_tx_v10_clust&quot;</span>
+                         <span class="s2">&quot;.genes_vs_motifs.rankings.feather&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="s2">&quot;ranking_db&quot;</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Drosophila 500bp/100bp ranking database (v10)&quot;</span><span class="p">,</span>
+                <span class="n">expected_size_mb</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">ResourceFile</span><span class="p">(</span>
+                <span class="n">url</span><span class="o">=</span><span class="p">(</span><span class="n">AERTSLAB_BASE</span>
+                     <span class="o">+</span> <span class="s2">&quot;databases/drosophila_melanogaster/dm6/&quot;</span>
+                     <span class="o">+</span> <span class="s2">&quot;flybase_r6.02/mc_v10_clust/gene_based/&quot;</span>
+                     <span class="o">+</span> <span class="s2">&quot;dm6_10kbp_up_10kbp_down_full_tx_v10_clust&quot;</span>
+                     <span class="o">+</span> <span class="s2">&quot;.genes_vs_motifs.rankings.feather&quot;</span><span class="p">),</span>
+                <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;dm6_10kbp_up_10kbp_down_full_tx_v10_clust&quot;</span>
+                         <span class="s2">&quot;.genes_vs_motifs.rankings.feather&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="s2">&quot;ranking_db&quot;</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Drosophila 10kbp ranking database (v10)&quot;</span><span class="p">,</span>
+                <span class="n">expected_size_mb</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">ResourceFile</span><span class="p">(</span>
+                <span class="n">url</span><span class="o">=</span><span class="n">AERTSLAB_BASE</span>
+                    <span class="o">+</span> <span class="s2">&quot;motif2tf/motifs-v10nr_clust-nr.flybase-m0.001-o0.0.tbl&quot;</span><span class="p">,</span>
+                <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;motifs-v10nr_clust-nr.flybase-m0.001-o0.0.tbl&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="s2">&quot;motif_annotation&quot;</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Drosophila motif annotations (v10)&quot;</span><span class="p">,</span>
+                <span class="n">expected_size_mb</span><span class="o">=</span><span class="mi">66</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">],</span>
+    <span class="p">)</span>
+
+    <span class="c1"># ---- Human v9 ----</span>
+    <span class="n">_RESOURCE_REGISTRY</span><span class="p">[(</span><span class="s2">&quot;scenic&quot;</span><span class="p">,</span> <span class="s2">&quot;human&quot;</span><span class="p">,</span> <span class="s2">&quot;v9&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">ResourceSet</span><span class="p">(</span>
+        <span class="n">species</span><span class="o">=</span><span class="s2">&quot;human&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v9&quot;</span><span class="p">,</span> <span class="n">datasource</span><span class="o">=</span><span class="s2">&quot;scenic&quot;</span><span class="p">,</span>
+        <span class="n">files</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">ResourceFile</span><span class="p">(</span>
+                <span class="n">url</span><span class="o">=</span><span class="n">AERTSLAB_BASE</span> <span class="o">+</span> <span class="s2">&quot;tf_lists/allTFs_hg38.txt&quot;</span><span class="p">,</span>
+                <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;allTFs_hg38.txt&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="s2">&quot;tf_list&quot;</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Human TF list (hg38)&quot;</span><span class="p">,</span>
+                <span class="n">expected_size_mb</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">ResourceFile</span><span class="p">(</span>
+                <span class="n">url</span><span class="o">=</span><span class="p">(</span><span class="n">AERTSLAB_BASE</span>
+                     <span class="o">+</span> <span class="s2">&quot;databases/homo_sapiens/hg38/refseq_r80/mc9nr/&quot;</span>
+                     <span class="o">+</span> <span class="s2">&quot;gene_based/hg38__refseq-r80__500bp_up_and_100bp&quot;</span>
+                     <span class="o">+</span> <span class="s2">&quot;_down_tss.mc9nr.genes_vs_motifs.rankings.feather&quot;</span><span class="p">),</span>
+                <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;hg38__refseq-r80__500bp_up_and_100bp_down_tss&quot;</span>
+                         <span class="s2">&quot;.mc9nr.genes_vs_motifs.rankings.feather&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="s2">&quot;ranking_db&quot;</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Human 500bp/100bp ranking database (v9)&quot;</span><span class="p">,</span>
+                <span class="n">expected_size_mb</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">ResourceFile</span><span class="p">(</span>
+                <span class="n">url</span><span class="o">=</span><span class="p">(</span><span class="n">AERTSLAB_BASE</span>
+                     <span class="o">+</span> <span class="s2">&quot;databases/homo_sapiens/hg38/refseq_r80/mc9nr/&quot;</span>
+                     <span class="o">+</span> <span class="s2">&quot;gene_based/hg38__refseq-r80__10kb_up_and_down_tss&quot;</span>
+                     <span class="o">+</span> <span class="s2">&quot;.mc9nr.genes_vs_motifs.rankings.feather&quot;</span><span class="p">),</span>
+                <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;hg38__refseq-r80__10kb_up_and_down_tss&quot;</span>
+                         <span class="s2">&quot;.mc9nr.genes_vs_motifs.rankings.feather&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="s2">&quot;ranking_db&quot;</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Human 10kb ranking database (v9)&quot;</span><span class="p">,</span>
+                <span class="n">expected_size_mb</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">ResourceFile</span><span class="p">(</span>
+                <span class="n">url</span><span class="o">=</span><span class="n">AERTSLAB_BASE</span>
+                    <span class="o">+</span> <span class="s2">&quot;motif2tf/motifs-v9-nr.hgnc-m0.001-o0.0.tbl&quot;</span><span class="p">,</span>
+                <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;motifs-v9-nr.hgnc-m0.001-o0.0.tbl&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="s2">&quot;motif_annotation&quot;</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Human motif annotations (v9)&quot;</span><span class="p">,</span>
+                <span class="n">expected_size_mb</span><span class="o">=</span><span class="mi">99</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">],</span>
+    <span class="p">)</span>
+
+    <span class="c1"># ---- Mouse v9 ----</span>
+    <span class="n">_RESOURCE_REGISTRY</span><span class="p">[(</span><span class="s2">&quot;scenic&quot;</span><span class="p">,</span> <span class="s2">&quot;mouse&quot;</span><span class="p">,</span> <span class="s2">&quot;v9&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">ResourceSet</span><span class="p">(</span>
+        <span class="n">species</span><span class="o">=</span><span class="s2">&quot;mouse&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;v9&quot;</span><span class="p">,</span> <span class="n">datasource</span><span class="o">=</span><span class="s2">&quot;scenic&quot;</span><span class="p">,</span>
+        <span class="n">files</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">ResourceFile</span><span class="p">(</span>
+                <span class="n">url</span><span class="o">=</span><span class="n">AERTSLAB_BASE</span> <span class="o">+</span> <span class="s2">&quot;tf_lists/allTFs_mm.txt&quot;</span><span class="p">,</span>
+                <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;allTFs_mm.txt&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="s2">&quot;tf_list&quot;</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Mouse TF list&quot;</span><span class="p">,</span>
+                <span class="n">expected_size_mb</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">ResourceFile</span><span class="p">(</span>
+                <span class="n">url</span><span class="o">=</span><span class="p">(</span><span class="n">AERTSLAB_BASE</span>
+                     <span class="o">+</span> <span class="s2">&quot;databases/mus_musculus/mm10/refseq_r80/mc9nr/&quot;</span>
+                     <span class="o">+</span> <span class="s2">&quot;gene_based/mm10__refseq-r80__500bp_up_and_100bp&quot;</span>
+                     <span class="o">+</span> <span class="s2">&quot;_down_tss.mc9nr.genes_vs_motifs.rankings.feather&quot;</span><span class="p">),</span>
+                <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;mm10__refseq-r80__500bp_up_and_100bp_down_tss&quot;</span>
+                         <span class="s2">&quot;.mc9nr.genes_vs_motifs.rankings.feather&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="s2">&quot;ranking_db&quot;</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Mouse 500bp/100bp ranking database (v9)&quot;</span><span class="p">,</span>
+                <span class="n">expected_size_mb</span><span class="o">=</span><span class="mi">900</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">ResourceFile</span><span class="p">(</span>
+                <span class="n">url</span><span class="o">=</span><span class="p">(</span><span class="n">AERTSLAB_BASE</span>
+                     <span class="o">+</span> <span class="s2">&quot;databases/mus_musculus/mm10/refseq_r80/mc9nr/&quot;</span>
+                     <span class="o">+</span> <span class="s2">&quot;gene_based/mm10__refseq-r80__10kb_up_and_down_tss&quot;</span>
+                     <span class="o">+</span> <span class="s2">&quot;.mc9nr.genes_vs_motifs.rankings.feather&quot;</span><span class="p">),</span>
+                <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;mm10__refseq-r80__10kb_up_and_down_tss&quot;</span>
+                         <span class="s2">&quot;.mc9nr.genes_vs_motifs.rankings.feather&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="s2">&quot;ranking_db&quot;</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Mouse 10kb ranking database (v9)&quot;</span><span class="p">,</span>
+                <span class="n">expected_size_mb</span><span class="o">=</span><span class="mi">900</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">ResourceFile</span><span class="p">(</span>
+                <span class="n">url</span><span class="o">=</span><span class="n">AERTSLAB_BASE</span>
+                    <span class="o">+</span> <span class="s2">&quot;motif2tf/motifs-v9-nr.mgi-m0.001-o0.0.tbl&quot;</span><span class="p">,</span>
+                <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;motifs-v9-nr.mgi-m0.001-o0.0.tbl&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="s2">&quot;motif_annotation&quot;</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Mouse motif annotations (v9)&quot;</span><span class="p">,</span>
+                <span class="n">expected_size_mb</span><span class="o">=</span><span class="mi">107</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">],</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="n">_register_scenic_resources</span><span class="p">()</span>
+
+
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># Download helpers</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="_download_file">
+<a class="viewcode-back" href="../../apidocs/flashscenic/flashscenic.data.html#flashscenic.data._download_file">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_download_file</span><span class="p">(</span>
+    <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">dest_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">expected_size_mb</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">chunk_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">,</span>  <span class="c1"># 1 MB chunks</span>
+    <span class="n">max_retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Download a single file with progress reporting and retry logic.</span>
+
+<span class="sd">    Writes to a .partial temp file first, then renames on success.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">partial_path</span> <span class="o">=</span> <span class="n">dest_path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="n">dest_path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">+</span> <span class="s2">&quot;.partial&quot;</span><span class="p">)</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">description</span> <span class="ow">or</span> <span class="n">dest_path</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="k">for</span> <span class="n">attempt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_retries</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">req</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">req</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+                <span class="n">total_bytes</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">getheader</span><span class="p">(</span><span class="s2">&quot;Content-Length&quot;</span><span class="p">)</span>
+                <span class="n">total_mb</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">total_bytes</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span> <span class="k">if</span> <span class="n">total_bytes</span> <span class="k">else</span> <span class="n">expected_size_mb</span>
+                <span class="n">total_bytes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">total_bytes</span><span class="p">)</span> <span class="k">if</span> <span class="n">total_bytes</span> <span class="k">else</span> <span class="kc">None</span>
+
+                <span class="n">downloaded</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">last_report</span> <span class="o">=</span> <span class="mi">0</span>
+
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">partial_path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                        <span class="n">chunk</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">chunk</span><span class="p">:</span>
+                            <span class="k">break</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+                        <span class="n">downloaded</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+                        <span class="n">downloaded_mb</span> <span class="o">=</span> <span class="n">downloaded</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span>
+
+                        <span class="c1"># Report progress every ~10 MB</span>
+                        <span class="k">if</span> <span class="n">downloaded_mb</span> <span class="o">-</span> <span class="n">last_report</span> <span class="o">&gt;=</span> <span class="mi">10</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">chunk</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">total_bytes</span><span class="p">:</span>
+                                <span class="n">pct</span> <span class="o">=</span> <span class="n">downloaded</span> <span class="o">/</span> <span class="n">total_bytes</span> <span class="o">*</span> <span class="mi">100</span>
+                                <span class="nb">print</span><span class="p">(</span>
+                                    <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">  [</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">downloaded_mb</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> / &quot;</span>
+                                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">total_mb</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> MB (</span><span class="si">{</span><span class="n">pct</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">%)&quot;</span><span class="p">,</span>
+                                    <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                <span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="nb">print</span><span class="p">(</span>
+                                    <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">  [</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">downloaded_mb</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">,</span>
+                                    <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                <span class="p">)</span>
+                            <span class="n">last_report</span> <span class="o">=</span> <span class="n">downloaded_mb</span>
+
+                <span class="nb">print</span><span class="p">()</span>  <span class="c1"># newline after progress</span>
+
+            <span class="c1"># Rename partial to final</span>
+            <span class="n">partial_path</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">dest_path</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">dest_path</span>
+
+        <span class="k">except</span> <span class="p">(</span><span class="n">urllib</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">URLError</span><span class="p">,</span> <span class="n">urllib</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">HTTPError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">partial_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="n">partial_path</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">attempt</span> <span class="o">&lt;</span> <span class="n">max_retries</span><span class="p">:</span>
+                <span class="n">wait</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">**</span> <span class="p">(</span><span class="n">attempt</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># 1s, 4s, 16s</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Retry </span><span class="si">{</span><span class="n">attempt</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">max_retries</span><span class="si">}</span><span class="s2"> for </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2"> &quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;(waiting </span><span class="si">{</span><span class="n">wait</span><span class="si">}</span><span class="s2">s): </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">wait</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Failed to download </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2"> after </span><span class="si">{</span><span class="n">max_retries</span><span class="si">}</span><span class="s2"> attempts: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+
+    <span class="c1"># Should not reach here, but just in case</span>
+    <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to download </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># Public API</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="download_data">
+<a class="viewcode-back" href="../../apidocs/flashscenic/flashscenic.data.html#flashscenic.data.download_data">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">download_data</span><span class="p">(</span>
+    <span class="n">species</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;human&quot;</span><span class="p">,</span>
+    <span class="n">version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;v10&quot;</span><span class="p">,</span>
+    <span class="n">datasource</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;scenic&quot;</span><span class="p">,</span>
+    <span class="n">cache_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DownloadedResources</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Download cistarget resource files required for the flashscenic pipeline.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    species : str, default=&#39;human&#39;</span>
+<span class="sd">        Species to download resources for. One of &#39;human&#39;, &#39;mouse&#39;,</span>
+<span class="sd">        &#39;drosophila&#39;.</span>
+<span class="sd">    version : str, default=&#39;v10&#39;</span>
+<span class="sd">        Motif collection version. One of &#39;v10&#39; (recommended), &#39;v9&#39;.</span>
+<span class="sd">    datasource : str, default=&#39;scenic&#39;</span>
+<span class="sd">        Data source identifier. Currently only &#39;scenic&#39; (Aertslab) is</span>
+<span class="sd">        supported. Architecture supports adding alternative sources.</span>
+<span class="sd">    cache_dir : str or None, default=None</span>
+<span class="sd">        Local directory to store downloaded files. If None, defaults to</span>
+<span class="sd">        ``./flashscenic_data/``.</span>
+<span class="sd">    force : bool, default=False</span>
+<span class="sd">        If True, re-download files even if they already exist locally.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    DownloadedResources</span>
+<span class="sd">        Dataclass with Path objects pointing to each downloaded file.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the species/version/datasource combination is not recognized.</span>
+<span class="sd">    ConnectionError</span>
+<span class="sd">        If download fails after retries.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">datasource</span><span class="p">,</span> <span class="n">species</span><span class="p">,</span> <span class="n">version</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_RESOURCE_REGISTRY</span><span class="p">:</span>
+        <span class="n">available</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">_RESOURCE_REGISTRY</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Unknown resource combination: datasource=</span><span class="si">{</span><span class="n">datasource</span><span class="si">!r}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;species=</span><span class="si">{</span><span class="n">species</span><span class="si">!r}</span><span class="s2">, version=</span><span class="si">{</span><span class="n">version</span><span class="si">!r}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Available combinations: </span><span class="si">{</span><span class="n">available</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">resource_set</span> <span class="o">=</span> <span class="n">_RESOURCE_REGISTRY</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="c1"># Resolve cache directory</span>
+    <span class="k">if</span> <span class="n">cache_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cache_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;./flashscenic_data&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cache_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">cache_dir</span><span class="p">)</span>
+    <span class="n">cache_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">DownloadedResources</span><span class="p">(</span><span class="n">cache_dir</span><span class="o">=</span><span class="n">cache_path</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Downloading </span><span class="si">{</span><span class="n">datasource</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">species</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2"> resources &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;to </span><span class="si">{</span><span class="n">cache_path</span><span class="si">}</span><span class="s2">/&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">rf</span> <span class="ow">in</span> <span class="n">resource_set</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
+        <span class="n">dest</span> <span class="o">=</span> <span class="n">cache_path</span> <span class="o">/</span> <span class="n">rf</span><span class="o">.</span><span class="n">filename</span>
+
+        <span class="k">if</span> <span class="n">dest</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  [</span><span class="si">{</span><span class="n">rf</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s2">] Already cached: </span><span class="si">{</span><span class="n">rf</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_download_file</span><span class="p">(</span>
+                <span class="n">url</span><span class="o">=</span><span class="n">rf</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+                <span class="n">dest_path</span><span class="o">=</span><span class="n">dest</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="n">rf</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+                <span class="n">expected_size_mb</span><span class="o">=</span><span class="n">rf</span><span class="o">.</span><span class="n">expected_size_mb</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Assign to result</span>
+        <span class="k">if</span> <span class="n">rf</span><span class="o">.</span><span class="n">category</span> <span class="o">==</span> <span class="s2">&quot;tf_list&quot;</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">tf_list</span> <span class="o">=</span> <span class="n">dest</span>
+        <span class="k">elif</span> <span class="n">rf</span><span class="o">.</span><span class="n">category</span> <span class="o">==</span> <span class="s2">&quot;ranking_db&quot;</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">ranking_dbs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">rf</span><span class="o">.</span><span class="n">category</span> <span class="o">==</span> <span class="s2">&quot;motif_annotation&quot;</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">motif_annotation</span> <span class="o">=</span> <span class="n">dest</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Download complete.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<div class="viewcode-block" id="list_available_resources">
+<a class="viewcode-back" href="../../apidocs/flashscenic/flashscenic.data.html#flashscenic.data.list_available_resources">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_available_resources</span><span class="p">(</span>
+    <span class="n">datasource</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">species</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ResourceSet</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List available resource sets, optionally filtered.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    datasource : str or None</span>
+<span class="sd">        Filter by data source (e.g., &#39;scenic&#39;).</span>
+<span class="sd">    species : str or None</span>
+<span class="sd">        Filter by species (e.g., &#39;human&#39;, &#39;mouse&#39;, &#39;drosophila&#39;).</span>
+<span class="sd">    version : str or None</span>
+<span class="sd">        Filter by version (e.g., &#39;v10&#39;, &#39;v9&#39;).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list of ResourceSet</span>
+<span class="sd">        Matching resource sets.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">sp</span><span class="p">,</span> <span class="n">ver</span><span class="p">),</span> <span class="n">rs</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">_RESOURCE_REGISTRY</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">if</span> <span class="n">datasource</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ds</span> <span class="o">!=</span> <span class="n">datasource</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">species</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sp</span> <span class="o">!=</span> <span class="n">species</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ver</span> <span class="o">!=</span> <span class="n">version</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">results</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Hao Zhu, Donna Slonim
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025-2026, Hao Zhu, Donna Slonim.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

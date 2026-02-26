@@ -1,0 +1,1379 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>API Reference &#8212; flashscenic</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Pipeline Guide" href="pipeline.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">flashscenic</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Downstream Analysis with flashscenic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.html">Pipeline Guide</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">API Reference</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/haozhu233/flashscenic" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/haozhu233/flashscenic/issues/new?title=Issue%20on%20page%20%2Fapi.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/api.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>API Reference</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pipeline">Pipeline</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.pipeline.run_flashscenic"><code class="docutils literal notranslate"><span class="pre">run_flashscenic()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-download">Data Download</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.data.download_data"><code class="docutils literal notranslate"><span class="pre">download_data()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.data.list_available_resources"><code class="docutils literal notranslate"><span class="pre">list_available_resources()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.data.flashscenic.data.DownloadedResources.DownloadedResources"><code class="docutils literal notranslate"><span class="pre">flashscenic.data.DownloadedResources.DownloadedResources</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.data.flashscenic.data.DownloadedResources.DownloadedResources.tf_list"><code class="docutils literal notranslate"><span class="pre">flashscenic.data.DownloadedResources.DownloadedResources.tf_list</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.data.flashscenic.data.DownloadedResources.DownloadedResources.ranking_dbs"><code class="docutils literal notranslate"><span class="pre">flashscenic.data.DownloadedResources.DownloadedResources.ranking_dbs</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.data.flashscenic.data.DownloadedResources.DownloadedResources.motif_annotation"><code class="docutils literal notranslate"><span class="pre">flashscenic.data.DownloadedResources.DownloadedResources.motif_annotation</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.data.flashscenic.data.DownloadedResources.DownloadedResources.cache_dir"><code class="docutils literal notranslate"><span class="pre">flashscenic.data.DownloadedResources.DownloadedResources.cache_dir</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.data.flashscenic.data.DownloadedResources.DownloadedResources.__repr__"><code class="docutils literal notranslate"><span class="pre">flashscenic.data.DownloadedResources.DownloadedResources.__repr__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#aucell">AUCell</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.aucell.get_aucell"><code class="docutils literal notranslate"><span class="pre">get_aucell()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cistarget">cisTarget</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.load_database"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner.load_database()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.load_annotations"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner.load_annotations()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.load_from_tensor"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner.load_from_tensor()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.genes_to_indices"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner.genes_to_indices()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.prune"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner.prune()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.prune_batch"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner.prune_batch()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.get_enriched_motif_names"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner.get_enriched_motif_names()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.get_leading_edge_genes"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner.get_leading_edge_genes()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.prune_modules"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner.prune_modules()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner._merge_regulons"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner._merge_regulons()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner._merge_regulons_by_tf"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner._merge_regulons_by_tf()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.clear_gpu_memory"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner.clear_gpu_memory()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.compute_recovery_aucs"><code class="docutils literal notranslate"><span class="pre">compute_recovery_aucs()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.compute_nes"><code class="docutils literal notranslate"><span class="pre">compute_nes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.prune_single_module"><code class="docutils literal notranslate"><span class="pre">prune_single_module()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.MotifAnnotation.MotifAnnotation"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.MotifAnnotation.MotifAnnotation</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.MotifAnnotation.MotifAnnotation.load_from_file"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.MotifAnnotation.MotifAnnotation.load_from_file()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.MotifAnnotation.MotifAnnotation.has_annotation"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.MotifAnnotation.MotifAnnotation.has_annotation()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.MotifAnnotation.MotifAnnotation.get_annotation"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.MotifAnnotation.MotifAnnotation.get_annotation()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.filter_by_annotations"><code class="docutils literal notranslate"><span class="pre">filter_by_annotations()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-utilities">Module Utilities</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.select_topk_targets"><code class="docutils literal notranslate"><span class="pre">select_topk_targets()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.select_threshold_targets"><code class="docutils literal notranslate"><span class="pre">select_threshold_targets()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.select_top_n_per_target"><code class="docutils literal notranslate"><span class="pre">select_top_n_per_target()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.filter_by_min_targets"><code class="docutils literal notranslate"><span class="pre">filter_by_min_targets()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.filter_by_mapped_fraction"><code class="docutils literal notranslate"><span class="pre">filter_by_mapped_fraction()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.get_target_indices"><code class="docutils literal notranslate"><span class="pre">get_target_indices()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.binarize"><code class="docutils literal notranslate"><span class="pre">binarize()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.to_numpy"><code class="docutils literal notranslate"><span class="pre">to_numpy()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analysis">Analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.rss.regulon_specificity_scores"><code class="docutils literal notranslate"><span class="pre">regulon_specificity_scores()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#helpers">Helpers</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.regulons_to_adjacency"><code class="docutils literal notranslate"><span class="pre">regulons_to_adjacency()</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading">#</a></h1>
+<section id="pipeline">
+<h2>Pipeline<a class="headerlink" href="#pipeline" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="apidocs/flashscenic/flashscenic.pipeline.html#flashscenic.pipeline.run_flashscenic" title="flashscenic.pipeline.run_flashscenic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flashscenic.pipeline.run_flashscenic</span></code></a></p></td>
+<td><p>Run the complete flashscenic pipeline.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.pipeline.run_flashscenic">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.pipeline.</span></span><span class="sig-name descname"><span class="pre">run_flashscenic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exp_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">species</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'human'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datasource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'scenic'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'v10'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tf_list_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ranking_db_paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">motif_annotation_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grn_n_steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grn_sparsity_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_percentile_thresholds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(75,)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_top_n_per_target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(5,</span> <span class="pre">10,</span> <span class="pre">50)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_min_targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_min_fraction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_include_tf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pruning_rank_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pruning_auc_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pruning_nes_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pruning_min_genes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pruning_merge_strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'union'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation_motif_similarity_fdr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation_orthologous_identity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aucell_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aucell_auc_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aucell_batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cuda'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="_modules/flashscenic/pipeline.html#run_flashscenic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.pipeline.run_flashscenic" title="Link to this definition">#</a></dt>
+<dd><p>Run the complete flashscenic pipeline.</p>
+<p>Performs GRN inference (RegDiffusion), module filtering, cisTarget pruning,
+and AUCell scoring. Stops before dimensionality reduction / visualization.</p>
+<p class="rubric" id="id1">Parameters</p>
+<p>exp_matrix : np.ndarray
+Expression matrix of shape (n_cells, n_genes). Should be
+log-transformed and (optionally) subset to highly variable genes.
+gene_names : list of str
+Gene names corresponding to columns of exp_matrix. Length must
+equal exp_matrix.shape[1].
+species : str, default=’human’
+Species for TF list and ranking databases. One of ‘human’, ‘mouse’,
+‘drosophila’.</p>
+<p>datasource : str, default=’scenic’
+Data source for resource downloads.
+version : str, default=’v10’
+Motif collection version.
+cache_dir : str or None
+Cache directory for downloaded resources. Defaults to
+<code class="docutils literal notranslate"><span class="pre">./flashscenic_data/</span></code>.
+tf_list_path : str or None
+Path to a custom TF list file. Overrides downloaded TF list.
+ranking_db_paths : list of str or None
+Paths to custom ranking database .feather files. Overrides
+downloaded databases.
+motif_annotation_path : str or None
+Path to a custom motif annotation .tbl file. Overrides
+downloaded annotation.</p>
+<p>grn_n_steps : int, default=1000
+Number of training steps for RegDiffusion.
+grn_sparsity_threshold : float, default=1.5
+Edges below this weight are zeroed. Higher = sparser network.</p>
+<p>module_k : int, default=50
+Top target genes per TF for module creation.
+module_percentile_thresholds : tuple of int, default=(75,)
+Percentile thresholds for percentile-based modules. Each value
+creates a module type keeping targets above that global weight
+percentile. Empty tuple to skip.
+module_top_n_per_target : tuple of int, default=(5, 10, 50)
+N values for top-N-per-target modules. For each N, finds each
+target gene’s top N strongest regulators, then regroups by TF.
+Empty tuple to skip.
+module_min_targets : int, default=20
+Minimum target genes for a TF module to be retained.
+module_min_fraction : float, default=0.8
+Minimum fraction of targets required. Matches pySCENIC’s 80% rule.
+module_include_tf : bool, default=True
+Include TF itself in its own module.</p>
+<p>pruning_rank_threshold : int, default=5000
+Maximum rank for cisTarget recovery curve.
+pruning_auc_threshold : float, default=0.05
+Fraction of genome for cisTarget AUC.
+pruning_nes_threshold : float, default=3.0
+NES threshold for motif enrichment.
+pruning_min_genes : int, default=0
+Minimum genes per regulon after pruning.
+pruning_merge_strategy : str, default=’union’
+How to merge regulons from multiple databases (‘union’ or ‘best’).</p>
+<p>annotation_motif_similarity_fdr : float, default=0.001
+Maximum FDR for motif similarity filtering.
+annotation_orthologous_identity : float, default=0.0
+Minimum orthologous identity threshold.</p>
+<p>aucell_k : int or None
+Top k targets for AUCell scoring. Defaults to module_k if None.
+aucell_auc_threshold : float, default=0.05
+Fraction of genome for AUCell AUC calculation.
+aucell_batch_size : int, default=32
+Batch size for AUCell computation.</p>
+<p>device : str, default=’cuda’
+PyTorch device (‘cuda’ or ‘cpu’).
+seed : int or None
+Random seed for reproducibility.
+verbose : bool, default=True
+Print progress messages.</p>
+<p class="rubric" id="id2">Returns</p>
+<p>dict
+- <code class="docutils literal notranslate"><span class="pre">'auc_scores'</span></code>: np.ndarray of shape (n_cells, n_regulons)
+- <code class="docutils literal notranslate"><span class="pre">'regulon_names'</span></code>: list of regulon name strings
+- <code class="docutils literal notranslate"><span class="pre">'regulons'</span></code>: list of regulon dicts from cisTarget
+- <code class="docutils literal notranslate"><span class="pre">'regulon_adj'</span></code>: np.ndarray of shape (n_regulons, n_genes)
+- <code class="docutils literal notranslate"><span class="pre">'parameters'</span></code>: dict of all parameters used</p>
+<p class="rubric" id="id3">Raises</p>
+<p>ImportError
+If regdiffusion is not installed.
+ValueError
+If no TFs survive filtering or no regulons survive pruning.</p>
+<p class="rubric" id="id4">Examples</p>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p>import flashscenic as fs
+result = fs.run_flashscenic(exp_matrix, gene_names, species=’human’)
+auc_scores = result[‘auc_scores’]  # (n_cells, n_regulons)</p>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="data-download">
+<h2>Data Download<a class="headerlink" href="#data-download" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="apidocs/flashscenic/flashscenic.data.html#flashscenic.data.download_data" title="flashscenic.data.download_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flashscenic.data.download_data</span></code></a></p></td>
+<td><p>Download cistarget resource files required for the flashscenic pipeline.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="apidocs/flashscenic/flashscenic.data.html#flashscenic.data.list_available_resources" title="flashscenic.data.list_available_resources"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flashscenic.data.list_available_resources</span></code></a></p></td>
+<td><p>List available resource sets, optionally filtered.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="apidocs/flashscenic/flashscenic.data.html#flashscenic.data.DownloadedResources" title="flashscenic.data.DownloadedResources"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flashscenic.data.DownloadedResources</span></code></a></p></td>
+<td><p>Paths to downloaded resource files.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.data.download_data">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.data.</span></span><span class="sig-name descname"><span class="pre">download_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">species</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'human'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'v10'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datasource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'scenic'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="apidocs/flashscenic/flashscenic.data.html#flashscenic.data.DownloadedResources" title="flashscenic.data.DownloadedResources"><span class="pre">flashscenic.data.DownloadedResources</span></a></span></span><a class="reference internal" href="_modules/flashscenic/data.html#download_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.data.download_data" title="Link to this definition">#</a></dt>
+<dd><p>Download cistarget resource files required for the flashscenic pipeline.</p>
+<p class="rubric" id="id10">Parameters</p>
+<p>species : str, default=’human’
+Species to download resources for. One of ‘human’, ‘mouse’,
+‘drosophila’.
+version : str, default=’v10’
+Motif collection version. One of ‘v10’ (recommended), ‘v9’.
+datasource : str, default=’scenic’
+Data source identifier. Currently only ‘scenic’ (Aertslab) is
+supported. Architecture supports adding alternative sources.
+cache_dir : str or None, default=None
+Local directory to store downloaded files. If None, defaults to
+<code class="docutils literal notranslate"><span class="pre">./flashscenic_data/</span></code>.
+force : bool, default=False
+If True, re-download files even if they already exist locally.</p>
+<p class="rubric" id="id11">Returns</p>
+<p>DownloadedResources
+Dataclass with Path objects pointing to each downloaded file.</p>
+<p class="rubric" id="id12">Raises</p>
+<p>ValueError
+If the species/version/datasource combination is not recognized.
+ConnectionError
+If download fails after retries.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.data.list_available_resources">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.data.</span></span><span class="sig-name descname"><span class="pre">list_available_resources</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datasource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">species</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="apidocs/flashscenic/flashscenic.data.html#flashscenic.data.ResourceSet" title="flashscenic.data.ResourceSet"><span class="pre">flashscenic.data.ResourceSet</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/flashscenic/data.html#list_available_resources"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.data.list_available_resources" title="Link to this definition">#</a></dt>
+<dd><p>List available resource sets, optionally filtered.</p>
+<p class="rubric" id="id13">Parameters</p>
+<p>datasource : str or None
+Filter by data source (e.g., ‘scenic’).
+species : str or None
+Filter by species (e.g., ‘human’, ‘mouse’, ‘drosophila’).
+version : str or None
+Filter by version (e.g., ‘v10’, ‘v9’).</p>
+<p class="rubric" id="id14">Returns</p>
+<p>list of ResourceSet
+Matching resource sets.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="flashscenic.data.flashscenic.data.DownloadedResources.DownloadedResources">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DownloadedResources</span></span><a class="headerlink" href="#flashscenic.data.flashscenic.data.DownloadedResources.DownloadedResources" title="Link to this definition">#</a></dt>
+<dd><p>Paths to downloaded resource files.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="flashscenic.data.flashscenic.data.DownloadedResources.DownloadedResources.tf_list">
+<span class="sig-name descname"><span class="pre">tf_list</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#flashscenic.data.flashscenic.data.DownloadedResources.DownloadedResources.tf_list" title="Link to this definition">#</a></dt>
+<dd><p>None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="flashscenic.data.flashscenic.data.DownloadedResources.DownloadedResources.ranking_dbs">
+<span class="sig-name descname"><span class="pre">ranking_dbs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#flashscenic.data.flashscenic.data.DownloadedResources.DownloadedResources.ranking_dbs" title="Link to this definition">#</a></dt>
+<dd><p>‘field(…)’</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="flashscenic.data.flashscenic.data.DownloadedResources.DownloadedResources.motif_annotation">
+<span class="sig-name descname"><span class="pre">motif_annotation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#flashscenic.data.flashscenic.data.DownloadedResources.DownloadedResources.motif_annotation" title="Link to this definition">#</a></dt>
+<dd><p>None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="flashscenic.data.flashscenic.data.DownloadedResources.DownloadedResources.cache_dir">
+<span class="sig-name descname"><span class="pre">cache_dir</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pathlib.Path</span></em><a class="headerlink" href="#flashscenic.data.flashscenic.data.DownloadedResources.DownloadedResources.cache_dir" title="Link to this definition">#</a></dt>
+<dd><p>‘field(…)’</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="flashscenic.data.flashscenic.data.DownloadedResources.DownloadedResources.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#flashscenic.data.flashscenic.data.DownloadedResources.DownloadedResources.__repr__" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="aucell">
+<h2>AUCell<a class="headerlink" href="#aucell" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.aucell.get_aucell">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.aucell.</span></span><span class="sig-name descname"><span class="pre">get_aucell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exp_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adj_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auc_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cuda'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flashscenic/aucell.html#get_aucell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.aucell.get_aucell" title="Link to this definition">#</a></dt>
+<dd><p>Fully vectorized pySCENIC-equivalent AUCell calculation.</p>
+<p>Uses the actual number of target genes per TF/regulon (not fixed k) to match
+pySCENIC behavior. When adj_array has weighted entries, uses weights for AUC.</p>
+<p>Args:
+exp_array (np.ndarray): Expression matrix (n_cells x n_genes)
+adj_array (np.ndarray): Adjacency matrix (n_tfs x n_genes), can be binary or weighted
+k (int): Max target genes per TF (pads shorter regulons). Default is 50.
+auc_threshold (float): Fraction of genome for AUC calculation. Default is 0.05.
+device (str): Device, ‘cpu’ or ‘cuda’. Default is ‘cuda’.
+batch_size (int): Batch size for processing cells. Default is 32.
+seed (int): Random seed for tie-breaking. Default is None.</p>
+<p>Returns:
+np.ndarray: AUCell scores matrix of shape (n_cells, n_TFs)</p>
+</dd></dl>
+
+</section>
+<section id="cistarget">
+<h2>cisTarget<a class="headerlink" href="#cistarget" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="apidocs/flashscenic/flashscenic.cistarget.html#flashscenic.cistarget.CisTargetPruner" title="flashscenic.cistarget.CisTargetPruner"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner</span></code></a></p></td>
+<td><p>GPU-accelerated cisTarget pruning with support for single or multiple databases.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="apidocs/flashscenic/flashscenic.cistarget.html#flashscenic.cistarget.compute_recovery_aucs" title="flashscenic.cistarget.compute_recovery_aucs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flashscenic.cistarget.compute_recovery_aucs</span></code></a></p></td>
+<td><p>Compute recovery curves and AUCs for all motifs given module genes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="apidocs/flashscenic/flashscenic.cistarget.html#flashscenic.cistarget.compute_nes" title="flashscenic.cistarget.compute_nes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flashscenic.cistarget.compute_nes</span></code></a></p></td>
+<td><p>Compute Normalized Enrichment Scores (NES) from AUC values.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="apidocs/flashscenic/flashscenic.cistarget.html#flashscenic.cistarget.prune_single_module" title="flashscenic.cistarget.prune_single_module"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flashscenic.cistarget.prune_single_module</span></code></a></p></td>
+<td><p>Perform cisTarget pruning for a single module.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="apidocs/flashscenic/flashscenic.cistarget.html#flashscenic.cistarget.MotifAnnotation" title="flashscenic.cistarget.MotifAnnotation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flashscenic.cistarget.MotifAnnotation</span></code></a></p></td>
+<td><p>Lightweight motif annotation storage without pandas.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="apidocs/flashscenic/flashscenic.cistarget.html#flashscenic.cistarget.filter_by_annotations" title="flashscenic.cistarget.filter_by_annotations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flashscenic.cistarget.filter_by_annotations</span></code></a></p></td>
+<td><p>Filter enriched motifs by annotations (CPU implementation).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CisTargetPruner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rank_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auc_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nes_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cuda'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_genes_per_regulon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merge_strategy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'union'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner" title="Link to this definition">#</a></dt>
+<dd><p>GPU-accelerated cisTarget pruning with support for single or multiple databases.</p>
+<p>Example (single database):
+```python
+pruner = CisTargetPruner(device=’cuda’)
+pruner.load_database(‘rankings.feather’)
+pruner.load_annotations(‘motifs.tbl’, filter_for_annotation=True)</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Prune with tensor input
+result = pruner.prune(module_gene_indices)
+```
+</pre></div>
+</div>
+<p>Example (multiple databases):
+```python
+pruner = CisTargetPruner(device=’cuda’)
+pruner.load_database([‘db_500bp.feather’, ‘db_10kb.feather’])
+pruner.load_annotations(‘motifs.tbl’)</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Prune modules across all databases
+regulon_info = pruner.prune_modules(modules, tf_names, gene_names)
+```
+</pre></div>
+</div>
+<p class="rubric">Initialization</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.load_database">
+<span class="sig-name descname"><span class="pre">load_database</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">database_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.load_database" title="Link to this definition">#</a></dt>
+<dd><p>Load ranking database(s) from feather file(s).</p>
+<p>Args:
+paths: Path to .feather ranking database, or list of paths for multiple databases
+database_names: Optional name(s) for database(s) (defaults to filename(s))</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.load_annotations">
+<span class="sig-name descname"><span class="pre">load_annotations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">annotation_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_for_annotation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">motif_similarity_fdr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orthologous_identity_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.load_annotations" title="Link to this definition">#</a></dt>
+<dd><p>Load motif annotations and enable filtering.</p>
+<p>Args:
+annotation_file: Path to motif annotation TSV file
+filter_for_annotation: If True, filter enriched motifs to keep only those with annotations
+motif_similarity_fdr: Maximum FDR threshold (default: 0.001)
+orthologous_identity_threshold: Minimum orthologous identity (default: 0.0)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.load_from_tensor">
+<span class="sig-name descname"><span class="pre">load_from_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rankings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flashscenic.cistarget.ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">motif_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.load_from_tensor" title="Link to this definition">#</a></dt>
+<dd><p>Load database from tensor/array directly.</p>
+<p>Args:
+rankings: (n_motifs, n_genes) ranking matrix
+motif_names: Optional list of motif names
+gene_names: Optional list of gene names</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.genes_to_indices">
+<span class="sig-name descname"><span class="pre">genes_to_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">genes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="headerlink" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.genes_to_indices" title="Link to this definition">#</a></dt>
+<dd><p>Convert gene names to indices tensor.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.prune">
+<span class="sig-name descname"><span class="pre">prune</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_gene_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flashscenic.cistarget.ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">flashscenic.cistarget.ArrayLike</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tf_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.prune" title="Link to this definition">#</a></dt>
+<dd><p>Prune a single module (single database mode only).</p>
+<p>Args:
+module_gene_indices: (n_module_genes,) indices of genes in module
+weights: Optional (n_module_genes,) gene weights
+tf_name: TF name for TF-specific annotation filtering (matching
+pySCENIC behavior). If None, keeps motifs with any annotation.</p>
+<p>Returns:
+Dict with pruning results (all tensors)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.prune_batch">
+<span class="sig-name descname"><span class="pre">prune_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.prune_batch" title="Link to this definition">#</a></dt>
+<dd><p>Prune multiple modules.</p>
+<p>Args:
+modules: List of (n_genes_i,) tensors with gene indices
+weights_list: Optional list of weight tensors</p>
+<p>Returns:
+List of pruning result dicts</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.get_enriched_motif_names">
+<span class="sig-name descname"><span class="pre">get_enriched_motif_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.get_enriched_motif_names" title="Link to this definition">#</a></dt>
+<dd><p>Get names of enriched motifs from pruning result.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.get_leading_edge_genes">
+<span class="sig-name descname"><span class="pre">get_leading_edge_genes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_gene_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.get_leading_edge_genes" title="Link to this definition">#</a></dt>
+<dd><p>Get leading edge gene names for each enriched motif.</p>
+<p>Args:
+result: Pruning result dict
+module_gene_indices: Original module gene indices</p>
+<p>Returns:
+List of gene name lists, one per enriched motif</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.prune_modules">
+<span class="sig-name descname"><span class="pre">prune_modules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tf_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.prune_modules" title="Link to this definition">#</a></dt>
+<dd><p>Prune modules across all databases and merge results (multi-database mode only).</p>
+<p>Args:
+modules: List of (n_genes_i,) tensors with gene indices for each TF module
+tf_names: List of TF names corresponding to modules
+gene_names: List of all gene names
+weights_list: Optional list of weight tensors for each module</p>
+<p>Returns:
+List of regulon dictionaries with keys: name, tf, motif, n_genes, genes, context, nes, auc</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner._merge_regulons">
+<span class="sig-name descname"><span class="pre">_merge_regulons</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regulons</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner._merge_regulons" title="Link to this definition">#</a></dt>
+<dd><p>Merge regulons from multiple databases.</p>
+<p>For the same TF+motif combination:</p>
+<ul class="simple">
+<li><p>If merge_strategy=’union’: keep all (they may have different genes from different DBs)</p></li>
+<li><p>If merge_strategy=’best’: keep the one with highest NES</p></li>
+</ul>
+<p>Note: pyscenic uses union strategy - it merges genes from all databases
+for the same TF+motif combination.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner._merge_regulons_by_tf">
+<span class="sig-name descname"><span class="pre">_merge_regulons_by_tf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regulons</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner._merge_regulons_by_tf" title="Link to this definition">#</a></dt>
+<dd><p>Merge regulons by TF, matching pyscenic’s df2regulons behavior.</p>
+<p>pyscenic groups by (TF, Type) and uses Regulon.union to merge all motifs
+for each TF into a single regulon. This function implements the same logic.</p>
+<p>Args:
+regulons: List of regulon dictionaries</p>
+<p>Returns:
+Merged regulons (one per TF)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.clear_gpu_memory">
+<span class="sig-name descname"><span class="pre">clear_gpu_memory</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.clear_gpu_memory" title="Link to this definition">#</a></dt>
+<dd><p>Release GPU memory.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.cistarget.compute_recovery_aucs">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.cistarget.</span></span><span class="sig-name descname"><span class="pre">compute_recovery_aucs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rankings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_gene_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auc_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/flashscenic/cistarget.html#compute_recovery_aucs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.cistarget.compute_recovery_aucs" title="Link to this definition">#</a></dt>
+<dd><p>Compute recovery curves and AUCs for all motifs given module genes.</p>
+<p>Vectorized implementation - processes all motifs in parallel.</p>
+<p>Args:
+rankings: (n_motifs, n_genes) - rank of each gene for each motif (0-indexed)
+module_gene_indices: (n_module_genes,) - indices of genes in the module
+rank_threshold: Maximum rank to consider for recovery curve
+auc_threshold: Fraction of genome for AUC calculation
+weights: (n_module_genes,) - optional weights for weighted recovery</p>
+<p>Returns:
+rccs: (n_motifs, rank_threshold) - recovery curves
+aucs: (n_motifs,) - AUC values</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.cistarget.compute_nes">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.cistarget.</span></span><span class="sig-name descname"><span class="pre">compute_nes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aucs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="_modules/flashscenic/cistarget.html#compute_nes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.cistarget.compute_nes" title="Link to this definition">#</a></dt>
+<dd><p>Compute Normalized Enrichment Scores (NES) from AUC values.</p>
+<p>NES = (AUC - mean(AUC)) / std(AUC)
+Uses population std (ddof=0) to match pySCENIC.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.cistarget.prune_single_module">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.cistarget.</span></span><span class="sig-name descname"><span class="pre">prune_single_module</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rankings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_gene_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auc_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nes_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/flashscenic/cistarget.html#prune_single_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.cistarget.prune_single_module" title="Link to this definition">#</a></dt>
+<dd><p>Perform cisTarget pruning for a single module.</p>
+<p>All inputs and outputs are tensors on the same device.</p>
+<p>Args:
+rankings: (n_motifs, n_genes) - ranking database tensor
+module_gene_indices: (n_module_genes,) - gene indices for this module
+rank_threshold: Maximum rank for recovery curve
+auc_threshold: Fraction of genome for AUC
+nes_threshold: NES threshold for enrichment
+weights: Optional (n_module_genes,) gene weights</p>
+<p>Returns:
+Dict with keys:
+- enriched_mask: (n_motifs,) bool - which motifs are enriched
+- nes: (n_motifs,) - NES scores
+- aucs: (n_motifs,) - AUC scores
+- rccs: (n_motifs, rank_threshold) - recovery curves
+- leading_edge_masks: (n_enriched, n_module_genes) - leading edge for each enriched motif
+- rank_at_max: (n_enriched,) - rank at max for each enriched motif</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="flashscenic.cistarget.flashscenic.cistarget.MotifAnnotation.MotifAnnotation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MotifAnnotation</span></span><a class="headerlink" href="#flashscenic.cistarget.flashscenic.cistarget.MotifAnnotation.MotifAnnotation" title="Link to this definition">#</a></dt>
+<dd><p>Lightweight motif annotation storage without pandas.</p>
+<p>Stores motif annotations in a dictionary for fast lookup.
+Matches pyscenic’s annotation filtering behavior.</p>
+<p class="rubric">Initialization</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="flashscenic.cistarget.flashscenic.cistarget.MotifAnnotation.MotifAnnotation.load_from_file">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">motif_similarity_fdr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orthologous_identity_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="apidocs/flashscenic/flashscenic.cistarget.html#flashscenic.cistarget.MotifAnnotation" title="flashscenic.cistarget.MotifAnnotation"><span class="pre">flashscenic.cistarget.MotifAnnotation</span></a></span></span><a class="headerlink" href="#flashscenic.cistarget.flashscenic.cistarget.MotifAnnotation.MotifAnnotation.load_from_file" title="Link to this definition">#</a></dt>
+<dd><p>Load motif annotations from a motif2TF snapshot file.</p>
+<p>Args:
+fname: Path to TSV annotation file
+motif_similarity_fdr: Maximum FDR threshold (default: 0.001)
+orthologous_identity_threshold: Minimum orthologous identity (default: 0.0)
+column_names: Optional tuple of column names to use. If None, reads from header.</p>
+<p>Returns:
+MotifAnnotation instance</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="flashscenic.cistarget.flashscenic.cistarget.MotifAnnotation.MotifAnnotation.has_annotation">
+<span class="sig-name descname"><span class="pre">has_annotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">motif_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tf_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#flashscenic.cistarget.flashscenic.cistarget.MotifAnnotation.MotifAnnotation.has_annotation" title="Link to this definition">#</a></dt>
+<dd><p>Check if a motif has annotation.</p>
+<p>Args:
+motif_id: Motif ID
+tf_name: Optional TF name (if provided, checks (TF, motif) pair)</p>
+<p>Returns:
+True if annotation exists</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="flashscenic.cistarget.flashscenic.cistarget.MotifAnnotation.MotifAnnotation.get_annotation">
+<span class="sig-name descname"><span class="pre">get_annotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">motif_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tf_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#flashscenic.cistarget.flashscenic.cistarget.MotifAnnotation.MotifAnnotation.get_annotation" title="Link to this definition">#</a></dt>
+<dd><p>Get annotation for a motif.</p>
+<p>Args:
+motif_id: Motif ID
+tf_name: Optional TF name</p>
+<p>Returns:
+Annotation dict or None</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.cistarget.filter_by_annotations">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.cistarget.</span></span><span class="sig-name descname"><span class="pre">filter_by_annotations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">motif_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">motif_annotations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="apidocs/flashscenic/flashscenic.cistarget.html#flashscenic.cistarget.MotifAnnotation" title="flashscenic.cistarget.MotifAnnotation"><span class="pre">flashscenic.cistarget.MotifAnnotation</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_for_annotation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tf_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/flashscenic/cistarget.html#filter_by_annotations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.cistarget.filter_by_annotations" title="Link to this definition">#</a></dt>
+<dd><p>Filter enriched motifs by annotations (CPU implementation).</p>
+<p>Matches pyscenic behavior: filters enriched motifs to keep only those
+annotated for the specific TF of the module being pruned.</p>
+<p>Args:
+result: Pruning result dict with ‘enriched_mask’, ‘nes’, ‘aucs’, etc.
+motif_names: List of motif names (from database)
+motif_annotations: MotifAnnotation object (None = no filtering)
+filter_for_annotation: If True, only keep motifs with annotations
+tf_name: TF name to filter for. If provided, only keep motifs annotated
+for this specific TF (matching pySCENIC behavior). If None,
+keep motifs with any annotation.</p>
+<p>Returns:
+Filtered result dict (all tensors remain on original device)</p>
+</dd></dl>
+
+</section>
+<section id="module-utilities">
+<h2>Module Utilities<a class="headerlink" href="#module-utilities" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="apidocs/flashscenic/flashscenic.modules.html#flashscenic.modules.select_topk_targets" title="flashscenic.modules.select_topk_targets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flashscenic.modules.select_topk_targets</span></code></a></p></td>
+<td><p>Select top-k targets per TF from adjacency matrix.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="apidocs/flashscenic/flashscenic.modules.html#flashscenic.modules.select_threshold_targets" title="flashscenic.modules.select_threshold_targets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flashscenic.modules.select_threshold_targets</span></code></a></p></td>
+<td><p>Select targets above threshold from adjacency matrix.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="apidocs/flashscenic/flashscenic.modules.html#flashscenic.modules.select_top_n_per_target" title="flashscenic.modules.select_top_n_per_target"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flashscenic.modules.select_top_n_per_target</span></code></a></p></td>
+<td><p>Select top-N regulators per target gene, then regroup by TF.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="apidocs/flashscenic/flashscenic.modules.html#flashscenic.modules.filter_by_min_targets" title="flashscenic.modules.filter_by_min_targets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flashscenic.modules.filter_by_min_targets</span></code></a></p></td>
+<td><p>Filter out TFs with fewer than min_targets or below min_fraction of targets.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="apidocs/flashscenic/flashscenic.modules.html#flashscenic.modules.filter_by_mapped_fraction" title="flashscenic.modules.filter_by_mapped_fraction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flashscenic.modules.filter_by_mapped_fraction</span></code></a></p></td>
+<td><p>Filter out TFs where less than min_fraction of targets can be mapped to a reference.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="apidocs/flashscenic/flashscenic.modules.html#flashscenic.modules.get_target_indices" title="flashscenic.modules.get_target_indices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flashscenic.modules.get_target_indices</span></code></a></p></td>
+<td><p>Get indices of non-zero targets for each TF.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="apidocs/flashscenic/flashscenic.modules.html#flashscenic.modules.binarize" title="flashscenic.modules.binarize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flashscenic.modules.binarize</span></code></a></p></td>
+<td><p>Convert weighted adjacency matrix to binary (0/1).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="apidocs/flashscenic/flashscenic.modules.html#flashscenic.modules.to_numpy" title="flashscenic.modules.to_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flashscenic.modules.to_numpy</span></code></a></p></td>
+<td><p>Convert tensor to numpy array.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.modules.select_topk_targets">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.modules.</span></span><span class="sig-name descname"><span class="pre">select_topk_targets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flashscenic.modules.ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_tf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tf_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">flashscenic.modules.ArrayLike</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="_modules/flashscenic/modules.html#select_topk_targets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.modules.select_topk_targets" title="Link to this definition">#</a></dt>
+<dd><p>Select top-k targets per TF from adjacency matrix.</p>
+<p class="rubric" id="id31">Parameters</p>
+<p>adj : array-like
+Adjacency matrix (n_tfs x n_genes) with edge weights
+k : int, default=50
+Number of top targets to select per TF
+include_tf : bool, default=True
+Include TF itself in its module (sets diagonal to 1 if tf_indices provided)
+tf_indices : array-like, optional
+Index of each TF in the gene list. Required if include_tf=True and
+TFs are part of the gene set.
+device : str, default=’cuda’
+Device for computation</p>
+<p class="rubric" id="id32">Returns</p>
+<p>torch.Tensor
+Filtered adjacency matrix with only top-k targets per TF
+Shape: (n_tfs, n_genes)</p>
+<p class="rubric" id="id33">Example</p>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p>adj = torch.rand(100, 5000)  # 100 TFs, 5000 genes
+filtered = select_topk_targets(adj, k=50)</p>
+<p class="rubric" id="id34">Each row now has at most 50 non-zero values</p>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.modules.select_threshold_targets">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.modules.</span></span><span class="sig-name descname"><span class="pre">select_threshold_targets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flashscenic.modules.ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_tf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tf_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">flashscenic.modules.ArrayLike</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="_modules/flashscenic/modules.html#select_threshold_targets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.modules.select_threshold_targets" title="Link to this definition">#</a></dt>
+<dd><p>Select targets above threshold from adjacency matrix.</p>
+<p class="rubric" id="id35">Parameters</p>
+<p>adj : array-like
+Adjacency matrix (n_tfs x n_genes) with edge weights
+threshold : float, default=0.0
+Absolute threshold (edges below this become 0)
+percentile : float, optional
+If provided, use this percentile of non-zero weights as threshold
+(overrides threshold parameter). Value between 0-100.
+include_tf : bool, default=True
+Include TF itself in its module
+tf_indices : array-like, optional
+Index of each TF in the gene list
+device : str, default=’cuda’
+Device for computation</p>
+<p class="rubric" id="id36">Returns</p>
+<p>torch.Tensor
+Filtered adjacency matrix</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.modules.select_top_n_per_target">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.modules.</span></span><span class="sig-name descname"><span class="pre">select_top_n_per_target</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flashscenic.modules.ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_tf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tf_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">flashscenic.modules.ArrayLike</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="_modules/flashscenic/modules.html#select_top_n_per_target"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.modules.select_top_n_per_target" title="Link to this definition">#</a></dt>
+<dd><p>Select top-N regulators per target gene, then regroup by TF.</p>
+<p>For each target gene, finds its N strongest regulators (TFs). The result
+is regrouped back into the standard (n_tfs, n_genes) layout. This is the
+inverted view used by pySCENIC’s “top N per target” module type.</p>
+<p class="rubric" id="id37">Parameters</p>
+<p>adj : array-like
+Adjacency matrix (n_tfs x n_genes) with edge weights
+n : int, default=5
+Number of top regulators to select per target gene
+include_tf : bool, default=True
+Include TF itself in its module (sets diagonal to 1 if tf_indices provided)
+tf_indices : array-like, optional
+Index of each TF in the gene list. Required if include_tf=True and
+TFs are part of the gene set.
+device : str, default=’cuda’
+Device for computation</p>
+<p class="rubric" id="id38">Returns</p>
+<p>torch.Tensor
+Filtered adjacency matrix with only top-N-per-target entries
+Shape: (n_tfs, n_genes)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.modules.filter_by_min_targets">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.modules.</span></span><span class="sig-name descname"><span class="pre">filter_by_min_targets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flashscenic.modules.ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_fraction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/flashscenic/modules.html#filter_by_min_targets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.modules.filter_by_min_targets" title="Link to this definition">#</a></dt>
+<dd><p>Filter out TFs with fewer than min_targets or below min_fraction of targets.</p>
+<p>This function supports both absolute count filtering (like pySCENIC’s min_genes=20)
+and percentage-based filtering (like pySCENIC’s 80% mapping requirement).</p>
+<p class="rubric" id="id39">Parameters</p>
+<p>adj : array-like
+Adjacency matrix (n_tfs x n_genes)
+min_targets : int, default=20
+Minimum number of non-zero targets required.
+Set to 0 to disable absolute count filtering.
+min_fraction : float or None, default=0.8
+Minimum fraction of total genes that must be non-zero targets.
+Value between 0.0 and 1.0. Default 0.8 matches pySCENIC’s behavior
+of skipping modules where less than 80% of genes can be mapped.
+Set to None to disable fraction-based filtering.
+device : str, default=’cuda’
+Device for computation</p>
+<p class="rubric" id="id40">Returns</p>
+<p>Tuple[torch.Tensor, torch.Tensor]
+- Filtered adjacency matrix (n_valid_tfs x n_genes)
+- Boolean mask indicating which TFs were kept</p>
+<p class="rubric" id="id41">Examples</p>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p>adj = torch.rand(100, 5000) &gt; 0.5  # Random binary adjacency</p>
+<p class="rubric" id="id42">Filter by absolute count (default pySCENIC behavior)</p>
+<p>filtered, mask = filter_by_min_targets(adj, min_targets=20)</p>
+<p class="rubric" id="id43">Filter by percentage (pySCENIC’s 80% rule)</p>
+<p>filtered, mask = filter_by_min_targets(adj, min_targets=0, min_fraction=0.8)</p>
+<p class="rubric" id="id44">Combine both filters</p>
+<p>filtered, mask = filter_by_min_targets(adj, min_targets=20, min_fraction=0.8)</p>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.modules.filter_by_mapped_fraction">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.modules.</span></span><span class="sig-name descname"><span class="pre">filter_by_mapped_fraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flashscenic.modules.ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">flashscenic.modules.ArrayLike</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_fraction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/flashscenic/modules.html#filter_by_mapped_fraction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.modules.filter_by_mapped_fraction" title="Link to this definition">#</a></dt>
+<dd><p>Filter out TFs where less than min_fraction of targets can be mapped to a reference.</p>
+<p>This mimics pySCENIC’s behavior of skipping modules where “less than 80% of
+the genes could be mapped to the ranking database” (transform.py:298-307).</p>
+<p class="rubric" id="id45">Parameters</p>
+<p>adj : array-like
+Adjacency matrix (n_tfs x n_genes)
+reference_indices : array-like, optional
+Indices of genes that exist in the reference database (e.g., ranking DB).
+If None, uses all genes (no filtering based on mapping).
+min_fraction : float, default=0.8
+Minimum fraction of targets that must be mappable to the reference.
+Default 0.8 matches pySCENIC’s 80% threshold.
+device : str, default=’cuda’
+Device for computation</p>
+<p class="rubric" id="id46">Returns</p>
+<p>Tuple[torch.Tensor, torch.Tensor]
+- Filtered adjacency matrix (n_valid_tfs x n_genes)
+- Boolean mask indicating which TFs were kept</p>
+<p class="rubric" id="id47">Notes</p>
+<p>pySCENIC’s logic (from transform.py):
+n_missing = len(module) - len(genes)  # genes not in ranking DB
+frac_missing = float(n_missing) / len(module)
+if frac_missing &gt;= 0.20:  # i.e., less than 80% mapped
+skip this module</p>
+<p class="rubric" id="id48">Examples</p>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p>adj = torch.rand(100, 5000) &gt; 0.5  # 100 TFs, 5000 genes</p>
+<p class="rubric" id="id49">Assume only genes 0-4000 are in the ranking database</p>
+<p>db_gene_indices = torch.arange(4000)
+filtered, mask = filter_by_mapped_fraction(adj, db_gene_indices, min_fraction=0.8)</p>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.modules.get_target_indices">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.modules.</span></span><span class="sig-name descname"><span class="pre">get_target_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flashscenic.modules.ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/flashscenic/modules.html#get_target_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.modules.get_target_indices" title="Link to this definition">#</a></dt>
+<dd><p>Get indices of non-zero targets for each TF.</p>
+<p>Useful for cisTarget pruning which needs gene indices.</p>
+<p class="rubric" id="id50">Parameters</p>
+<p>adj : array-like
+Adjacency matrix (n_tfs x n_genes)
+device : str, default=’cuda’
+Device for computation</p>
+<p class="rubric" id="id51">Returns</p>
+<p>Tuple[torch.Tensor, torch.Tensor]
+- Flat tensor of gene indices
+- Tensor of (start, end) positions for each TF’s targets</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.modules.binarize">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.modules.</span></span><span class="sig-name descname"><span class="pre">binarize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flashscenic.modules.ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="_modules/flashscenic/modules.html#binarize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.modules.binarize" title="Link to this definition">#</a></dt>
+<dd><p>Convert weighted adjacency matrix to binary (0/1).</p>
+<p class="rubric" id="id52">Parameters</p>
+<p>adj : array-like
+Adjacency matrix (n_tfs x n_genes)
+device : str, default=’cuda’</p>
+<p class="rubric" id="id53">Returns</p>
+<p>torch.Tensor
+Binary adjacency matrix</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.modules.to_numpy">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.modules.</span></span><span class="sig-name descname"><span class="pre">to_numpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/flashscenic/modules.html#to_numpy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.modules.to_numpy" title="Link to this definition">#</a></dt>
+<dd><p>Convert tensor to numpy array.</p>
+</dd></dl>
+
+</section>
+<section id="analysis">
+<h2>Analysis<a class="headerlink" href="#analysis" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.rss.regulon_specificity_scores">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.rss.</span></span><span class="sig-name descname"><span class="pre">regulon_specificity_scores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auc_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_type_labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regulon_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flashscenic/rss.html#regulon_specificity_scores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.rss.regulon_specificity_scores" title="Link to this definition">#</a></dt>
+<dd><p>Compute Regulon Specificity Scores (RSS) based on Jensen-Shannon divergence.</p>
+<p>RSS quantifies how specific each regulon’s activity is to each cell type.
+A score close to 1 means the regulon is exclusively active in that cell type.</p>
+<p>Reference: Suo et al. 2018 (doi: 10.1016/j.celrep.2018.10.045)</p>
+<p class="rubric" id="id54">Parameters</p>
+<p>auc_matrix : np.ndarray
+AUCell scores of shape (n_cells, n_regulons).
+cell_type_labels : array-like
+Cell type label per cell (length n_cells). Can be a list, numpy array,
+or pandas Series.
+regulon_names : list of str, optional
+Names for each regulon column. If None, integer indices are used.</p>
+<p class="rubric" id="id55">Returns</p>
+<p>dict
+‘rss’ : np.ndarray of shape (n_cell_types, n_regulons)
+RSS values. Higher means more specific.
+‘cell_types’ : list of str
+Sorted unique cell type labels (row labels of rss).
+‘regulon_names’ : list of str
+Regulon names (column labels of rss).</p>
+</dd></dl>
+
+</section>
+<section id="helpers">
+<h2>Helpers<a class="headerlink" href="#helpers" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.regulons_to_adjacency">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.</span></span><span class="sig-name descname"><span class="pre">regulons_to_adjacency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regulons</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/flashscenic.html#regulons_to_adjacency"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.regulons_to_adjacency" title="Link to this definition">#</a></dt>
+<dd><p>Convert list of regulon dicts to adjacency matrix for AUCell.</p>
+<p class="rubric" id="id56">Parameters</p>
+<p>regulons : list of dict
+Output from CisTargetPruner.prune_modules(), each dict has ‘genes’ key
+gene_names : list of str
+List of gene names matching columns of expression matrix</p>
+<p class="rubric" id="id57">Returns</p>
+<p>np.ndarray
+Binary adjacency matrix of shape (n_regulons, n_genes)</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="pipeline.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Pipeline Guide</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pipeline">Pipeline</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.pipeline.run_flashscenic"><code class="docutils literal notranslate"><span class="pre">run_flashscenic()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-download">Data Download</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.data.download_data"><code class="docutils literal notranslate"><span class="pre">download_data()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.data.list_available_resources"><code class="docutils literal notranslate"><span class="pre">list_available_resources()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.data.flashscenic.data.DownloadedResources.DownloadedResources"><code class="docutils literal notranslate"><span class="pre">flashscenic.data.DownloadedResources.DownloadedResources</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.data.flashscenic.data.DownloadedResources.DownloadedResources.tf_list"><code class="docutils literal notranslate"><span class="pre">flashscenic.data.DownloadedResources.DownloadedResources.tf_list</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.data.flashscenic.data.DownloadedResources.DownloadedResources.ranking_dbs"><code class="docutils literal notranslate"><span class="pre">flashscenic.data.DownloadedResources.DownloadedResources.ranking_dbs</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.data.flashscenic.data.DownloadedResources.DownloadedResources.motif_annotation"><code class="docutils literal notranslate"><span class="pre">flashscenic.data.DownloadedResources.DownloadedResources.motif_annotation</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.data.flashscenic.data.DownloadedResources.DownloadedResources.cache_dir"><code class="docutils literal notranslate"><span class="pre">flashscenic.data.DownloadedResources.DownloadedResources.cache_dir</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.data.flashscenic.data.DownloadedResources.DownloadedResources.__repr__"><code class="docutils literal notranslate"><span class="pre">flashscenic.data.DownloadedResources.DownloadedResources.__repr__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#aucell">AUCell</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.aucell.get_aucell"><code class="docutils literal notranslate"><span class="pre">get_aucell()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cistarget">cisTarget</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.load_database"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner.load_database()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.load_annotations"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner.load_annotations()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.load_from_tensor"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner.load_from_tensor()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.genes_to_indices"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner.genes_to_indices()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.prune"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner.prune()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.prune_batch"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner.prune_batch()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.get_enriched_motif_names"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner.get_enriched_motif_names()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.get_leading_edge_genes"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner.get_leading_edge_genes()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.prune_modules"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner.prune_modules()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner._merge_regulons"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner._merge_regulons()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner._merge_regulons_by_tf"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner._merge_regulons_by_tf()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.CisTargetPruner.CisTargetPruner.clear_gpu_memory"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.CisTargetPruner.CisTargetPruner.clear_gpu_memory()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.compute_recovery_aucs"><code class="docutils literal notranslate"><span class="pre">compute_recovery_aucs()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.compute_nes"><code class="docutils literal notranslate"><span class="pre">compute_nes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.prune_single_module"><code class="docutils literal notranslate"><span class="pre">prune_single_module()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.MotifAnnotation.MotifAnnotation"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.MotifAnnotation.MotifAnnotation</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.MotifAnnotation.MotifAnnotation.load_from_file"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.MotifAnnotation.MotifAnnotation.load_from_file()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.MotifAnnotation.MotifAnnotation.has_annotation"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.MotifAnnotation.MotifAnnotation.has_annotation()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.flashscenic.cistarget.MotifAnnotation.MotifAnnotation.get_annotation"><code class="docutils literal notranslate"><span class="pre">flashscenic.cistarget.MotifAnnotation.MotifAnnotation.get_annotation()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.cistarget.filter_by_annotations"><code class="docutils literal notranslate"><span class="pre">filter_by_annotations()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-utilities">Module Utilities</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.select_topk_targets"><code class="docutils literal notranslate"><span class="pre">select_topk_targets()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.select_threshold_targets"><code class="docutils literal notranslate"><span class="pre">select_threshold_targets()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.select_top_n_per_target"><code class="docutils literal notranslate"><span class="pre">select_top_n_per_target()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.filter_by_min_targets"><code class="docutils literal notranslate"><span class="pre">filter_by_min_targets()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.filter_by_mapped_fraction"><code class="docutils literal notranslate"><span class="pre">filter_by_mapped_fraction()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.get_target_indices"><code class="docutils literal notranslate"><span class="pre">get_target_indices()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.binarize"><code class="docutils literal notranslate"><span class="pre">binarize()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.to_numpy"><code class="docutils literal notranslate"><span class="pre">to_numpy()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analysis">Analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.rss.regulon_specificity_scores"><code class="docutils literal notranslate"><span class="pre">regulon_specificity_scores()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#helpers">Helpers</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.regulons_to_adjacency"><code class="docutils literal notranslate"><span class="pre">regulons_to_adjacency()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Hao Zhu, Donna Slonim
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025-2026, Hao Zhu, Donna Slonim.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

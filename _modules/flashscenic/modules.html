@@ -1,0 +1,830 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>flashscenic.modules &#8212; flashscenic</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/flashscenic/modules';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">flashscenic</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Downstream Analysis with flashscenic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pipeline.html">Pipeline Guide</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/haozhu233/flashscenic" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/haozhu233/flashscenic/issues/new?title=Issue%20on%20page%20%2F_modules/flashscenic/modules.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for flashscenic.modules</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module creation utilities for flashscenic.</span>
+
+<span class="sd">All operations are tensor-native for GPU acceleration.</span>
+<span class="sd">Input: adjacency matrix (n_tfs x n_genes) from GRN inference</span>
+<span class="sd">Output: filtered adjacency matrix ready for AUCell</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="n">ArrayLike</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="select_topk_targets">
+<a class="viewcode-back" href="../../apidocs/flashscenic/flashscenic.modules.html#flashscenic.modules.select_topk_targets">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">select_topk_targets</span><span class="p">(</span>
+    <span class="n">adj</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
+    <span class="n">include_tf</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">tf_indices</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;cuda&#39;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Select top-k targets per TF from adjacency matrix.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    adj : array-like</span>
+<span class="sd">        Adjacency matrix (n_tfs x n_genes) with edge weights</span>
+<span class="sd">    k : int, default=50</span>
+<span class="sd">        Number of top targets to select per TF</span>
+<span class="sd">    include_tf : bool, default=True</span>
+<span class="sd">        Include TF itself in its module (sets diagonal to 1 if tf_indices provided)</span>
+<span class="sd">    tf_indices : array-like, optional</span>
+<span class="sd">        Index of each TF in the gene list. Required if include_tf=True and</span>
+<span class="sd">        TFs are part of the gene set.</span>
+<span class="sd">    device : str, default=&#39;cuda&#39;</span>
+<span class="sd">        Device for computation</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    torch.Tensor</span>
+<span class="sd">        Filtered adjacency matrix with only top-k targets per TF</span>
+<span class="sd">        Shape: (n_tfs, n_genes)</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; adj = torch.rand(100, 5000)  # 100 TFs, 5000 genes</span>
+<span class="sd">    &gt;&gt;&gt; filtered = select_topk_targets(adj, k=50)</span>
+<span class="sd">    &gt;&gt;&gt; # Each row now has at most 50 non-zero values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Convert to tensor if needed</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">adj</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">adj</span><span class="p">)</span>
+    <span class="n">adj</span> <span class="o">=</span> <span class="n">adj</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="n">n_tfs</span><span class="p">,</span> <span class="n">n_genes</span> <span class="o">=</span> <span class="n">adj</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="c1"># Get top-k values and indices for each TF</span>
+    <span class="n">topk_values</span><span class="p">,</span> <span class="n">topk_indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">topk</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">n_genes</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Create output matrix with zeros</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">adj</span><span class="p">)</span>
+
+    <span class="c1"># Scatter top-k values back</span>
+    <span class="n">output</span><span class="o">.</span><span class="n">scatter_</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">topk_indices</span><span class="p">,</span> <span class="n">topk_values</span><span class="p">)</span>
+
+    <span class="c1"># Include TF in its own module</span>
+    <span class="k">if</span> <span class="n">include_tf</span> <span class="ow">and</span> <span class="n">tf_indices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tf_indices</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">tf_indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">tf_indices</span><span class="p">)</span>
+        <span class="n">tf_indices</span> <span class="o">=</span> <span class="n">tf_indices</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+        <span class="c1"># Set diagonal elements (TF -&gt; TF) to 1.0</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">tf_idx</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tf_indices</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">tf_idx</span> <span class="o">&lt;</span> <span class="n">n_genes</span><span class="p">:</span>
+                <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">tf_idx</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+    <span class="k">return</span> <span class="n">output</span></div>
+
+
+
+<div class="viewcode-block" id="select_threshold_targets">
+<a class="viewcode-back" href="../../apidocs/flashscenic/flashscenic.modules.html#flashscenic.modules.select_threshold_targets">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">select_threshold_targets</span><span class="p">(</span>
+    <span class="n">adj</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">percentile</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">include_tf</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">tf_indices</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;cuda&#39;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Select targets above threshold from adjacency matrix.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    adj : array-like</span>
+<span class="sd">        Adjacency matrix (n_tfs x n_genes) with edge weights</span>
+<span class="sd">    threshold : float, default=0.0</span>
+<span class="sd">        Absolute threshold (edges below this become 0)</span>
+<span class="sd">    percentile : float, optional</span>
+<span class="sd">        If provided, use this percentile of non-zero weights as threshold</span>
+<span class="sd">        (overrides threshold parameter). Value between 0-100.</span>
+<span class="sd">    include_tf : bool, default=True</span>
+<span class="sd">        Include TF itself in its module</span>
+<span class="sd">    tf_indices : array-like, optional</span>
+<span class="sd">        Index of each TF in the gene list</span>
+<span class="sd">    device : str, default=&#39;cuda&#39;</span>
+<span class="sd">        Device for computation</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    torch.Tensor</span>
+<span class="sd">        Filtered adjacency matrix</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">adj</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">adj</span><span class="p">)</span>
+    <span class="n">adj</span> <span class="o">=</span> <span class="n">adj</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="c1"># Calculate threshold from percentile if provided</span>
+    <span class="k">if</span> <span class="n">percentile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">nonzero_values</span> <span class="o">=</span> <span class="n">adj</span><span class="p">[</span><span class="n">adj</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nonzero_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">threshold</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">nonzero_values</span><span class="p">,</span> <span class="n">percentile</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+
+    <span class="c1"># Apply threshold</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">adj</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">adj</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">adj</span><span class="p">))</span>
+
+    <span class="c1"># Include TF in its own module</span>
+    <span class="k">if</span> <span class="n">include_tf</span> <span class="ow">and</span> <span class="n">tf_indices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tf_indices</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">tf_indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">tf_indices</span><span class="p">)</span>
+        <span class="n">tf_indices</span> <span class="o">=</span> <span class="n">tf_indices</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+        <span class="n">n_genes</span> <span class="o">=</span> <span class="n">adj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">tf_idx</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tf_indices</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">tf_idx</span> <span class="o">&lt;</span> <span class="n">n_genes</span><span class="p">:</span>
+                <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">tf_idx</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+    <span class="k">return</span> <span class="n">output</span></div>
+
+
+
+<div class="viewcode-block" id="select_top_n_per_target">
+<a class="viewcode-back" href="../../apidocs/flashscenic/flashscenic.modules.html#flashscenic.modules.select_top_n_per_target">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">select_top_n_per_target</span><span class="p">(</span>
+    <span class="n">adj</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="n">include_tf</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">tf_indices</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;cuda&#39;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Select top-N regulators per target gene, then regroup by TF.</span>
+
+<span class="sd">    For each target gene, finds its N strongest regulators (TFs). The result</span>
+<span class="sd">    is regrouped back into the standard (n_tfs, n_genes) layout. This is the</span>
+<span class="sd">    inverted view used by pySCENIC&#39;s &quot;top N per target&quot; module type.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    adj : array-like</span>
+<span class="sd">        Adjacency matrix (n_tfs x n_genes) with edge weights</span>
+<span class="sd">    n : int, default=5</span>
+<span class="sd">        Number of top regulators to select per target gene</span>
+<span class="sd">    include_tf : bool, default=True</span>
+<span class="sd">        Include TF itself in its module (sets diagonal to 1 if tf_indices provided)</span>
+<span class="sd">    tf_indices : array-like, optional</span>
+<span class="sd">        Index of each TF in the gene list. Required if include_tf=True and</span>
+<span class="sd">        TFs are part of the gene set.</span>
+<span class="sd">    device : str, default=&#39;cuda&#39;</span>
+<span class="sd">        Device for computation</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    torch.Tensor</span>
+<span class="sd">        Filtered adjacency matrix with only top-N-per-target entries</span>
+<span class="sd">        Shape: (n_tfs, n_genes)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">adj</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">adj</span><span class="p">)</span>
+    <span class="n">adj</span> <span class="o">=</span> <span class="n">adj</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="n">n_tfs</span><span class="p">,</span> <span class="n">n_genes</span> <span class="o">=</span> <span class="n">adj</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="c1"># Transpose to (n_genes, n_tfs): each row is a target gene, columns are TFs</span>
+    <span class="n">adj_t</span> <span class="o">=</span> <span class="n">adj</span><span class="o">.</span><span class="n">t</span><span class="p">()</span>
+
+    <span class="c1"># Top-k along TF dimension for each target gene</span>
+    <span class="n">topk_values</span><span class="p">,</span> <span class="n">topk_indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">topk</span><span class="p">(</span><span class="n">adj_t</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n_tfs</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Scatter back into sparse transposed matrix</span>
+    <span class="n">output_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">adj_t</span><span class="p">)</span>
+    <span class="n">output_t</span><span class="o">.</span><span class="n">scatter_</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">topk_indices</span><span class="p">,</span> <span class="n">topk_values</span><span class="p">)</span>
+
+    <span class="c1"># Transpose back to (n_tfs, n_genes)</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">output_t</span><span class="o">.</span><span class="n">t</span><span class="p">()</span>
+
+    <span class="c1"># Include TF in its own module</span>
+    <span class="k">if</span> <span class="n">include_tf</span> <span class="ow">and</span> <span class="n">tf_indices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tf_indices</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">tf_indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">tf_indices</span><span class="p">)</span>
+        <span class="n">tf_indices</span> <span class="o">=</span> <span class="n">tf_indices</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">tf_idx</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tf_indices</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">tf_idx</span> <span class="o">&lt;</span> <span class="n">n_genes</span><span class="p">:</span>
+                <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">tf_idx</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+    <span class="k">return</span> <span class="n">output</span></div>
+
+
+
+<div class="viewcode-block" id="filter_by_min_targets">
+<a class="viewcode-back" href="../../apidocs/flashscenic/flashscenic.modules.html#flashscenic.modules.filter_by_min_targets">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">filter_by_min_targets</span><span class="p">(</span>
+    <span class="n">adj</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">min_targets</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="n">min_fraction</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;cuda&#39;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Filter out TFs with fewer than min_targets or below min_fraction of targets.</span>
+
+<span class="sd">    This function supports both absolute count filtering (like pySCENIC&#39;s min_genes=20)</span>
+<span class="sd">    and percentage-based filtering (like pySCENIC&#39;s 80% mapping requirement).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    adj : array-like</span>
+<span class="sd">        Adjacency matrix (n_tfs x n_genes)</span>
+<span class="sd">    min_targets : int, default=20</span>
+<span class="sd">        Minimum number of non-zero targets required.</span>
+<span class="sd">        Set to 0 to disable absolute count filtering.</span>
+<span class="sd">    min_fraction : float or None, default=0.8</span>
+<span class="sd">        Minimum fraction of total genes that must be non-zero targets.</span>
+<span class="sd">        Value between 0.0 and 1.0. Default 0.8 matches pySCENIC&#39;s behavior</span>
+<span class="sd">        of skipping modules where less than 80% of genes can be mapped.</span>
+<span class="sd">        Set to None to disable fraction-based filtering.</span>
+<span class="sd">    device : str, default=&#39;cuda&#39;</span>
+<span class="sd">        Device for computation</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Tuple[torch.Tensor, torch.Tensor]</span>
+<span class="sd">        - Filtered adjacency matrix (n_valid_tfs x n_genes)</span>
+<span class="sd">        - Boolean mask indicating which TFs were kept</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; adj = torch.rand(100, 5000) &gt; 0.5  # Random binary adjacency</span>
+<span class="sd">    &gt;&gt;&gt; # Filter by absolute count (default pySCENIC behavior)</span>
+<span class="sd">    &gt;&gt;&gt; filtered, mask = filter_by_min_targets(adj, min_targets=20)</span>
+<span class="sd">    &gt;&gt;&gt; # Filter by percentage (pySCENIC&#39;s 80% rule)</span>
+<span class="sd">    &gt;&gt;&gt; filtered, mask = filter_by_min_targets(adj, min_targets=0, min_fraction=0.8)</span>
+<span class="sd">    &gt;&gt;&gt; # Combine both filters</span>
+<span class="sd">    &gt;&gt;&gt; filtered, mask = filter_by_min_targets(adj, min_targets=20, min_fraction=0.8)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">adj</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">adj</span><span class="p">)</span>
+    <span class="n">adj</span> <span class="o">=</span> <span class="n">adj</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="n">n_tfs</span><span class="p">,</span> <span class="n">n_genes</span> <span class="o">=</span> <span class="n">adj</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="c1"># Count non-zero targets per TF</span>
+    <span class="n">target_counts</span> <span class="o">=</span> <span class="p">(</span><span class="n">adj</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Create mask for TFs with enough targets (absolute count)</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">target_counts</span> <span class="o">&gt;=</span> <span class="n">min_targets</span>
+
+    <span class="c1"># Apply fraction-based filtering if specified</span>
+    <span class="k">if</span> <span class="n">min_fraction</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="mf">0.0</span> <span class="o">&lt;=</span> <span class="n">min_fraction</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;min_fraction must be between 0.0 and 1.0&quot;</span>
+        <span class="n">min_count_from_fraction</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_genes</span> <span class="o">*</span> <span class="n">min_fraction</span><span class="p">)</span>
+        <span class="n">fraction_mask</span> <span class="o">=</span> <span class="n">target_counts</span> <span class="o">&gt;=</span> <span class="n">min_count_from_fraction</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span> <span class="o">&amp;</span> <span class="n">fraction_mask</span>
+
+    <span class="k">return</span> <span class="n">adj</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">mask</span></div>
+
+
+
+<div class="viewcode-block" id="filter_by_mapped_fraction">
+<a class="viewcode-back" href="../../apidocs/flashscenic/flashscenic.modules.html#flashscenic.modules.filter_by_mapped_fraction">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">filter_by_mapped_fraction</span><span class="p">(</span>
+    <span class="n">adj</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">reference_indices</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">min_fraction</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;cuda&#39;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Filter out TFs where less than min_fraction of targets can be mapped to a reference.</span>
+
+<span class="sd">    This mimics pySCENIC&#39;s behavior of skipping modules where &quot;less than 80% of</span>
+<span class="sd">    the genes could be mapped to the ranking database&quot; (transform.py:298-307).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    adj : array-like</span>
+<span class="sd">        Adjacency matrix (n_tfs x n_genes)</span>
+<span class="sd">    reference_indices : array-like, optional</span>
+<span class="sd">        Indices of genes that exist in the reference database (e.g., ranking DB).</span>
+<span class="sd">        If None, uses all genes (no filtering based on mapping).</span>
+<span class="sd">    min_fraction : float, default=0.8</span>
+<span class="sd">        Minimum fraction of targets that must be mappable to the reference.</span>
+<span class="sd">        Default 0.8 matches pySCENIC&#39;s 80% threshold.</span>
+<span class="sd">    device : str, default=&#39;cuda&#39;</span>
+<span class="sd">        Device for computation</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Tuple[torch.Tensor, torch.Tensor]</span>
+<span class="sd">        - Filtered adjacency matrix (n_valid_tfs x n_genes)</span>
+<span class="sd">        - Boolean mask indicating which TFs were kept</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    pySCENIC&#39;s logic (from transform.py):</span>
+<span class="sd">        n_missing = len(module) - len(genes)  # genes not in ranking DB</span>
+<span class="sd">        frac_missing = float(n_missing) / len(module)</span>
+<span class="sd">        if frac_missing &gt;= 0.20:  # i.e., less than 80% mapped</span>
+<span class="sd">            skip this module</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; adj = torch.rand(100, 5000) &gt; 0.5  # 100 TFs, 5000 genes</span>
+<span class="sd">    &gt;&gt;&gt; # Assume only genes 0-4000 are in the ranking database</span>
+<span class="sd">    &gt;&gt;&gt; db_gene_indices = torch.arange(4000)</span>
+<span class="sd">    &gt;&gt;&gt; filtered, mask = filter_by_mapped_fraction(adj, db_gene_indices, min_fraction=0.8)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">adj</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">adj</span><span class="p">)</span>
+    <span class="n">adj</span> <span class="o">=</span> <span class="n">adj</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="n">n_tfs</span><span class="p">,</span> <span class="n">n_genes</span> <span class="o">=</span> <span class="n">adj</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="c1"># If no reference provided, keep all TFs</span>
+    <span class="k">if</span> <span class="n">reference_indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_tfs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">adj</span><span class="p">,</span> <span class="n">mask</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reference_indices</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">reference_indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">reference_indices</span><span class="p">)</span>
+    <span class="n">reference_indices</span> <span class="o">=</span> <span class="n">reference_indices</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+
+    <span class="c1"># Create a mask for genes that are in the reference database</span>
+    <span class="n">reference_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_genes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">reference_mask</span><span class="p">[</span><span class="n">reference_indices</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># For each TF, count total targets and targets that can be mapped</span>
+    <span class="n">targets_per_tf</span> <span class="o">=</span> <span class="n">adj</span> <span class="o">&gt;</span> <span class="mi">0</span>  <span class="c1"># (n_tfs, n_genes) boolean</span>
+    <span class="n">total_targets</span> <span class="o">=</span> <span class="n">targets_per_tf</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>  <span class="c1"># (n_tfs,)</span>
+
+    <span class="c1"># Count targets that are also in the reference</span>
+    <span class="n">mappable_targets</span> <span class="o">=</span> <span class="p">(</span><span class="n">targets_per_tf</span> <span class="o">&amp;</span> <span class="n">reference_mask</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+
+    <span class="c1"># Calculate fraction of targets that can be mapped</span>
+    <span class="c1"># Avoid division by zero for TFs with no targets</span>
+    <span class="n">fraction_mapped</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+        <span class="n">total_targets</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">mappable_targets</span> <span class="o">/</span> <span class="n">total_targets</span><span class="p">,</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">total_targets</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Keep TFs where at least min_fraction of targets are mappable</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">fraction_mapped</span> <span class="o">&gt;=</span> <span class="n">min_fraction</span>
+
+    <span class="k">return</span> <span class="n">adj</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">mask</span></div>
+
+
+
+<div class="viewcode-block" id="get_target_indices">
+<a class="viewcode-back" href="../../apidocs/flashscenic/flashscenic.modules.html#flashscenic.modules.get_target_indices">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_target_indices</span><span class="p">(</span>
+    <span class="n">adj</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;cuda&#39;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get indices of non-zero targets for each TF.</span>
+
+<span class="sd">    Useful for cisTarget pruning which needs gene indices.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    adj : array-like</span>
+<span class="sd">        Adjacency matrix (n_tfs x n_genes)</span>
+<span class="sd">    device : str, default=&#39;cuda&#39;</span>
+<span class="sd">        Device for computation</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Tuple[torch.Tensor, torch.Tensor]</span>
+<span class="sd">        - Flat tensor of gene indices</span>
+<span class="sd">        - Tensor of (start, end) positions for each TF&#39;s targets</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">adj</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">adj</span><span class="p">)</span>
+    <span class="n">adj</span> <span class="o">=</span> <span class="n">adj</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="n">n_tfs</span> <span class="o">=</span> <span class="n">adj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Find non-zero indices</span>
+    <span class="n">nonzero</span> <span class="o">=</span> <span class="n">adj</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+    <span class="c1"># Get indices and counts per TF</span>
+    <span class="n">all_indices</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">positions</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_tfs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_tfs</span><span class="p">):</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">nonzero</span><span class="p">[</span><span class="n">i</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">all_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+        <span class="n">positions</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">positions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">all_indices</span><span class="p">:</span>
+        <span class="n">flat_indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">all_indices</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">flat_indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">flat_indices</span><span class="p">,</span> <span class="n">positions</span></div>
+
+
+
+<div class="viewcode-block" id="binarize">
+<a class="viewcode-back" href="../../apidocs/flashscenic/flashscenic.modules.html#flashscenic.modules.binarize">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">binarize</span><span class="p">(</span><span class="n">adj</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;cuda&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert weighted adjacency matrix to binary (0/1).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    adj : array-like</span>
+<span class="sd">        Adjacency matrix (n_tfs x n_genes)</span>
+<span class="sd">    device : str, default=&#39;cuda&#39;</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    torch.Tensor</span>
+<span class="sd">        Binary adjacency matrix</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">adj</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">adj</span><span class="p">)</span>
+    <span class="n">adj</span> <span class="o">=</span> <span class="n">adj</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">adj</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="to_numpy">
+<a class="viewcode-back" href="../../apidocs/flashscenic/flashscenic.modules.html#flashscenic.modules.to_numpy">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">to_numpy</span><span class="p">(</span><span class="n">tensor</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert tensor to numpy array.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">tensor</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Hao Zhu, Donna Slonim
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025-2026, Hao Zhu, Donna Slonim.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

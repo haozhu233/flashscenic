@@ -1,0 +1,738 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>flashscenic.modules &#8212; flashscenic</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'apidocs/flashscenic/flashscenic.modules';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">flashscenic</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Downstream Analysis with flashscenic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pipeline.html">Pipeline Guide</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/haozhu233/flashscenic" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/haozhu233/flashscenic/issues/new?title=Issue%20on%20page%20%2Fapidocs/flashscenic/flashscenic.modules.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/apidocs/flashscenic/flashscenic.modules.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>flashscenic.modules</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.ArrayLike"><code class="docutils literal notranslate"><span class="pre">ArrayLike</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.select_topk_targets"><code class="docutils literal notranslate"><span class="pre">select_topk_targets()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.select_threshold_targets"><code class="docutils literal notranslate"><span class="pre">select_threshold_targets()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.select_top_n_per_target"><code class="docutils literal notranslate"><span class="pre">select_top_n_per_target()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.filter_by_min_targets"><code class="docutils literal notranslate"><span class="pre">filter_by_min_targets()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.filter_by_mapped_fraction"><code class="docutils literal notranslate"><span class="pre">filter_by_mapped_fraction()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.get_target_indices"><code class="docutils literal notranslate"><span class="pre">get_target_indices()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.binarize"><code class="docutils literal notranslate"><span class="pre">binarize()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.to_numpy"><code class="docutils literal notranslate"><span class="pre">to_numpy()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-flashscenic.modules">
+<span id="flashscenic-modules"></span><h1><a class="reference internal" href="#module-flashscenic.modules" title="flashscenic.modules"><code class="xref py py-mod docutils literal notranslate"><span class="pre">flashscenic.modules</span></code></a><a class="headerlink" href="#module-flashscenic.modules" title="Link to this heading">#</a></h1>
+<p>Module creation utilities for flashscenic.</p>
+<p>All operations are tensor-native for GPU acceleration.
+Input: adjacency matrix (n_tfs x n_genes) from GRN inference
+Output: filtered adjacency matrix ready for AUCell</p>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flashscenic.modules.select_topk_targets" title="flashscenic.modules.select_topk_targets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">select_topk_targets</span></code></a></p></td>
+<td><p>Select top-k targets per TF from adjacency matrix.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#flashscenic.modules.select_threshold_targets" title="flashscenic.modules.select_threshold_targets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">select_threshold_targets</span></code></a></p></td>
+<td><p>Select targets above threshold from adjacency matrix.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flashscenic.modules.select_top_n_per_target" title="flashscenic.modules.select_top_n_per_target"><code class="xref py py-obj docutils literal notranslate"><span class="pre">select_top_n_per_target</span></code></a></p></td>
+<td><p>Select top-N regulators per target gene, then regroup by TF.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#flashscenic.modules.filter_by_min_targets" title="flashscenic.modules.filter_by_min_targets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_by_min_targets</span></code></a></p></td>
+<td><p>Filter out TFs with fewer than min_targets or below min_fraction of targets.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flashscenic.modules.filter_by_mapped_fraction" title="flashscenic.modules.filter_by_mapped_fraction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_by_mapped_fraction</span></code></a></p></td>
+<td><p>Filter out TFs where less than min_fraction of targets can be mapped to a reference.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#flashscenic.modules.get_target_indices" title="flashscenic.modules.get_target_indices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_target_indices</span></code></a></p></td>
+<td><p>Get indices of non-zero targets for each TF.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flashscenic.modules.binarize" title="flashscenic.modules.binarize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">binarize</span></code></a></p></td>
+<td><p>Convert weighted adjacency matrix to binary (0/1).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#flashscenic.modules.to_numpy" title="flashscenic.modules.to_numpy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_numpy</span></code></a></p></td>
+<td><p>Convert tensor to numpy array.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="data">
+<h3>Data<a class="headerlink" href="#data" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flashscenic.modules.ArrayLike" title="flashscenic.modules.ArrayLike"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ArrayLike</span></code></a></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="api">
+<h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
+<dl class="py data">
+<dt class="sig sig-object py" id="flashscenic.modules.ArrayLike">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.modules.</span></span><span class="sig-name descname"><span class="pre">ArrayLike</span></span><a class="headerlink" href="#flashscenic.modules.ArrayLike" title="Link to this definition">#</a></dt>
+<dd><p>None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.modules.select_topk_targets">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.modules.</span></span><span class="sig-name descname"><span class="pre">select_topk_targets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flashscenic.modules.ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_tf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tf_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">flashscenic.modules.ArrayLike</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="../../_modules/flashscenic/modules.html#select_topk_targets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.modules.select_topk_targets" title="Link to this definition">#</a></dt>
+<dd><p>Select top-k targets per TF from adjacency matrix.</p>
+<p class="rubric" id="id14">Parameters</p>
+<p>adj : array-like
+Adjacency matrix (n_tfs x n_genes) with edge weights
+k : int, default=50
+Number of top targets to select per TF
+include_tf : bool, default=True
+Include TF itself in its module (sets diagonal to 1 if tf_indices provided)
+tf_indices : array-like, optional
+Index of each TF in the gene list. Required if include_tf=True and
+TFs are part of the gene set.
+device : str, default=’cuda’
+Device for computation</p>
+<p class="rubric" id="id15">Returns</p>
+<p>torch.Tensor
+Filtered adjacency matrix with only top-k targets per TF
+Shape: (n_tfs, n_genes)</p>
+<p class="rubric" id="id16">Example</p>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p>adj = torch.rand(100, 5000)  # 100 TFs, 5000 genes
+filtered = select_topk_targets(adj, k=50)</p>
+<p class="rubric" id="id17">Each row now has at most 50 non-zero values</p>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.modules.select_threshold_targets">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.modules.</span></span><span class="sig-name descname"><span class="pre">select_threshold_targets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flashscenic.modules.ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_tf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tf_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">flashscenic.modules.ArrayLike</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="../../_modules/flashscenic/modules.html#select_threshold_targets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.modules.select_threshold_targets" title="Link to this definition">#</a></dt>
+<dd><p>Select targets above threshold from adjacency matrix.</p>
+<p class="rubric" id="id18">Parameters</p>
+<p>adj : array-like
+Adjacency matrix (n_tfs x n_genes) with edge weights
+threshold : float, default=0.0
+Absolute threshold (edges below this become 0)
+percentile : float, optional
+If provided, use this percentile of non-zero weights as threshold
+(overrides threshold parameter). Value between 0-100.
+include_tf : bool, default=True
+Include TF itself in its module
+tf_indices : array-like, optional
+Index of each TF in the gene list
+device : str, default=’cuda’
+Device for computation</p>
+<p class="rubric" id="id19">Returns</p>
+<p>torch.Tensor
+Filtered adjacency matrix</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.modules.select_top_n_per_target">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.modules.</span></span><span class="sig-name descname"><span class="pre">select_top_n_per_target</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flashscenic.modules.ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_tf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tf_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">flashscenic.modules.ArrayLike</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="../../_modules/flashscenic/modules.html#select_top_n_per_target"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.modules.select_top_n_per_target" title="Link to this definition">#</a></dt>
+<dd><p>Select top-N regulators per target gene, then regroup by TF.</p>
+<p>For each target gene, finds its N strongest regulators (TFs). The result
+is regrouped back into the standard (n_tfs, n_genes) layout. This is the
+inverted view used by pySCENIC’s “top N per target” module type.</p>
+<p class="rubric" id="id20">Parameters</p>
+<p>adj : array-like
+Adjacency matrix (n_tfs x n_genes) with edge weights
+n : int, default=5
+Number of top regulators to select per target gene
+include_tf : bool, default=True
+Include TF itself in its module (sets diagonal to 1 if tf_indices provided)
+tf_indices : array-like, optional
+Index of each TF in the gene list. Required if include_tf=True and
+TFs are part of the gene set.
+device : str, default=’cuda’
+Device for computation</p>
+<p class="rubric" id="id21">Returns</p>
+<p>torch.Tensor
+Filtered adjacency matrix with only top-N-per-target entries
+Shape: (n_tfs, n_genes)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.modules.filter_by_min_targets">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.modules.</span></span><span class="sig-name descname"><span class="pre">filter_by_min_targets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flashscenic.modules.ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_fraction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/flashscenic/modules.html#filter_by_min_targets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.modules.filter_by_min_targets" title="Link to this definition">#</a></dt>
+<dd><p>Filter out TFs with fewer than min_targets or below min_fraction of targets.</p>
+<p>This function supports both absolute count filtering (like pySCENIC’s min_genes=20)
+and percentage-based filtering (like pySCENIC’s 80% mapping requirement).</p>
+<p class="rubric" id="id22">Parameters</p>
+<p>adj : array-like
+Adjacency matrix (n_tfs x n_genes)
+min_targets : int, default=20
+Minimum number of non-zero targets required.
+Set to 0 to disable absolute count filtering.
+min_fraction : float or None, default=0.8
+Minimum fraction of total genes that must be non-zero targets.
+Value between 0.0 and 1.0. Default 0.8 matches pySCENIC’s behavior
+of skipping modules where less than 80% of genes can be mapped.
+Set to None to disable fraction-based filtering.
+device : str, default=’cuda’
+Device for computation</p>
+<p class="rubric" id="id23">Returns</p>
+<p>Tuple[torch.Tensor, torch.Tensor]
+- Filtered adjacency matrix (n_valid_tfs x n_genes)
+- Boolean mask indicating which TFs were kept</p>
+<p class="rubric" id="id24">Examples</p>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p>adj = torch.rand(100, 5000) &gt; 0.5  # Random binary adjacency</p>
+<p class="rubric" id="id25">Filter by absolute count (default pySCENIC behavior)</p>
+<p>filtered, mask = filter_by_min_targets(adj, min_targets=20)</p>
+<p class="rubric" id="id26">Filter by percentage (pySCENIC’s 80% rule)</p>
+<p>filtered, mask = filter_by_min_targets(adj, min_targets=0, min_fraction=0.8)</p>
+<p class="rubric" id="id27">Combine both filters</p>
+<p>filtered, mask = filter_by_min_targets(adj, min_targets=20, min_fraction=0.8)</p>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.modules.filter_by_mapped_fraction">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.modules.</span></span><span class="sig-name descname"><span class="pre">filter_by_mapped_fraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flashscenic.modules.ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">flashscenic.modules.ArrayLike</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_fraction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/flashscenic/modules.html#filter_by_mapped_fraction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.modules.filter_by_mapped_fraction" title="Link to this definition">#</a></dt>
+<dd><p>Filter out TFs where less than min_fraction of targets can be mapped to a reference.</p>
+<p>This mimics pySCENIC’s behavior of skipping modules where “less than 80% of
+the genes could be mapped to the ranking database” (transform.py:298-307).</p>
+<p class="rubric" id="id28">Parameters</p>
+<p>adj : array-like
+Adjacency matrix (n_tfs x n_genes)
+reference_indices : array-like, optional
+Indices of genes that exist in the reference database (e.g., ranking DB).
+If None, uses all genes (no filtering based on mapping).
+min_fraction : float, default=0.8
+Minimum fraction of targets that must be mappable to the reference.
+Default 0.8 matches pySCENIC’s 80% threshold.
+device : str, default=’cuda’
+Device for computation</p>
+<p class="rubric" id="id29">Returns</p>
+<p>Tuple[torch.Tensor, torch.Tensor]
+- Filtered adjacency matrix (n_valid_tfs x n_genes)
+- Boolean mask indicating which TFs were kept</p>
+<p class="rubric" id="id30">Notes</p>
+<p>pySCENIC’s logic (from transform.py):
+n_missing = len(module) - len(genes)  # genes not in ranking DB
+frac_missing = float(n_missing) / len(module)
+if frac_missing &gt;= 0.20:  # i.e., less than 80% mapped
+skip this module</p>
+<p class="rubric" id="id31">Examples</p>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p>adj = torch.rand(100, 5000) &gt; 0.5  # 100 TFs, 5000 genes</p>
+<p class="rubric" id="id32">Assume only genes 0-4000 are in the ranking database</p>
+<p>db_gene_indices = torch.arange(4000)
+filtered, mask = filter_by_mapped_fraction(adj, db_gene_indices, min_fraction=0.8)</p>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.modules.get_target_indices">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.modules.</span></span><span class="sig-name descname"><span class="pre">get_target_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flashscenic.modules.ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/flashscenic/modules.html#get_target_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.modules.get_target_indices" title="Link to this definition">#</a></dt>
+<dd><p>Get indices of non-zero targets for each TF.</p>
+<p>Useful for cisTarget pruning which needs gene indices.</p>
+<p class="rubric" id="id33">Parameters</p>
+<p>adj : array-like
+Adjacency matrix (n_tfs x n_genes)
+device : str, default=’cuda’
+Device for computation</p>
+<p class="rubric" id="id34">Returns</p>
+<p>Tuple[torch.Tensor, torch.Tensor]
+- Flat tensor of gene indices
+- Tensor of (start, end) positions for each TF’s targets</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.modules.binarize">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.modules.</span></span><span class="sig-name descname"><span class="pre">binarize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flashscenic.modules.ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="../../_modules/flashscenic/modules.html#binarize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.modules.binarize" title="Link to this definition">#</a></dt>
+<dd><p>Convert weighted adjacency matrix to binary (0/1).</p>
+<p class="rubric" id="id35">Parameters</p>
+<p>adj : array-like
+Adjacency matrix (n_tfs x n_genes)
+device : str, default=’cuda’</p>
+<p class="rubric" id="id36">Returns</p>
+<p>torch.Tensor
+Binary adjacency matrix</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.modules.to_numpy">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.modules.</span></span><span class="sig-name descname"><span class="pre">to_numpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../_modules/flashscenic/modules.html#to_numpy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.modules.to_numpy" title="Link to this definition">#</a></dt>
+<dd><p>Convert tensor to numpy array.</p>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.ArrayLike"><code class="docutils literal notranslate"><span class="pre">ArrayLike</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.select_topk_targets"><code class="docutils literal notranslate"><span class="pre">select_topk_targets()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.select_threshold_targets"><code class="docutils literal notranslate"><span class="pre">select_threshold_targets()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.select_top_n_per_target"><code class="docutils literal notranslate"><span class="pre">select_top_n_per_target()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.filter_by_min_targets"><code class="docutils literal notranslate"><span class="pre">filter_by_min_targets()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.filter_by_mapped_fraction"><code class="docutils literal notranslate"><span class="pre">filter_by_mapped_fraction()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.get_target_indices"><code class="docutils literal notranslate"><span class="pre">get_target_indices()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.binarize"><code class="docutils literal notranslate"><span class="pre">binarize()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.to_numpy"><code class="docutils literal notranslate"><span class="pre">to_numpy()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Hao Zhu, Donna Slonim
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025-2026, Hao Zhu, Donna Slonim.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
