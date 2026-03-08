@@ -137,9 +137,15 @@ _submit JOB_05 --dependency=afterok:${JOB_03}:${JOB_04} "$BENCH_DIR/slurm/run_05
 echo "Submitted 05_visualize       → job $JOB_05"
 
 # ---------------------------------------------------------------------------
-# Step 06 — Summarize (waits for 05)
+# Step 05b — RSS heatmap from binary AUCell scores (waits for 05)
 # ---------------------------------------------------------------------------
-_submit JOB_06 --dependency=afterok:${JOB_05} "$BENCH_DIR/slurm/run_06_summarize.sh"
+_submit JOB_05B --dependency=afterok:${JOB_05} "$BENCH_DIR/slurm/run_05b_rss.sh"
+echo "Submitted 05b_rss            → job $JOB_05B"
+
+# ---------------------------------------------------------------------------
+# Step 06 — Summarize (waits for 05b)
+# ---------------------------------------------------------------------------
+_submit JOB_06 --dependency=afterok:${JOB_05B} "$BENCH_DIR/slurm/run_06_summarize.sh"
 echo "Submitted 06_summarize       → job $JOB_06"
 
 echo ""
@@ -155,13 +161,14 @@ echo "  $JOB_02D  02d_merge       (serializes h5ad write)"
 echo "  $JOB_03   03_metrics      ┐"
 echo "  $JOB_04   04_ml_predictor ┘── parallel"
 echo "  $JOB_05   05_visualize"
+echo "  $JOB_05B  05b_rss"
 echo "  $JOB_06   06_summarize"
 
 if ! $DRY_RUN; then
     echo ""
     echo "Monitor with:"
     echo "  squeue -u \$USER"
-    JOB_LIST=$(echo "${JOB_00} ${JOB_01} ${JOB_02A} ${JOB_02B} ${JOB_02C} ${JOB_02D} ${JOB_03} ${JOB_04} ${JOB_05} ${JOB_06}" \
+    JOB_LIST=$(echo "${JOB_00} ${JOB_01} ${JOB_02A} ${JOB_02B} ${JOB_02C} ${JOB_02D} ${JOB_03} ${JOB_04} ${JOB_05} ${JOB_05B} ${JOB_06}" \
                | tr ' ' '\n' | { grep -v '^skip$' || true; } | tr '\n' ',' | sed 's/,$//')
     echo "  squeue -j ${JOB_LIST}"
 fi

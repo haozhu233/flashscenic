@@ -14,6 +14,7 @@ from .cistarget import (
     prune_single_module,
 )
 from .rss import regulon_specificity_scores
+from .binarize_aucell import binarize_auc_matrix
 from .modules import (
     select_topk_targets,
     select_threshold_targets,
@@ -77,6 +78,7 @@ __all__ = [
     'prune_single_module',
     # Analysis
     'regulon_specificity_scores',
+    'binarize_auc_matrix',
     # Module selection
     'select_topk_targets',
     'select_threshold_targets',
