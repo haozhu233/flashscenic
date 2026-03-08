@@ -1,8 +1,10 @@
 import numpy as np
 from scipy.spatial.distance import jensenshannon
 
+from .binarize_aucell import binarize_auc_matrix
 
-def regulon_specificity_scores(auc_matrix, cell_type_labels, regulon_names=None):
+
+def regulon_specificity_scores(auc_matrix, cell_type_labels, regulon_names=None, binarize=False):
     """
     Compute Regulon Specificity Scores (RSS) based on Jensen-Shannon divergence.
 
@@ -20,6 +22,10 @@ def regulon_specificity_scores(auc_matrix, cell_type_labels, regulon_names=None)
         or pandas Series.
     regulon_names : list of str, optional
         Names for each regulon column. If None, integer indices are used.
+    binarize : bool, default False
+        If True, binarize the AUC matrix into per-cell on/off calls using
+        a per-regulon GMM threshold before computing RSS. Follows the SCENIC
+        protocol (Aibar et al., Nature Protocols 2020).
 
     Returns
     -------
@@ -31,6 +37,9 @@ def regulon_specificity_scores(auc_matrix, cell_type_labels, regulon_names=None)
         'regulon_names' : list of str
             Regulon names (column labels of rss).
     """
+    if binarize:
+        auc_matrix = binarize_auc_matrix(auc_matrix).astype(np.float64)
+
     labels = np.asarray(cell_type_labels)
     cell_types = sorted(set(labels.tolist()))
     n_types = len(cell_types)
