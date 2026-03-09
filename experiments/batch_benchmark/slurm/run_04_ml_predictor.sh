@@ -15,7 +15,9 @@ BENCH_DIR=/cluster/scratch/gcardenal/flashscenic/experiments/batch_benchmark
 cd "$BENCH_DIR"
 source /cluster/scratch/gcardenal/scanpy/bin/activate
 
+DATASET="ad_neurons"
+
 echo "Node: $(hostname) | Date: $(date)"
 export OMP_NUM_THREADS=4
-python scripts/04_ml_predictor.py --dataset all --tasks sex celltype
+python -u scripts/04_ml_predictor.py --dataset "$DATASET" --tasks sex celltype
 echo "Done: $(date)"

@@ -30,12 +30,15 @@ echo "GPU: $(nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>/d
 echo "Cache dir: $CACHE_DIR ($(ls "$CACHE_DIR" | wc -l) files)"
 
 echo "--- ad_neurons ---"
-python scripts/02c_run_flashscenic.py --dataset ad_neurons --cache_dir "$CACHE_DIR" --force
+python scripts/02c_run_flashscenic.py --dataset ad_neurons --cache_dir "$CACHE_DIR" 
 
 echo "--- immune_human ---"
-python scripts/02c_run_flashscenic.py --dataset immune_human --cache_dir "$CACHE_DIR" --force
+python scripts/02c_run_flashscenic.py --dataset immune_human --cache_dir "$CACHE_DIR" 
 
 echo "--- pancreas ---"
-python scripts/02c_run_flashscenic.py --dataset pancreas --cache_dir "$CACHE_DIR" --force
+python scripts/02c_run_flashscenic.py --dataset pancreas --cache_dir "$CACHE_DIR"
+
+echo "--- ad_inhibitory ---"
+python scripts/02c_run_flashscenic.py --dataset ad_inhibitory --cache_dir "$CACHE_DIR"
 
 echo "Done: $(date)"

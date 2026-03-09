@@ -32,12 +32,13 @@ from pathlib import Path
 import anndata as ad
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import ElasticNet, LogisticRegression
 from sklearn.metrics import (
     balanced_accuracy_score,
     roc_auc_score,
 )
 from sklearn.preprocessing import LabelEncoder, StandardScaler
+from scipy.stats import pearsonr
 
 sys.path.insert(0, str(Path(__file__).parent))
 from config import DATASETS, METHODS, ML, DATA_DIR, METRICS_DIR
@@ -62,7 +63,37 @@ def load_embedding(adata: ad.AnnData, method: str) -> np.ndarray:
     key = EMBEDDING_KEYS[method]
     if key not in adata.obsm:
         raise KeyError(f"Embedding '{key}' not found. Run 02{method[0]}_run_{method}.py first.")
-    return adata.obsm[key]
+    return np.array(adata.obsm[key])
+
+
+# ---------------------------------------------------------------------------
+# Stratified subsampling
+# ---------------------------------------------------------------------------
+
+def subsample_cells(
+    obs: pd.DataFrame,
+    batch_key: str,
+    cell_type_key: str,
+    max_cells: int,
+    seed: int = 42,
+) -> np.ndarray:
+    """
+    Return positional integer indices for a stratified subsample of max_cells cells.
+
+    Stratifies by (batch × cell_type) so every combination keeps ≥1 cell,
+    guaranteeing all donors and all cell types are represented after subsampling.
+    """
+    rng = np.random.default_rng(seed)
+    total = len(obs)
+    tmp = obs[[batch_key, cell_type_key]].copy()
+    tmp["_pos"] = np.arange(total)
+    chosen = []
+    for _, grp in tmp.groupby([batch_key, cell_type_key], observed=True)["_pos"]:
+        pos = grp.values
+        n_target = max(1, round(max_cells * len(pos) / total))
+        n_sample = min(len(pos), n_target)
+        chosen.append(rng.choice(pos, size=n_sample, replace=False))
+    return np.sort(np.concatenate(chosen))
 
 
 # ---------------------------------------------------------------------------
@@ -81,6 +112,21 @@ def make_model(multiclass: bool = False) -> LogisticRegression:
         multi_class="multinomial" if multiclass else "auto",
         random_state=ML["seed"],
         class_weight="balanced",  # handle imbalanced classes
+    )
+
+
+# ---------------------------------------------------------------------------
+# Regression model (age prediction)
+# ---------------------------------------------------------------------------
+
+def make_regression_model() -> ElasticNet:
+    cfg = ML["elasticnet"]
+    return ElasticNet(
+        alpha=1.0 / cfg["C"],
+        l1_ratio=cfg["l1_ratio"],
+        max_iter=cfg["max_iter"],
+        tol=cfg["tol"],
+        random_state=ML["seed"],
     )
 
 
@@ -259,14 +305,21 @@ def lobo_eval(
                         ]
                         keep = np.isin(y_test_filtered, classes_in_test)
                         try:
+                            proba_subset = y_proba[test_mask_classes][keep][:, idx_in_model]
+                            # Renormalise rows so they sum to 1 (required after
+                            # subsetting a k-of-16 class softmax to k columns)
+                            row_sums = proba_subset.sum(axis=1, keepdims=True)
+                            row_sums = np.where(row_sums == 0, 1, row_sums)
+                            proba_subset = proba_subset / row_sums
                             auroc = roc_auc_score(
                                 y_test_filtered[keep],
-                                y_proba[test_mask_classes][keep][:, idx_in_model],
+                                proba_subset,
                                 multi_class="ovr",
                                 average="macro",
                                 labels=classes_in_test,
                             )
-                        except ValueError:
+                        except ValueError as e:
+                            print(f"      [auroc-warn] {e}")
                             auroc = np.nan
         else:
             y_proba = model.predict_proba(X_test_sc)[:, 1]
@@ -293,14 +346,81 @@ def lobo_eval(
     return rows
 
 
+def lobo_age_eval(
+    X: np.ndarray,
+    y_age: np.ndarray,
+    batch_labels: np.ndarray,
+    method: str,
+    dataset: str,
+) -> list[dict]:
+    """
+    LOBO regression for donor age prediction.
+
+    Each held-out batch is one donor (all cells share the same age).
+    Fits ElasticNet on training donors, averages cell predictions for the
+    held-out donor, and collects (true_age, predicted_age) per donor.
+    """
+    batches = np.unique(batch_labels)
+    rows = []
+
+    for held_out in batches:
+        train_mask = batch_labels != held_out
+        test_mask  = batch_labels == held_out
+        if test_mask.sum() < 2:
+            continue
+
+        X_train, y_train = X[train_mask], y_age[train_mask]
+        X_test = X[test_mask]
+        true_age = float(y_age[test_mask][0])   # same value for all cells in donor
+
+        scaler = StandardScaler()
+        X_train_sc = scaler.fit_transform(X_train)
+        X_test_sc  = scaler.transform(X_test)
+
+        model = make_regression_model()
+        try:
+            model.fit(X_train_sc, y_train)
+        except Exception as e:
+            print(f"      [error] donor '{held_out}': {e}")
+            continue
+
+        pred_age = float(model.predict(X_test_sc).mean())
+        abs_err  = abs(pred_age - true_age)
+
+        print(f"      Donor '{held_out}': true={true_age:.0f}, "
+              f"pred={pred_age:.1f}, |err|={abs_err:.1f}")
+
+        rows.append({
+            "dataset": dataset,
+            "method": method,
+            "task": "age",
+            "held_out_batch": str(held_out),
+            "n_train": int(train_mask.sum()),
+            "n_test": int(test_mask.sum()),
+            "true_age": true_age,
+            "predicted_age": pred_age,
+            "abs_error": abs_err,
+        })
+
+    return rows
+
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
-def run_task(name: str, cfg: dict, task: str, adata: ad.AnnData) -> pd.DataFrame:
+def run_task(
+    name: str,
+    cfg: dict,
+    task: str,
+    adata: ad.AnnData,
+    subsample_idx: np.ndarray | None = None,
+) -> pd.DataFrame:
     """Run one task (sex or celltype) for all methods on one dataset."""
     batch_key = cfg["batch_key"]
     batch_labels = pd.Categorical(adata.obs[batch_key]).codes
+    if subsample_idx is not None:
+        batch_labels = batch_labels[subsample_idx]
 
     if task == "sex":
         sex_key = cfg["sex_key"]
@@ -309,11 +429,25 @@ def run_task(name: str, cfg: dict, task: str, adata: ad.AnnData) -> pd.DataFrame
             return pd.DataFrame()
         le = LabelEncoder()
         y = le.fit_transform(adata.obs[sex_key])
+        if subsample_idx is not None:
+            y = y[subsample_idx]
         print(f"  Sex labels: {dict(zip(le.classes_, np.bincount(y)))}")
+    elif task == "age":
+        age_key = cfg.get("age_key")
+        if not age_key or age_key not in adata.obs.columns:
+            print(f"  [skip] age task: age_key '{age_key}' not available for {name}")
+            return pd.DataFrame()
+        y = pd.to_numeric(adata.obs[age_key], errors="coerce").values
+        if subsample_idx is not None:
+            y = y[subsample_idx]
+        print(f"  Age range: {np.nanmin(y):.0f}–{np.nanmax(y):.0f} years "
+              f"({np.sum(np.isnan(y))} NaN)")
     else:
         ct_key = cfg["cell_type_key"]
         le = LabelEncoder()
         y = le.fit_transform(adata.obs[ct_key])
+        if subsample_idx is not None:
+            y = y[subsample_idx]
         print(f"  Cell types: {len(le.classes_)} classes")
 
     # For sex prediction: detect if every batch is single-sex → use grouped K-fold
@@ -333,8 +467,12 @@ def run_task(name: str, cfg: dict, task: str, adata: ad.AnnData) -> pd.DataFrame
             print(f"  [skip] {method}: {e}")
             continue
 
+        if subsample_idx is not None:
+            X = X[subsample_idx]
         print(f"\n  Method: {method} ({X.shape})")
-        if use_grouped_kfold:
+        if task == "age":
+            rows = lobo_age_eval(X, y, batch_labels, method=method, dataset=name)
+        elif use_grouped_kfold:
             rows = sex_grouped_kfold_eval(
                 X, y, batch_labels,
                 method=method, dataset=name,
@@ -348,7 +486,7 @@ def run_task(name: str, cfg: dict, task: str, adata: ad.AnnData) -> pd.DataFrame
     return pd.DataFrame(all_rows)
 
 
-def summarize(df_sex: pd.DataFrame, df_ct: pd.DataFrame,
+def summarize(df_sex: pd.DataFrame, df_ct: pd.DataFrame, df_age: pd.DataFrame,
               name: str) -> pd.DataFrame:
     """Aggregate per-fold results into mean ± std per method."""
     rows = []
@@ -375,6 +513,18 @@ def summarize(df_sex: pd.DataFrame, df_ct: pd.DataFrame,
                 row[f"{task_name}_BalAcc_mean"] = subset["balanced_accuracy"].mean()
                 row[f"{task_name}_BalAcc_std"] = subset["balanced_accuracy"].std()
 
+        # Age regression: MedAE and Pearson R across donors
+        age_rows = df_age[df_age.method == method] if not df_age.empty else pd.DataFrame()
+        if not age_rows.empty and len(age_rows) >= 3:
+            trues = age_rows["true_age"].values
+            preds = age_rows["predicted_age"].values
+            row["age_MedAE"] = float(np.median(np.abs(preds - trues)))
+            r, _ = pearsonr(trues, preds)
+            row["age_R"] = float(r)
+        else:
+            row["age_MedAE"] = np.nan
+            row["age_R"] = np.nan
+
         rows.append(row)
 
     return pd.DataFrame(rows)
@@ -384,8 +534,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", default="all",
                         choices=list(DATASETS.keys()) + ["all"])
-    parser.add_argument("--tasks", nargs="+", default=["sex", "celltype"],
-                        choices=["sex", "celltype"])
+    parser.add_argument("--tasks", nargs="+", default=["sex", "celltype", "age"],
+                        choices=["sex", "celltype", "age"])
     args = parser.parse_args()
 
     to_process = list(DATASETS.keys()) if args.dataset == "all" else [args.dataset]
@@ -400,14 +550,31 @@ def main():
             print(f"  [skip] {preprocessed_path.name} not found.")
             continue
 
-        adata = ad.read_h5ad(preprocessed_path)
+        adata = ad.read_h5ad(preprocessed_path, backed="r")
+
+        # Subsample large datasets while preserving all batches and cell types
+        n_cells = adata.n_obs
+        max_cells = ML.get("max_cells")
+        subsample_idx = None
+        if max_cells and n_cells > max_cells:
+            cfg_ds = DATASETS[name]
+            subsample_idx = subsample_cells(
+                adata.obs,
+                batch_key=cfg_ds["batch_key"],
+                cell_type_key=cfg_ds["cell_type_key"],
+                max_cells=max_cells,
+                seed=ML["seed"],
+            )
+            print(f"  Subsampled {n_cells:,} → {len(subsample_idx):,} cells "
+                  f"(stratified by batch × cell type, target={max_cells:,})")
 
         df_sex = pd.DataFrame()
         df_ct = pd.DataFrame()
+        df_age = pd.DataFrame()
 
         if "sex" in args.tasks:
             print(f"\n--- Task: sex prediction ---")
-            df_sex = run_task(name, DATASETS[name], "sex", adata)
+            df_sex = run_task(name, DATASETS[name], "sex", adata, subsample_idx)
             if not df_sex.empty:
                 out = METRICS_DIR / f"ml_sex_{name}.csv"
                 df_sex.to_csv(out, index=False)
@@ -415,14 +582,22 @@ def main():
 
         if "celltype" in args.tasks:
             print(f"\n--- Task: cell type prediction (positive control) ---")
-            df_ct = run_task(name, DATASETS[name], "celltype", adata)
+            df_ct = run_task(name, DATASETS[name], "celltype", adata, subsample_idx)
             if not df_ct.empty:
                 out = METRICS_DIR / f"ml_celltype_{name}.csv"
                 df_ct.to_csv(out, index=False)
                 print(f"\n  Cell type results saved to {out.name}")
 
+        if "age" in args.tasks:
+            print(f"\n--- Task: age prediction (donor-level regression) ---")
+            df_age = run_task(name, DATASETS[name], "age", adata, subsample_idx)
+            if not df_age.empty:
+                out = METRICS_DIR / f"ml_age_{name}.csv"
+                df_age.to_csv(out, index=False)
+                print(f"\n  Age results saved to {out.name}")
+
         # Aggregate summary
-        df_summary = summarize(df_sex, df_ct, name)
+        df_summary = summarize(df_sex, df_ct, df_age, name)
         out = METRICS_DIR / f"ml_summary_{name}.csv"
         df_summary.to_csv(out, index=False)
 

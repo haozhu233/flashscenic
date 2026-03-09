@@ -11,8 +11,10 @@
 #   bash submit_pipeline.sh --dry-run  # print what would be submitted, no actual submission
 #   sbatch submit_pipeline.sh          # submit via SLURM (logs go to logs/submit_pipeline/)
 #
-# To skip a step: set the variable to "skip" before the step block, e.g.:
-#   JOB_00=skip   # validation already done
+# To skip steps, edit SKIP_STEPS below.
+# Valid step IDs: 00 01 02A 02B 02C 02D 03 04 05 05B 06
+# Per-dataset steps (03, 04, 05, 05B) skip all three dataset jobs for that step.
+# Example: SKIP_STEPS=(00 01 02A 02B 02C 02D) — resume from metrics onwards
 #
 # Prerequisites (run on login node first):
 #   bash slurm/00_download_data.sh
@@ -21,7 +23,28 @@
 set -euo pipefail
 
 BENCH_DIR=/cluster/scratch/gcardenal/flashscenic/experiments/batch_benchmark
-mkdir -p "$BENCH_DIR/logs/submit_pipeline"
+LOGS="$BENCH_DIR/logs"
+mkdir -p "$LOGS/submit_pipeline"
+
+# ---------------------------------------------------------------------------
+# Steps to skip — add step IDs to this array
+# ---------------------------------------------------------------------------
+SKIP_STEPS=(00)   # e.g. (00 01 02A 02B 02C 02D 03 04 05 05B 06)
+
+# ---------------------------------------------------------------------------
+# Datasets to skip — set any per-dataset job var to "skip" to exclude it
+# from all steps. Useful when a dataset is commented out in config.py.
+# ---------------------------------------------------------------------------
+JOB_03_AD=skip; JOB_04_AD=skip; JOB_05_AD=skip; JOB_05B_AD=skip
+
+_is_skipped() {
+    local step="$1"
+    local s
+    for s in "${SKIP_STEPS[@]+"${SKIP_STEPS[@]}"}"; do
+        [[ "$s" == "$step" ]] && return 0
+    done
+    return 1
+}
 
 # ---------------------------------------------------------------------------
 # Dry-run support
@@ -32,11 +55,13 @@ for arg in "$@"; do
 done
 
 _submit() {
-    # Usage: _submit VARNAME [--dependency=<dep>] SCRIPT
+    # Usage: _submit VARNAME [--dependency=<dep>] [--extra-sbatch-flags...] SCRIPT
+    # Any --flag that is not --dependency= is forwarded directly to sbatch.
     # Sets VARNAME to the submitted job ID (or a placeholder in dry-run).
     local varname="$1"; shift
     local dep_flag=""
     local script=""
+    local extra_sbatch_flags=()
 
     for arg in "$@"; do
         if [[ "$arg" == --dependency=* ]]; then
@@ -51,6 +76,8 @@ _submit() {
                 dep_flag="--dependency=${dep_type}:${clean_ids}"
             fi
             # If all dependencies were "skip", dep_flag stays empty → no dependency
+        elif [[ "$arg" == --* ]]; then
+            extra_sbatch_flags+=("$arg")
         else
             script="$arg"
         fi
@@ -61,14 +88,16 @@ _submit() {
 
     if $DRY_RUN; then
         local fake_id="DRY_${script_name}"
-        printf '  [dry-run] Would submit: sbatch %s %s\n' "${dep_flag:-(no dependency)}" "$script"
+        local flags_str="${extra_sbatch_flags[*]:-}"
+        printf '  [dry-run] Would submit: sbatch %s %s %s\n' \
+            "${flags_str}" "${dep_flag:-(no dependency)}" "$script"
         printf -v "$varname" '%s' "$fake_id"
     else
         local job_id
         if [[ -n "$dep_flag" ]]; then
-            job_id=$(sbatch --parsable "$dep_flag" "$script")
+            job_id=$(sbatch --parsable "${extra_sbatch_flags[@]+"${extra_sbatch_flags[@]}"}" "$dep_flag" "$script")
         else
-            job_id=$(sbatch --parsable "$script")
+            job_id=$(sbatch --parsable "${extra_sbatch_flags[@]+"${extra_sbatch_flags[@]}"}" "$script")
         fi
         printf -v "$varname" '%s' "$job_id"
     fi
@@ -77,98 +106,282 @@ _submit() {
 echo "=== Submitting batch benchmark pipeline ==="
 echo "Bench dir: $BENCH_DIR"
 $DRY_RUN && echo "[DRY RUN — no jobs will actually be submitted]"
+[[ ${#SKIP_STEPS[@]} -gt 0 ]] && echo "Skipping steps: ${SKIP_STEPS[*]}"
 echo ""
-
-# ---------------------------------------------------------------------------
-# Toggle steps here: uncomment the "=skip" line to bypass a step
-# ---------------------------------------------------------------------------
-JOB_00=skip   # uncomment to skip validation (already done)
 
 # ---------------------------------------------------------------------------
 # Step 00 — Validate data
 # ---------------------------------------------------------------------------
-JOB_00="${JOB_00:-}"   # preserve if already set to "skip" above
-
-if [[ "${JOB_00}" != "skip" ]]; then
-    _submit JOB_00 "$BENCH_DIR/slurm/run_00_validate.sh"
-    echo "Submitted 00_validate        → job $JOB_00"
-else
+if _is_skipped 00; then
     echo "[skip] 00_validate"
     JOB_00=skip
+else
+    _submit JOB_00 "$BENCH_DIR/slurm/run_00_validate.sh"
+    echo "Submitted 00_validate        → job $JOB_00"
 fi
 
 # ---------------------------------------------------------------------------
 # Step 01 — Preprocess (waits for 00 if not skipped)
 # ---------------------------------------------------------------------------
-_submit JOB_01 --dependency=afterok:$JOB_00 "$BENCH_DIR/slurm/run_01_preprocess.sh"
-echo "Submitted 01_preprocess      → job $JOB_01"
+if _is_skipped 01; then
+    echo "[skip] 01_preprocess"
+    JOB_01=skip
+else
+    _submit JOB_01 --dependency=afterok:$JOB_00 "$BENCH_DIR/slurm/run_01_preprocess.sh"
+    echo "Submitted 01_preprocess      → job $JOB_01"
+fi
 
 # ---------------------------------------------------------------------------
 # Steps 02a, 02b, 02c — Integration methods (parallel after 01)
 # ---------------------------------------------------------------------------
-_submit JOB_02A --dependency=afterok:$JOB_01 "$BENCH_DIR/slurm/run_02a_baselines.sh"
-echo "Submitted 02a_baselines      → job $JOB_02A"
+if _is_skipped 02A; then
+    echo "[skip] 02a_baselines"
+    JOB_02A=skip
+else
+    _submit JOB_02A --dependency=afterok:$JOB_01 "$BENCH_DIR/slurm/run_02a_baselines.sh"
+    echo "Submitted 02a_baselines      → job $JOB_02A"
+fi
 
-_submit JOB_02B --dependency=afterok:$JOB_01 "$BENCH_DIR/slurm/run_02b_scvi.sh"
-echo "Submitted 02b_scvi           → job $JOB_02B"
+if _is_skipped 02B; then
+    echo "[skip] 02b_scvi"
+    JOB_02B=skip
+else
+    _submit JOB_02B --dependency=afterok:$JOB_01 "$BENCH_DIR/slurm/run_02b_scvi.sh"
+    echo "Submitted 02b_scvi           → job $JOB_02B"
+fi
 
-_submit JOB_02C --dependency=afterok:$JOB_01 "$BENCH_DIR/slurm/run_02c_flashscenic.sh"
-echo "Submitted 02c_flashscenic    → job $JOB_02C"
+if _is_skipped 02C; then
+    echo "[skip] 02c_flashscenic"
+    JOB_02C=skip
+else
+    _submit JOB_02C --dependency=afterok:$JOB_01 "$BENCH_DIR/slurm/run_02c_flashscenic.sh"
+    echo "Submitted 02c_flashscenic    → job $JOB_02C"
+fi
 
 # ---------------------------------------------------------------------------
 # Step 02d — Merge all embeddings into h5ad (waits for ALL 02x, runs once)
 # ---------------------------------------------------------------------------
-_submit JOB_02D --dependency=afterok:${JOB_02A}:${JOB_02B}:${JOB_02C} "$BENCH_DIR/slurm/run_02d_merge.sh"
-echo "Submitted 02d_merge          → job $JOB_02D"
+if _is_skipped 02D; then
+    echo "[skip] 02d_merge"
+    JOB_02D=skip
+else
+    _submit JOB_02D --dependency=afterok:${JOB_02A}:${JOB_02B}:${JOB_02C} "$BENCH_DIR/slurm/run_02d_merge.sh"
+    echo "Submitted 02d_merge          → job $JOB_02D"
+fi
 
 # ---------------------------------------------------------------------------
-# Steps 03 and 04 — Metrics + ML predictor (both wait for 02d)
+# Steps 03 — scIB metrics, one job per dataset (parallel after 02d)
 # ---------------------------------------------------------------------------
-_submit JOB_03 --dependency=afterok:${JOB_02D} "$BENCH_DIR/slurm/run_03_metrics.sh"
-echo "Submitted 03_metrics         → job $JOB_03"
+mkdir -p "$LOGS/03_metrics" "$LOGS/04_ml_predictor" "$LOGS/05_visualize" "$LOGS/05b_rss"
 
-_submit JOB_04 --dependency=afterok:${JOB_02D} "$BENCH_DIR/slurm/run_04_ml_predictor.sh"
-echo "Submitted 04_ml_predictor    → job $JOB_04"
+if _is_skipped 03; then
+    echo "[skip] 03_metrics (all datasets)"
+    JOB_03_IMMUNE=skip; JOB_03_PANC=skip; JOB_03_AD=skip; JOB_03_INHIB=skip
+else
+    _submit JOB_03_IMMUNE \
+        --job-name=03_metrics_immune \
+        --output="$LOGS/03_metrics/03_metrics_immune_%j.out" \
+        --export=ALL,DATASET=immune_human \
+        --dependency=afterok:${JOB_02D} \
+        "$BENCH_DIR/slurm/run_03_metrics.sh"
+    echo "Submitted 03_metrics_immune  → job $JOB_03_IMMUNE"
+
+    _submit JOB_03_PANC \
+        --job-name=03_metrics_pancreas \
+        --output="$LOGS/03_metrics/03_metrics_pancreas_%j.out" \
+        --export=ALL,DATASET=pancreas \
+        --dependency=afterok:${JOB_02D} \
+        "$BENCH_DIR/slurm/run_03_metrics.sh"
+    echo "Submitted 03_metrics_pancreas→ job $JOB_03_PANC"
+
+    _submit JOB_03_AD \
+        --job-name=03_metrics_ad \
+        --output="$LOGS/03_metrics/03_metrics_ad_%j.out" \
+        --export=ALL,DATASET=ad_neurons \
+        --dependency=afterok:${JOB_02D} \
+        "$BENCH_DIR/slurm/run_03_metrics.sh"
+    echo "Submitted 03_metrics_ad      → job $JOB_03_AD"
+
+    _submit JOB_03_INHIB \
+        --job-name=03_metrics_inhib \
+        --output="$LOGS/03_metrics/03_metrics_inhib_%j.out" \
+        --export=ALL,DATASET=ad_inhibitory \
+        --dependency=afterok:${JOB_02D} \
+        "$BENCH_DIR/slurm/run_03_metrics.sh"
+    echo "Submitted 03_metrics_inhib   → job $JOB_03_INHIB"
+fi
 
 # ---------------------------------------------------------------------------
-# Step 05 — Visualize (waits for 03 and 04)
+# Steps 04 — ML predictor, one job per dataset (parallel after 02d)
 # ---------------------------------------------------------------------------
-_submit JOB_05 --dependency=afterok:${JOB_03}:${JOB_04} "$BENCH_DIR/slurm/run_05_visualize.sh"
-echo "Submitted 05_visualize       → job $JOB_05"
+if _is_skipped 04; then
+    echo "[skip] 04_ml_predictor (all datasets)"
+    JOB_04_IMMUNE=skip; JOB_04_PANC=skip; JOB_04_AD=skip; JOB_04_INHIB=skip
+else
+    _submit JOB_04_IMMUNE \
+        --job-name=04_ml_immune \
+        --output="$LOGS/04_ml_predictor/04_ml_immune_%j.out" \
+        --export=ALL,DATASET=immune_human \
+        --dependency=afterok:${JOB_02D} \
+        "$BENCH_DIR/slurm/run_04_ml_predictor.sh"
+    echo "Submitted 04_ml_immune       → job $JOB_04_IMMUNE"
+
+    _submit JOB_04_PANC \
+        --job-name=04_ml_pancreas \
+        --output="$LOGS/04_ml_predictor/04_ml_pancreas_%j.out" \
+        --export=ALL,DATASET=pancreas \
+        --dependency=afterok:${JOB_02D} \
+        "$BENCH_DIR/slurm/run_04_ml_predictor.sh"
+    echo "Submitted 04_ml_pancreas     → job $JOB_04_PANC"
+
+    _submit JOB_04_AD \
+        --job-name=04_ml_ad \
+        --output="$LOGS/04_ml_predictor/04_ml_ad_%j.out" \
+        --export=ALL,DATASET=ad_neurons \
+        --dependency=afterok:${JOB_02D} \
+        "$BENCH_DIR/slurm/run_04_ml_predictor.sh"
+    echo "Submitted 04_ml_ad           → job $JOB_04_AD"
+
+    _submit JOB_04_INHIB \
+        --job-name=04_ml_inhib \
+        --output="$LOGS/04_ml_predictor/04_ml_inhib_%j.out" \
+        --export=ALL,DATASET=ad_inhibitory \
+        --dependency=afterok:${JOB_02D} \
+        "$BENCH_DIR/slurm/run_04_ml_predictor.sh"
+    echo "Submitted 04_ml_inhib        → job $JOB_04_INHIB"
+fi
 
 # ---------------------------------------------------------------------------
-# Step 05b — RSS heatmap from binary AUCell scores (waits for 05)
+# Steps 05 — Visualize, one job per dataset (each waits for its own 03+04)
 # ---------------------------------------------------------------------------
-_submit JOB_05B --dependency=afterok:${JOB_05} "$BENCH_DIR/slurm/run_05b_rss.sh"
-echo "Submitted 05b_rss            → job $JOB_05B"
+if _is_skipped 05; then
+    echo "[skip] 05_visualize (all datasets)"
+    JOB_05_IMMUNE=skip; JOB_05_PANC=skip; JOB_05_AD=skip; JOB_05_INHIB=skip
+else
+    _submit JOB_05_IMMUNE \
+        --job-name=05_visualize_immune \
+        --output="$LOGS/05_visualize/05_visualize_immune_%j.out" \
+        --export=ALL,DATASET=immune_human \
+        --dependency=afterok:${JOB_03_IMMUNE}:${JOB_04_IMMUNE} \
+        "$BENCH_DIR/slurm/run_05_visualize.sh"
+    echo "Submitted 05_visualize_immune→ job $JOB_05_IMMUNE"
+
+    _submit JOB_05_PANC \
+        --job-name=05_visualize_pancreas \
+        --output="$LOGS/05_visualize/05_visualize_pancreas_%j.out" \
+        --export=ALL,DATASET=pancreas \
+        --dependency=afterok:${JOB_03_PANC}:${JOB_04_PANC} \
+        "$BENCH_DIR/slurm/run_05_visualize.sh"
+    echo "Submitted 05_visualize_panc  → job $JOB_05_PANC"
+
+    _submit JOB_05_AD \
+        --job-name=05_visualize_ad \
+        --output="$LOGS/05_visualize/05_visualize_ad_%j.out" \
+        --export=ALL,DATASET=ad_neurons \
+        --dependency=afterok:${JOB_03_AD}:${JOB_04_AD} \
+        "$BENCH_DIR/slurm/run_05_visualize.sh"
+    echo "Submitted 05_visualize_ad    → job $JOB_05_AD"
+
+    _submit JOB_05_INHIB \
+        --job-name=05_visualize_inhib \
+        --output="$LOGS/05_visualize/05_visualize_inhib_%j.out" \
+        --export=ALL,DATASET=ad_inhibitory \
+        --dependency=afterok:${JOB_03_INHIB}:${JOB_04_INHIB} \
+        "$BENCH_DIR/slurm/run_05_visualize.sh"
+    echo "Submitted 05_visualize_inhib → job $JOB_05_INHIB"
+fi
 
 # ---------------------------------------------------------------------------
-# Step 06 — Summarize (waits for 05b)
+# Steps 05b — RSS, one job per dataset (each waits for its own 05)
 # ---------------------------------------------------------------------------
-_submit JOB_06 --dependency=afterok:${JOB_05B} "$BENCH_DIR/slurm/run_06_summarize.sh"
-echo "Submitted 06_summarize       → job $JOB_06"
+if _is_skipped 05B; then
+    echo "[skip] 05b_rss (all datasets)"
+    JOB_05B_IMMUNE=skip; JOB_05B_PANC=skip; JOB_05B_AD=skip; JOB_05B_INHIB=skip
+else
+    _submit JOB_05B_IMMUNE \
+        --job-name=05b_rss_immune \
+        --output="$LOGS/05b_rss/05b_rss_immune_%j.out" \
+        --export=ALL,DATASET=immune_human \
+        --dependency=afterok:${JOB_05_IMMUNE} \
+        "$BENCH_DIR/slurm/run_05b_rss.sh"
+    echo "Submitted 05b_rss_immune     → job $JOB_05B_IMMUNE"
+
+    _submit JOB_05B_PANC \
+        --job-name=05b_rss_pancreas \
+        --output="$LOGS/05b_rss/05b_rss_pancreas_%j.out" \
+        --export=ALL,DATASET=pancreas \
+        --dependency=afterok:${JOB_05_PANC} \
+        "$BENCH_DIR/slurm/run_05b_rss.sh"
+    echo "Submitted 05b_rss_pancreas   → job $JOB_05B_PANC"
+
+    _submit JOB_05B_AD \
+        --job-name=05b_rss_ad \
+        --output="$LOGS/05b_rss/05b_rss_ad_%j.out" \
+        --export=ALL,DATASET=ad_neurons \
+        --dependency=afterok:${JOB_05_AD} \
+        "$BENCH_DIR/slurm/run_05b_rss.sh"
+    echo "Submitted 05b_rss_ad         → job $JOB_05B_AD"
+
+    _submit JOB_05B_INHIB \
+        --job-name=05b_rss_inhib \
+        --output="$LOGS/05b_rss/05b_rss_inhib_%j.out" \
+        --export=ALL,DATASET=ad_inhibitory \
+        --dependency=afterok:${JOB_05_INHIB} \
+        "$BENCH_DIR/slurm/run_05b_rss.sh"
+    echo "Submitted 05b_rss_inhib      → job $JOB_05B_INHIB"
+fi
+
+# ---------------------------------------------------------------------------
+# Step 06 — Summarize (waits for ALL 05b jobs)
+# ---------------------------------------------------------------------------
+if _is_skipped 06; then
+    echo "[skip] 06_summarize"
+    JOB_06=skip
+else
+    _submit JOB_06 \
+        --dependency=afterok:${JOB_05B_IMMUNE}:${JOB_05B_PANC}:${JOB_05B_AD}:${JOB_05B_INHIB} \
+        "$BENCH_DIR/slurm/run_06_summarize.sh"
+    echo "Submitted 06_summarize       → job $JOB_06"
+fi
 
 echo ""
 echo "=== All jobs submitted ==="
 echo ""
 echo "Job chain:"
-echo "  $JOB_00   00_validate"
-echo "  $JOB_01   01_preprocess"
-echo "  $JOB_02A  02a_baselines  ┐"
-echo "  $JOB_02B  02b_scvi       ├── parallel"
-echo "  $JOB_02C  02c_flashscenic┘"
-echo "  $JOB_02D  02d_merge       (serializes h5ad write)"
-echo "  $JOB_03   03_metrics      ┐"
-echo "  $JOB_04   04_ml_predictor ┘── parallel"
-echo "  $JOB_05   05_visualize"
-echo "  $JOB_05B  05b_rss"
-echo "  $JOB_06   06_summarize"
+echo "  $JOB_00              00_validate"
+echo "  $JOB_01              01_preprocess"
+echo "  $JOB_02A             02a_baselines  ┐"
+echo "  $JOB_02B             02b_scvi       ├── parallel"
+echo "  $JOB_02C             02c_flashscenic┘"
+echo "  $JOB_02D             02d_merge"
+echo "  $JOB_03_IMMUNE       03_metrics_immune   ┐"
+echo "  $JOB_03_PANC         03_metrics_pancreas ├── parallel"
+echo "  $JOB_03_AD           03_metrics_ad       │"
+echo "  $JOB_03_INHIB        03_metrics_inhib    ┘"
+echo "  $JOB_04_IMMUNE       04_ml_immune        ┐"
+echo "  $JOB_04_PANC         04_ml_pancreas      ├── parallel"
+echo "  $JOB_04_AD           04_ml_ad            │"
+echo "  $JOB_04_INHIB        04_ml_inhib         ┘"
+echo "  $JOB_05_IMMUNE       05_visualize_immune ┐ (waits for 03+04 per dataset)"
+echo "  $JOB_05_PANC         05_visualize_panc   ├── parallel"
+echo "  $JOB_05_AD           05_visualize_ad     │"
+echo "  $JOB_05_INHIB        05_visualize_inhib  ┘"
+echo "  $JOB_05B_IMMUNE      05b_rss_immune      ┐"
+echo "  $JOB_05B_PANC        05b_rss_pancreas    ├── parallel"
+echo "  $JOB_05B_AD          05b_rss_ad          │"
+echo "  $JOB_05B_INHIB       05b_rss_inhib       ┘"
+echo "  $JOB_06              06_summarize"
 
 if ! $DRY_RUN; then
     echo ""
     echo "Monitor with:"
     echo "  squeue -u \$USER"
-    JOB_LIST=$(echo "${JOB_00} ${JOB_01} ${JOB_02A} ${JOB_02B} ${JOB_02C} ${JOB_02D} ${JOB_03} ${JOB_04} ${JOB_05} ${JOB_05B} ${JOB_06}" \
+    JOB_LIST=$(echo "${JOB_00} ${JOB_01} ${JOB_02A} ${JOB_02B} ${JOB_02C} ${JOB_02D} \
+                     ${JOB_03_IMMUNE} ${JOB_03_PANC} ${JOB_03_AD} ${JOB_03_INHIB} \
+                     ${JOB_04_IMMUNE} ${JOB_04_PANC} ${JOB_04_AD} ${JOB_04_INHIB} \
+                     ${JOB_05_IMMUNE} ${JOB_05_PANC} ${JOB_05_AD} ${JOB_05_INHIB} \
+                     ${JOB_05B_IMMUNE} ${JOB_05B_PANC} ${JOB_05B_AD} ${JOB_05B_INHIB} \
+                     ${JOB_06}" \
                | tr ' ' '\n' | { grep -v '^skip$' || true; } | tr '\n' ',' | sed 's/,$//')
     echo "  squeue -j ${JOB_LIST}"
 fi

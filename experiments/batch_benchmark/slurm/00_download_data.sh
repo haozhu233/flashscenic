@@ -10,7 +10,7 @@
 
 set -euo pipefail
 
-DATA_DIR="$(dirname "$0")/data"
+DATA_DIR="$(dirname "$0")/../data"
 mkdir -p "$DATA_DIR"
 
 # Download from figshare via the API endpoint (avoids 202 async queueing)
@@ -88,6 +88,13 @@ echo "=== Downloading AD neurons — all cells (CellxGENE, 424K cells, ~6.4 GB, 
 download_direct \
     "https://datasets.cellxgene.cziscience.com/9066d7f5-924e-4022-9c8a-ceaff3d50104.h5ad" \
     "$DATA_DIR/ad_neurons.h5ad" \
+    500
+
+echo ""
+echo "=== Downloading AD inhibitory neurons (CellxGENE, ~1070 MB, has sex) ==="
+download_direct \
+    "https://datasets.cellxgene.cziscience.com/e7be14ca-e499-4dfa-8292-0768896852dd.h5ad" \
+    "$DATA_DIR/ad_inhibitory.h5ad" \
     500
 
 echo ""

@@ -14,8 +14,10 @@ BENCH_DIR=/cluster/scratch/gcardenal/flashscenic/experiments/batch_benchmark
 cd "$BENCH_DIR"
 source /cluster/scratch/gcardenal/scanpy/bin/activate
 
+DATASET="${DATASET:-all}"
+
 mkdir -p "$BENCH_DIR/logs/05b_rss"
 
 echo "Node: $(hostname) | Date: $(date)"
-python scripts/05b_rss.py --dataset all
+python -u scripts/05b_rss.py --dataset "$DATASET"
 echo "Done: $(date)"

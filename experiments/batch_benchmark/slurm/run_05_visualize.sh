@@ -15,7 +15,9 @@ BENCH_DIR=/cluster/scratch/gcardenal/flashscenic/experiments/batch_benchmark
 cd "$BENCH_DIR"
 source /cluster/scratch/gcardenal/scanpy/bin/activate
 
+DATASET="${DATASET:-all}"
+
 echo "Node: $(hostname) | Date: $(date)"
 export MPLBACKEND=Agg
-python scripts/05_visualize.py --dataset all
+python -u scripts/05_visualize.py --dataset "$DATASET"
 echo "Done: $(date)"

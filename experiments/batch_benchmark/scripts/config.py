@@ -56,6 +56,19 @@ DATASETS = {
         "batch_key": "donor_id",         # 46 donors, confirmed
         "cell_type_key": "Author_Annotation",  # finer subtypes vs. 7-class 'cell_type'
         "sex_key": "sex",                # confirmed: 'female' / 'male'
+        "age_key": "Age",                # donor age in years
+        "species": "human",
+        "min_cells_per_sex_per_batch": 20,
+    },
+    "ad_inhibitory": {
+        # CellxGENE — inhibitory neuron subset of the same AD resilience study
+        # Same obs columns and donor structure as ad_neurons
+        "url": "https://datasets.cellxgene.cziscience.com/e7be14ca-e499-4dfa-8292-0768896852dd.h5ad",
+        "path": DATA_DIR / "ad_inhibitory.h5ad",
+        "batch_key": "donor_id",
+        "cell_type_key": "Author_Annotation",
+        "sex_key": "sex",
+        "age_key": "Age",
         "species": "human",
         "min_cells_per_sex_per_batch": 20,
     },
@@ -139,6 +152,7 @@ ML = {
     },
     "min_cells_per_class": 20,  # skip a class if fewer than this in test fold
     "sex_n_splits": 5,          # K for grouped K-fold when donors are single-sex
+    "max_cells": 100_000,       # subsample datasets larger than this before ML tasks
 }
 
 # ---------------------------------------------------------------------------
