@@ -29,7 +29,7 @@ mkdir -p "$LOGS/submit_pipeline"
 # ---------------------------------------------------------------------------
 # Steps to skip — add step IDs to this array
 # ---------------------------------------------------------------------------
-SKIP_STEPS=(00)   # e.g. (00 01 02A 02B 02C 02D 03 04 05 05B 06)
+SKIP_STEPS=(00 01 02A 02B 02C 02D)   # e.g. (00 01 02A 02B 02C 02D 03 04 05 05B 06)
 
 # ---------------------------------------------------------------------------
 # Datasets to skip — set any per-dataset job var to "skip" to exclude it
@@ -58,7 +58,12 @@ _submit() {
     # Usage: _submit VARNAME [--dependency=<dep>] [--extra-sbatch-flags...] SCRIPT
     # Any --flag that is not --dependency= is forwarded directly to sbatch.
     # Sets VARNAME to the submitted job ID (or a placeholder in dry-run).
-    local varname="$1"; shift
+    # If VARNAME is already set to "skip", honour that and do not submit.
+    local varname="$1"
+    if [[ "${!varname:-}" == "skip" ]]; then
+        return 0
+    fi
+    shift
     local dep_flag=""
     local script=""
     local extra_sbatch_flags=()
@@ -382,7 +387,7 @@ if ! $DRY_RUN; then
                      ${JOB_05_IMMUNE} ${JOB_05_PANC} ${JOB_05_AD} ${JOB_05_INHIB} \
                      ${JOB_05B_IMMUNE} ${JOB_05B_PANC} ${JOB_05B_AD} ${JOB_05B_INHIB} \
                      ${JOB_06}" \
-               | tr ' ' '\n' | { grep -v '^skip$' || true; } | tr '\n' ',' | sed 's/,$//')
+               | tr ' ' '\n' | grep -E '^[0-9]+$' | tr '\n' ',' | sed 's/,$//')
     echo "  squeue -j ${JOB_LIST}"
 fi
 

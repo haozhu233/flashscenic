@@ -126,7 +126,7 @@ def fig_umaps(adata: ad.AnnData, cfg: dict, name: str) -> None:
         if col == 0:
             ax.set_ylabel("Colored by cell type", fontsize=9)
 
-    # Add legends outside the last column
+    # Add per-row legends to the right of the last column
     handles_batch = [
         plt.Line2D([0], [0], marker="o", color="w",
                    markerfacecolor=batch_palette[i], markersize=6, label=str(b))
@@ -138,9 +138,18 @@ def fig_umaps(adata: ad.AnnData, cfg: dict, name: str) -> None:
         for i, ct in enumerate(ct_categories)
     ]
 
-    fig.legend(handles=handles_batch, title="Batch", loc="upper right",
-               bbox_to_anchor=(1.02, 1.0), fontsize=7, title_fontsize=8,
-               frameon=True, ncol=1)
+    axes[0, n_cols - 1].legend(
+        handles=handles_batch, title="Batch",
+        loc="upper left", bbox_to_anchor=(1.01, 1.0),
+        fontsize=7, title_fontsize=8, frameon=True, ncol=1,
+        borderaxespad=0,
+    )
+    axes[1, n_cols - 1].legend(
+        handles=handles_ct, title="Cell type",
+        loc="upper left", bbox_to_anchor=(1.01, 1.0),
+        fontsize=7, title_fontsize=8, frameon=True, ncol=1,
+        borderaxespad=0,
+    )
 
     fig.suptitle(f"UMAP — {name}", fontsize=13, fontweight="bold", y=1.01)
     plt.tight_layout()

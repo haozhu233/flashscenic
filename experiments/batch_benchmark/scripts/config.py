@@ -45,21 +45,21 @@ DATASETS = {
         "species": "human",
         "min_cells_per_sex_per_batch": None,
     },
-    "ad_neurons": {
+#    "ad_neurons": {
         # CellxGENE collection 0d35c0fd — ALL cells, AD resilience study
         # Confirmed: 424,528 cells × 60,305 genes, 46 donors (batches)
         # sex: female=239,615 / male=184,913, perfectly distributed (each donor is one sex)
         # counts: in adata.raw (X is already normalized) — handled by _detect_counts_location
         # https://cellxgene.cziscience.com/collections/0d35c0fd-ef0b-4b70-bce6-645a4660e5fa
-        "url": "https://datasets.cellxgene.cziscience.com/9066d7f5-924e-4022-9c8a-ceaff3d50104.h5ad",
-        "path": DATA_DIR / "ad_neurons.h5ad",
-        "batch_key": "donor_id",         # 46 donors, confirmed
-        "cell_type_key": "Author_Annotation",  # finer subtypes vs. 7-class 'cell_type'
-        "sex_key": "sex",                # confirmed: 'female' / 'male'
-        "age_key": "Age",                # donor age in years
-        "species": "human",
-        "min_cells_per_sex_per_batch": 20,
-    },
+#        "url": "https://datasets.cellxgene.cziscience.com/9066d7f5-924e-4022-9c8a-ceaff3d50104.h5ad",
+#        "path": DATA_DIR / "ad_neurons.h5ad",
+#        "batch_key": "donor_id",         # 46 donors, confirmed
+#        "cell_type_key": "Author_Annotation",  # finer subtypes vs. 7-class 'cell_type'
+#        "sex_key": "sex",                # confirmed: 'female' / 'male'
+#       "age_key": "Age",                # donor age in years
+#        "species": "human",
+#        "min_cells_per_sex_per_batch": 20,
+#    },
     "ad_inhibitory": {
         # CellxGENE — inhibitory neuron subset of the same AD resilience study
         # Same obs columns and donor structure as ad_neurons
