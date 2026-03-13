@@ -24,7 +24,27 @@ for d in [RESULTS_DIR, EMBEDDINGS_DIR, METRICS_DIR, FIGURES_DIR, DATA_DIR]:
 # ---------------------------------------------------------------------------
 # scIB figshare article 12420968 — file IDs verified via API
 # https://api.figshare.com/v2/articles/12420968/files
-DATASETS = {    
+DATASETS = {
+    "immune_human": {
+        # Immune_ALL_human.h5ad — figshare file ID 25717328 (2064 MB)
+        "url": "https://api.figshare.com/v2/file/download/25717328",
+        "path": DATA_DIR / "immune_human.h5ad",
+        "batch_key": "batch",
+        "cell_type_key": "final_annotation",  # confirmed from adata.obs
+        "sex_key": None,             # dataset has no sex column
+        "species": "human",
+        "min_cells_per_sex_per_batch": None,
+    },
+    "pancreas": {
+        # human_pancreas_norm_complexBatch.h5ad — figshare file ID 24539828 (316 MB)
+        "url": "https://api.figshare.com/v2/file/download/24539828",
+        "path": DATA_DIR / "pancreas.h5ad",
+        "batch_key": "tech",
+        "cell_type_key": "celltype",
+        "sex_key": None,             # pancreas dataset lacks sex annotation
+        "species": "human",
+        "min_cells_per_sex_per_batch": None,
+    },
 #    "ad_neurons": {
         # CellxGENE collection 0d35c0fd — ALL cells, AD resilience study
         # Confirmed: 424,528 cells × 60,305 genes, 46 donors (batches)
@@ -40,18 +60,18 @@ DATASETS = {
 #        "species": "human",
 #        "min_cells_per_sex_per_batch": 20,
 #    },
-#    "ad_inhibitory": {
-#        # CellxGENE — inhibitory neuron subset of the same AD resilience study
-#        # Same obs columns and donor structure as ad_neurons
-#        "url": "https://datasets.cellxgene.cziscience.com/e7be14ca-e499-4dfa-8292-0768896852dd.h5ad",
-#        "path": DATA_DIR / "ad_inhibitory.h5ad",
-#        "batch_key": "donor_id",
-#        "cell_type_key": "Author_Annotation",
-#        "sex_key": "sex",
-#        "age_key": "Age",
-#        "species": "human",
-#        "min_cells_per_sex_per_batch": 20,
-#    },
+    "ad_inhibitory": {
+        # CellxGENE — inhibitory neuron subset of the same AD resilience study
+        # Same obs columns and donor structure as ad_neurons
+        "url": "https://datasets.cellxgene.cziscience.com/e7be14ca-e499-4dfa-8292-0768896852dd.h5ad",
+        "path": DATA_DIR / "ad_inhibitory.h5ad",
+        "batch_key": "donor_id",
+        "cell_type_key": "Author_Annotation",
+        "sex_key": "sex",
+        "age_key": "Age",
+        "species": "human",
+        "min_cells_per_sex_per_batch": 20,
+    },
     "als_motor_cortex": {
         # CellxGENE — ALS motor cortex (6 ALS + 6 healthy donors)
         "url": "https://datasets.cellxgene.cziscience.com/0ab54d91-066c-4223-a9ea-6a3b0d1adef4.h5ad",
@@ -95,16 +115,9 @@ PREPROCESS = {
 }
 
 # ---------------------------------------------------------------------------
-# Analysis filters
-# ---------------------------------------------------------------------------
-# Minimum number of cells a cell type must have to be included in RSS (05b)
-# and DE TF analysis (06). Cell types with fewer cells are skipped.
-MIN_CELLS_PER_CT = 500
-
-# ---------------------------------------------------------------------------
 # Integration methods
 # ---------------------------------------------------------------------------
-METHODS = ["raw_pca", "flashscenic"]
+METHODS = ["raw_pca", "harmony", "scvi", "flashscenic"]
 
 HARMONY = {
     "max_iter_harmony": 20,
@@ -162,15 +175,7 @@ ML = {
         "solver": "saga",       # handles elasticnet penalty
         "tol": 1e-3,
     },
-    "test_size": 0.25,          # fraction of donors held out for test set (datasets without disease)
-    "n_test_per_disease": 2,    # donors per disease group in test set (when disease_key is available)
-    # Metacell aggregation: both cell-level and metacell-level are always run.
-    # Metacells are applied to flashscenic only (raw_pca always cell-level).
-    "metacell_size": 16,        # cells averaged per metacell
-    "n_metacells": 100,         # fallback if expected_reuse is None
-    # Adaptive metacell count: n_mc = max(1, round(expected_reuse * n_cells / metacell_size))
-    # Set to None to use fixed n_metacells instead.
-    "expected_reuse": 2.5,      # expected times one cell appears across metacells per donor
+    "test_size": 0.25,          # fraction of donors held out for test set
 }
 
 # ---------------------------------------------------------------------------

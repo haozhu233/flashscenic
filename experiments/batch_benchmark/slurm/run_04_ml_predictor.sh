@@ -19,5 +19,6 @@ DATASET="${DATASET:-all}"
 
 echo "Node: $(hostname) | Date: $(date)"
 export OMP_NUM_THREADS=4
-python -u scripts/04_ml_predictor.py --dataset "$DATASET" --tasks sex celltype age
+TASKS="${TASKS:-sex disease}"
+python -u scripts/04_ml_predictor.py --dataset "$DATASET" --tasks $TASKS
 echo "Done: $(date)"

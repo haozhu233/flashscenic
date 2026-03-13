@@ -152,7 +152,14 @@ def preprocess(name: str, cfg: dict, pp: dict) -> ad.AnnData:
 
     # ---- 3. Gene QC ---------------------------------------------------------
     n_genes_before = adata.n_vars
-    sc.pp.filter_genes(adata, min_cells=pp["min_cells"])
+    if pp["n_hvgs"] is None and pp.get("min_cells_frac"):
+        min_cells_abs = max(pp["min_cells"],
+                            int(np.ceil(pp["min_cells_frac"] * adata.n_obs)))
+        print(f"  Gene filter: min_cells={min_cells_abs} "
+              f"({pp['min_cells_frac']*100:.1f}% of {adata.n_obs:,} cells)")
+    else:
+        min_cells_abs = pp["min_cells"]
+    sc.pp.filter_genes(adata, min_cells=min_cells_abs)
     print(f"  Gene QC: {n_genes_before:,} → {adata.n_vars:,} genes "
           f"(removed {n_genes_before - adata.n_vars:,})")
 
@@ -177,40 +184,48 @@ def preprocess(name: str, cfg: dict, pp: dict) -> ad.AnnData:
     adata.layers["normalized_log"] = adata.X.copy()
     print(f"  Normalized (target_sum={pp['target_sum']:.0f}) + log1p")
 
-    # ---- 5. HVG selection (batch-aware) -------------------------------------
+    # ---- 5. HVG selection (batch-aware, optional) ---------------------------
     batch_key = cfg["batch_key"]
     batch_available = batch_key in adata.obs.columns
 
-    # Cap n_hvgs at the number of genes available after QC
-    n_hvgs = min(pp["n_hvgs"], adata.n_vars)
-    if n_hvgs < pp["n_hvgs"]:
-        print(f"  HVG: requested {pp['n_hvgs']:,} but only {adata.n_vars:,} genes available "
-              f"— using all {n_hvgs:,} genes")
+    if pp["n_hvgs"] is not None:
+        # Cap n_hvgs at the number of genes available after QC
+        n_hvgs = min(pp["n_hvgs"], adata.n_vars)
+        if n_hvgs < pp["n_hvgs"]:
+            print(f"  HVG: requested {pp['n_hvgs']:,} but only {adata.n_vars:,} genes available "
+                  f"— using all {n_hvgs:,} genes")
 
-    if batch_available:
-        sc.pp.highly_variable_genes(
-            adata,
-            n_top_genes=n_hvgs,
-            batch_key=batch_key,
-            flavor="seurat_v3",
-            layer="counts",
-        )
-        print(f"  HVG: {adata.var.highly_variable.sum():,} genes selected "
-              f"(batch-aware, batch_key='{batch_key}')")
+        if batch_available:
+            sc.pp.highly_variable_genes(
+                adata,
+                n_top_genes=n_hvgs,
+                batch_key=batch_key,
+                flavor="seurat_v3",
+                layer="counts",
+            )
+            print(f"  HVG: {adata.var.highly_variable.sum():,} genes selected "
+                  f"(batch-aware, batch_key='{batch_key}')")
+        else:
+            sc.pp.highly_variable_genes(
+                adata, n_top_genes=n_hvgs, flavor="seurat_v3", layer="counts"
+            )
+            print(f"  HVG: {adata.var.highly_variable.sum():,} genes selected (no batch correction)")
     else:
-        sc.pp.highly_variable_genes(
-            adata, n_top_genes=n_hvgs, flavor="seurat_v3", layer="counts"
-        )
-        print(f"  HVG: {adata.var.highly_variable.sum():,} genes selected (no batch correction)")
+        print(f"  HVG selection skipped — using all {adata.n_vars:,} filtered genes")
 
-    # ---- 6. PCA on HVG subset -----------------------------------------------
+    # ---- 6. PCA -------------------------------------------------------------
     # Scale only for PCA (zero-mean unit-variance), keep normalized_log intact
-    adata_hvg = adata[:, adata.var.highly_variable].copy()
-    sc.pp.scale(adata_hvg, max_value=10)
-
-    sc.pp.pca(adata_hvg, n_comps=pp["n_pcs"], random_state=GLOBAL_SEED)
-    adata.obsm["X_pca"] = adata_hvg.obsm["X_pca"]
-    print(f"  PCA: {pp['n_pcs']} components on {adata_hvg.n_vars:,} HVGs")
+    if pp["n_hvgs"] is not None and "highly_variable" in adata.var.columns:
+        pca_input = adata[:, adata.var.highly_variable].copy()
+        print(f"  PCA on {pca_input.n_vars:,} HVGs")
+    else:
+        pca_input = adata.copy()
+        print(f"  PCA on all {pca_input.n_vars:,} filtered genes")
+    sc.pp.scale(pca_input, max_value=10)
+    sc.pp.pca(pca_input, n_comps=pp["n_pcs"], random_state=GLOBAL_SEED)
+    adata.obsm["X_pca"] = pca_input.obsm["X_pca"]
+    print(f"  PCA: {pp['n_pcs']} components")
+    del pca_input
 
     # ---- 7. Print label distributions ---------------------------------------
     for key_name, col in [

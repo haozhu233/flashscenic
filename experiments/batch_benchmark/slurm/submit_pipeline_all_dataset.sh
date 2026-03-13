@@ -29,16 +29,15 @@ mkdir -p "$LOGS/submit_pipeline"
 # ---------------------------------------------------------------------------
 # Steps to skip — add step IDs to this array
 # ---------------------------------------------------------------------------
-SKIP_STEPS=(00 01 02A 02B 02C 02D 03 04)   # e.g. (00 01 02A 02B 02C 02D 03 04 05 05B 06)
+SKIP_STEPS=(00)   # e.g. (00 01 02A 02B 02C 02D 03 04 05 05B 06)
 
 # ---------------------------------------------------------------------------
 # Datasets to skip — set any per-dataset job var to "skip" to exclude it
 # from all steps. Useful when a dataset is commented out in config.py.
 # ---------------------------------------------------------------------------
-JOB_03_AD=skip; JOB_04_AD_SEX=skip; JOB_04_AD_DIS=skip; JOB_05_AD=skip; JOB_05B_AD=skip
-JOB_03_INHIB=skip; JOB_04_INHIB_SEX=skip; JOB_04_INHIB_DIS=skip; JOB_05_INHIB=skip; JOB_05B_INHIB=skip
-# JOB_03_MOTOR=skip; JOB_04_MOTOR_SEX=skip; JOB_04_MOTOR_DIS=skip; JOB_05_MOTOR=skip; JOB_05B_MOTOR=skip
-# JOB_03_SPINE=skip; JOB_04_SPINE_SEX=skip; JOB_04_SPINE_DIS=skip; JOB_05_SPINE=skip; JOB_05B_SPINE=skip
+JOB_03_AD=skip; JOB_04_AD=skip; JOB_05_AD=skip; JOB_05B_AD=skip
+# JOB_03_MOTOR=skip; JOB_04_MOTOR=skip; JOB_05_MOTOR=skip; JOB_05B_MOTOR=skip
+# JOB_03_SPINE=skip; JOB_04_SPINE=skip; JOB_05_SPINE=skip; JOB_05B_SPINE=skip
 
 _is_skipped() {
     local step="$1"
@@ -180,13 +179,36 @@ fi
 # ---------------------------------------------------------------------------
 # Steps 03 — scIB metrics, one job per dataset (parallel after 02d)
 # ---------------------------------------------------------------------------
-mkdir -p "$LOGS/03_metrics" "$LOGS/04_ml_predictor" "$LOGS/05_visualize" "$LOGS/05b_rss" "$LOGS/05c_de_tfs"
+mkdir -p "$LOGS/03_metrics" "$LOGS/04_ml_predictor" "$LOGS/05_visualize" "$LOGS/05b_rss"
 
 if _is_skipped 03; then
     echo "[skip] 03_metrics (all datasets)"
     JOB_03_IMMUNE=skip; JOB_03_PANC=skip; JOB_03_AD=skip; JOB_03_INHIB=skip
-    JOB_03_MOTOR=skip; JOB_03_SPINE=skip
 else
+    _submit JOB_03_IMMUNE \
+        --job-name=03_metrics_immune \
+        --output="$LOGS/03_metrics/03_metrics_immune_%j.out" \
+        --export=ALL,DATASET=immune_human \
+        --dependency=afterok:${JOB_02D} \
+        "$BENCH_DIR/slurm/run_03_metrics.sh"
+    echo "Submitted 03_metrics_immune  → job $JOB_03_IMMUNE"
+
+    _submit JOB_03_PANC \
+        --job-name=03_metrics_pancreas \
+        --output="$LOGS/03_metrics/03_metrics_pancreas_%j.out" \
+        --export=ALL,DATASET=pancreas \
+        --dependency=afterok:${JOB_02D} \
+        "$BENCH_DIR/slurm/run_03_metrics.sh"
+    echo "Submitted 03_metrics_pancreas→ job $JOB_03_PANC"
+
+    _submit JOB_03_AD \
+        --job-name=03_metrics_ad \
+        --output="$LOGS/03_metrics/03_metrics_ad_%j.out" \
+        --export=ALL,DATASET=ad_neurons \
+        --dependency=afterok:${JOB_02D} \
+        "$BENCH_DIR/slurm/run_03_metrics.sh"
+    echo "Submitted 03_metrics_ad      → job $JOB_03_AD"
+
     _submit JOB_03_INHIB \
         --job-name=03_metrics_inhib \
         --output="$LOGS/03_metrics/03_metrics_inhib_%j.out" \
@@ -217,51 +239,55 @@ fi
 # ---------------------------------------------------------------------------
 if _is_skipped 04; then
     echo "[skip] 04_ml_predictor (all datasets)"
-    JOB_04_IMMUNE=skip; JOB_04_PANC=skip
-    JOB_04_AD_SEX=skip; JOB_04_AD_DIS=skip
-    JOB_04_INHIB_SEX=skip; JOB_04_INHIB_DIS=skip
-    JOB_04_MOTOR_SEX=skip; JOB_04_MOTOR_DIS=skip
-    JOB_04_SPINE_SEX=skip; JOB_04_SPINE_DIS=skip
+    JOB_04_IMMUNE=skip; JOB_04_PANC=skip; JOB_04_AD=skip; JOB_04_INHIB=skip
 else
-    _submit JOB_04_INHIB_SEX \
-        --job-name=04_ml_inhib_sex \
-        --output="$LOGS/04_ml_predictor/04_ml_inhib_sex_%j.out" \
+    _submit JOB_04_IMMUNE \
+        --job-name=04_ml_immune \
+        --output="$LOGS/04_ml_predictor/04_ml_immune_%j.out" \
+        --export=ALL,DATASET=immune_human \
+        --dependency=afterok:${JOB_02D} \
+        "$BENCH_DIR/slurm/run_04_ml_predictor.sh"
+    echo "Submitted 04_ml_immune       → job $JOB_04_IMMUNE"
+
+    _submit JOB_04_PANC \
+        --job-name=04_ml_pancreas \
+        --output="$LOGS/04_ml_predictor/04_ml_pancreas_%j.out" \
+        --export=ALL,DATASET=pancreas \
+        --dependency=afterok:${JOB_02D} \
+        "$BENCH_DIR/slurm/run_04_ml_predictor.sh"
+    echo "Submitted 04_ml_pancreas     → job $JOB_04_PANC"
+
+    _submit JOB_04_AD \
+        --job-name=04_ml_ad \
+        --output="$LOGS/04_ml_predictor/04_ml_ad_%j.out" \
+        --export=ALL,DATASET=ad_neurons \
+        --dependency=afterok:${JOB_02D} \
+        "$BENCH_DIR/slurm/run_04_ml_predictor.sh"
+    echo "Submitted 04_ml_ad           → job $JOB_04_AD"
+
+    _submit JOB_04_INHIB \
+        --job-name=04_ml_inhib \
+        --output="$LOGS/04_ml_predictor/04_ml_inhib_%j.out" \
         --export=ALL,DATASET=ad_inhibitory,TASKS="sex age" \
         --dependency=afterok:${JOB_02D} \
         "$BENCH_DIR/slurm/run_04_ml_predictor.sh"
-    echo "Submitted 04_ml_inhib_sex    → job $JOB_04_INHIB_SEX"
+    echo "Submitted 04_ml_inhib        → job $JOB_04_INHIB"
 
-    _submit JOB_04_MOTOR_SEX \
-        --job-name=04_ml_motor_sex \
-        --output="$LOGS/04_ml_predictor/04_ml_motor_sex_%j.out" \
-        --export=ALL,DATASET=als_motor_cortex,TASKS=sex \
+    _submit JOB_04_MOTOR \
+        --job-name=04_ml_motor \
+        --output="$LOGS/04_ml_predictor/04_ml_motor_%j.out" \
+        --export=ALL,DATASET=als_motor_cortex \
         --dependency=afterok:${JOB_02D} \
         "$BENCH_DIR/slurm/run_04_ml_predictor.sh"
-    echo "Submitted 04_ml_motor_sex    → job $JOB_04_MOTOR_SEX"
+    echo "Submitted 04_ml_motor        → job $JOB_04_MOTOR"
 
-    _submit JOB_04_MOTOR_DIS \
-        --job-name=04_ml_motor_dis \
-        --output="$LOGS/04_ml_predictor/04_ml_motor_dis_%j.out" \
-        --export=ALL,DATASET=als_motor_cortex,TASKS=disease \
+    _submit JOB_04_SPINE \
+        --job-name=04_ml_spine \
+        --output="$LOGS/04_ml_predictor/04_ml_spine_%j.out" \
+        --export=ALL,DATASET=als_spinal_cord \
         --dependency=afterok:${JOB_02D} \
         "$BENCH_DIR/slurm/run_04_ml_predictor.sh"
-    echo "Submitted 04_ml_motor_dis    → job $JOB_04_MOTOR_DIS"
-
-    _submit JOB_04_SPINE_SEX \
-        --job-name=04_ml_spine_sex \
-        --output="$LOGS/04_ml_predictor/04_ml_spine_sex_%j.out" \
-        --export=ALL,DATASET=als_spinal_cord,TASKS=sex \
-        --dependency=afterok:${JOB_02D} \
-        "$BENCH_DIR/slurm/run_04_ml_predictor.sh"
-    echo "Submitted 04_ml_spine_sex    → job $JOB_04_SPINE_SEX"
-
-    _submit JOB_04_SPINE_DIS \
-        --job-name=04_ml_spine_dis \
-        --output="$LOGS/04_ml_predictor/04_ml_spine_dis_%j.out" \
-        --export=ALL,DATASET=als_spinal_cord,TASKS=disease \
-        --dependency=afterok:${JOB_02D} \
-        "$BENCH_DIR/slurm/run_04_ml_predictor.sh"
-    echo "Submitted 04_ml_spine_dis    → job $JOB_04_SPINE_DIS"
+    echo "Submitted 04_ml_spine        → job $JOB_04_SPINE"
 fi
 
 # ---------------------------------------------------------------------------
@@ -271,11 +297,35 @@ if _is_skipped 05; then
     echo "[skip] 05_visualize (all datasets)"
     JOB_05_IMMUNE=skip; JOB_05_PANC=skip; JOB_05_AD=skip; JOB_05_INHIB=skip
 else
+    _submit JOB_05_IMMUNE \
+        --job-name=05_visualize_immune \
+        --output="$LOGS/05_visualize/05_visualize_immune_%j.out" \
+        --export=ALL,DATASET=immune_human \
+        --dependency=afterok:${JOB_03_IMMUNE}:${JOB_04_IMMUNE} \
+        "$BENCH_DIR/slurm/run_05_visualize.sh"
+    echo "Submitted 05_visualize_immune→ job $JOB_05_IMMUNE"
+
+    _submit JOB_05_PANC \
+        --job-name=05_visualize_pancreas \
+        --output="$LOGS/05_visualize/05_visualize_pancreas_%j.out" \
+        --export=ALL,DATASET=pancreas \
+        --dependency=afterok:${JOB_03_PANC}:${JOB_04_PANC} \
+        "$BENCH_DIR/slurm/run_05_visualize.sh"
+    echo "Submitted 05_visualize_panc  → job $JOB_05_PANC"
+
+    _submit JOB_05_AD \
+        --job-name=05_visualize_ad \
+        --output="$LOGS/05_visualize/05_visualize_ad_%j.out" \
+        --export=ALL,DATASET=ad_neurons \
+        --dependency=afterok:${JOB_03_AD}:${JOB_04_AD} \
+        "$BENCH_DIR/slurm/run_05_visualize.sh"
+    echo "Submitted 05_visualize_ad    → job $JOB_05_AD"
+
     _submit JOB_05_INHIB \
         --job-name=05_visualize_inhib \
         --output="$LOGS/05_visualize/05_visualize_inhib_%j.out" \
         --export=ALL,DATASET=ad_inhibitory \
-        --dependency=afterok:${JOB_03_INHIB}:${JOB_04_INHIB_SEX}:${JOB_04_INHIB_DIS} \
+        --dependency=afterok:${JOB_03_INHIB}:${JOB_04_INHIB} \
         "$BENCH_DIR/slurm/run_05_visualize.sh"
     echo "Submitted 05_visualize_inhib → job $JOB_05_INHIB"
 
@@ -283,7 +333,7 @@ else
         --job-name=05_visualize_motor \
         --output="$LOGS/05_visualize/05_visualize_motor_%j.out" \
         --export=ALL,DATASET=als_motor_cortex \
-        --dependency=afterok:${JOB_03_MOTOR}:${JOB_04_MOTOR_SEX}:${JOB_04_MOTOR_DIS} \
+        --dependency=afterok:${JOB_03_MOTOR}:${JOB_04_MOTOR} \
         "$BENCH_DIR/slurm/run_05_visualize.sh"
     echo "Submitted 05_visualize_motor → job $JOB_05_MOTOR"
 
@@ -291,7 +341,7 @@ else
         --job-name=05_visualize_spine \
         --output="$LOGS/05_visualize/05_visualize_spine_%j.out" \
         --export=ALL,DATASET=als_spinal_cord \
-        --dependency=afterok:${JOB_03_SPINE}:${JOB_04_SPINE_SEX}:${JOB_04_SPINE_DIS} \
+        --dependency=afterok:${JOB_03_SPINE}:${JOB_04_SPINE} \
         "$BENCH_DIR/slurm/run_05_visualize.sh"
     echo "Submitted 05_visualize_spine → job $JOB_05_SPINE"
 fi
@@ -303,11 +353,35 @@ if _is_skipped 05B; then
     echo "[skip] 05b_rss (all datasets)"
     JOB_05B_IMMUNE=skip; JOB_05B_PANC=skip; JOB_05B_AD=skip; JOB_05B_INHIB=skip
 else
+    _submit JOB_05B_IMMUNE \
+        --job-name=05b_rss_immune \
+        --output="$LOGS/05b_rss/05b_rss_immune_%j.out" \
+        --export=ALL,DATASET=immune_human \
+        --dependency=afterok:${JOB_05_IMMUNE} \
+        "$BENCH_DIR/slurm/run_05b_rss.sh"
+    echo "Submitted 05b_rss_immune     → job $JOB_05B_IMMUNE"
+
+    _submit JOB_05B_PANC \
+        --job-name=05b_rss_pancreas \
+        --output="$LOGS/05b_rss/05b_rss_pancreas_%j.out" \
+        --export=ALL,DATASET=pancreas \
+        --dependency=afterok:${JOB_05_PANC} \
+        "$BENCH_DIR/slurm/run_05b_rss.sh"
+    echo "Submitted 05b_rss_pancreas   → job $JOB_05B_PANC"
+
+    _submit JOB_05B_AD \
+        --job-name=05b_rss_ad \
+        --output="$LOGS/05b_rss/05b_rss_ad_%j.out" \
+        --export=ALL,DATASET=ad_neurons \
+        --dependency=afterok:${JOB_05_AD} \
+        "$BENCH_DIR/slurm/run_05b_rss.sh"
+    echo "Submitted 05b_rss_ad         → job $JOB_05B_AD"
+
     _submit JOB_05B_INHIB \
         --job-name=05b_rss_inhib \
         --output="$LOGS/05b_rss/05b_rss_inhib_%j.out" \
         --export=ALL,DATASET=ad_inhibitory \
-        --dependency=afterok:${JOB_02A}:${JOB_02B}:${JOB_02C} \
+        --dependency=afterok:${JOB_05_INHIB} \
         "$BENCH_DIR/slurm/run_05b_rss.sh"
     echo "Submitted 05b_rss_inhib      → job $JOB_05B_INHIB"
 
@@ -315,7 +389,7 @@ else
         --job-name=05b_rss_motor \
         --output="$LOGS/05b_rss/05b_rss_motor_%j.out" \
         --export=ALL,DATASET=als_motor_cortex \
-        --dependency=afterok:${JOB_02A}:${JOB_02B}:${JOB_02C} \
+        --dependency=afterok:${JOB_05_MOTOR} \
         "$BENCH_DIR/slurm/run_05b_rss.sh"
     echo "Submitted 05b_rss_motor      → job $JOB_05B_MOTOR"
 
@@ -323,44 +397,20 @@ else
         --job-name=05b_rss_spine \
         --output="$LOGS/05b_rss/05b_rss_spine_%j.out" \
         --export=ALL,DATASET=als_spinal_cord \
-        --dependency=afterok:${JOB_02A}:${JOB_02B}:${JOB_02C} \
+        --dependency=afterok:${JOB_05_SPINE} \
         "$BENCH_DIR/slurm/run_05b_rss.sh"
     echo "Submitted 05b_rss_spine      → job $JOB_05B_SPINE"
 fi
 
 # ---------------------------------------------------------------------------
-# Step 05c — DE TF activity, ALS datasets only (parallel after 02D)
-# ---------------------------------------------------------------------------
-if _is_skipped 05C; then
-    echo "[skip] 05c_de_tfs (all datasets)"
-    JOB_05C_MOTOR=skip; JOB_05C_SPINE=skip
-else
-    _submit JOB_05C_MOTOR \
-        --job-name=05c_de_tfs_motor \
-        --output="$LOGS/05c_de_tfs/05c_de_tfs_motor_%j.out" \
-        --export=ALL,DATASET=als_motor_cortex \
-        --dependency=afterok:${JOB_02A}:${JOB_02B}:${JOB_02C}:${JOB_02D} \
-        "$BENCH_DIR/slurm/run_05c_de_tfs.sh"
-    echo "Submitted 05c_de_tfs_motor   → job $JOB_05C_MOTOR"
-
-    _submit JOB_05C_SPINE \
-        --job-name=05c_de_tfs_spine \
-        --output="$LOGS/05c_de_tfs/05c_de_tfs_spine_%j.out" \
-        --export=ALL,DATASET=als_spinal_cord \
-        --dependency=afterok:${JOB_02A}:${JOB_02B}:${JOB_02C}:${JOB_02D} \
-        "$BENCH_DIR/slurm/run_05c_de_tfs.sh"
-    echo "Submitted 05c_de_tfs_spine   → job $JOB_05C_SPINE"
-fi
-
-# ---------------------------------------------------------------------------
-# Step 06 — Summarize (waits for ALL 05b + 05c jobs)
+# Step 06 — Summarize (waits for ALL 05b jobs)
 # ---------------------------------------------------------------------------
 if _is_skipped 06; then
     echo "[skip] 06_summarize"
     JOB_06=skip
 else
     _submit JOB_06 \
-        --dependency=afterok:${JOB_05B_MOTOR}:${JOB_05B_SPINE}:${JOB_05C_MOTOR}:${JOB_05C_SPINE} \
+        --dependency=afterok:${JOB_05B_IMMUNE}:${JOB_05B_PANC}:${JOB_05B_AD}:${JOB_05B_INHIB}:${JOB_05B_MOTOR}:${JOB_05B_SPINE} \
         "$BENCH_DIR/slurm/run_06_summarize.sh"
     echo "Submitted 06_summarize       → job $JOB_06"
 fi
@@ -375,18 +425,30 @@ echo "  $JOB_02A             02a_baselines  ┐"
 echo "  $JOB_02B             02b_scvi       ├── parallel"
 echo "  $JOB_02C             02c_flashscenic┘"
 echo "  $JOB_02D             02d_merge"
-echo "  $JOB_03_MOTOR        03_metrics_motor      ┐ parallel"
-echo "  $JOB_03_SPINE        03_metrics_spine      ┘"
-echo "  $JOB_04_MOTOR_SEX    04_ml_motor_sex       ┐"
-echo "  $JOB_04_MOTOR_DIS    04_ml_motor_dis       ├── parallel (sex+disease per dataset)"
-echo "  $JOB_04_SPINE_SEX    04_ml_spine_sex       │"
-echo "  $JOB_04_SPINE_DIS    04_ml_spine_dis       ┘"
-echo "  $JOB_05_MOTOR        05_visualize_motor    ┐ (waits for 03+04_sex+04_dis per dataset)"
-echo "  $JOB_05_SPINE        05_visualize_spine    ┘"
-echo "  $JOB_05B_MOTOR       05b_rss_motor       ┐ parallel"
+echo "  $JOB_03_IMMUNE       03_metrics_immune   ┐"
+echo "  $JOB_03_PANC         03_metrics_pancreas │"
+echo "  $JOB_03_AD           03_metrics_ad       ├── parallel"
+echo "  $JOB_03_INHIB        03_metrics_inhib    │"
+echo "  $JOB_03_MOTOR        03_metrics_motor    │"
+echo "  $JOB_03_SPINE        03_metrics_spine    ┘"
+echo "  $JOB_04_IMMUNE       04_ml_immune        ┐"
+echo "  $JOB_04_PANC         04_ml_pancreas      │"
+echo "  $JOB_04_AD           04_ml_ad            ├── parallel"
+echo "  $JOB_04_INHIB        04_ml_inhib         │"
+echo "  $JOB_04_MOTOR        04_ml_motor         │"
+echo "  $JOB_04_SPINE        04_ml_spine         ┘"
+echo "  $JOB_05_IMMUNE       05_visualize_immune ┐ (waits for 03+04 per dataset)"
+echo "  $JOB_05_PANC         05_visualize_panc   │"
+echo "  $JOB_05_AD           05_visualize_ad     ├── parallel"
+echo "  $JOB_05_INHIB        05_visualize_inhib  │"
+echo "  $JOB_05_MOTOR        05_visualize_motor  │"
+echo "  $JOB_05_SPINE        05_visualize_spine  ┘"
+echo "  $JOB_05B_IMMUNE      05b_rss_immune      ┐"
+echo "  $JOB_05B_PANC        05b_rss_pancreas    │"
+echo "  $JOB_05B_AD          05b_rss_ad          ├── parallel"
+echo "  $JOB_05B_INHIB       05b_rss_inhib       │"
+echo "  $JOB_05B_MOTOR       05b_rss_motor       │"
 echo "  $JOB_05B_SPINE       05b_rss_spine       ┘"
-echo "  $JOB_05C_MOTOR       05c_de_tfs_motor    ┐ (waits for 02D)"
-echo "  $JOB_05C_SPINE       05c_de_tfs_spine    ┘"
 echo "  $JOB_06              06_summarize"
 
 if ! $DRY_RUN; then
@@ -394,12 +456,10 @@ if ! $DRY_RUN; then
     echo "Monitor with:"
     echo "  squeue -u \$USER"
     JOB_LIST=$(echo "${JOB_00} ${JOB_01} ${JOB_02A} ${JOB_02B} ${JOB_02C} ${JOB_02D} \
-                     ${JOB_03_MOTOR} ${JOB_03_SPINE} \
-                     ${JOB_04_MOTOR_SEX} ${JOB_04_MOTOR_DIS} \
-                     ${JOB_04_SPINE_SEX} ${JOB_04_SPINE_DIS} \
-                     ${JOB_05_MOTOR} ${JOB_05_SPINE} \
-                     ${JOB_05B_MOTOR} ${JOB_05B_SPINE} \
-                     ${JOB_05C_MOTOR} ${JOB_05C_SPINE} \
+                     ${JOB_03_IMMUNE} ${JOB_03_PANC} ${JOB_03_AD} ${JOB_03_INHIB} ${JOB_03_MOTOR} ${JOB_03_SPINE} \
+                     ${JOB_04_IMMUNE} ${JOB_04_PANC} ${JOB_04_AD} ${JOB_04_INHIB} ${JOB_04_MOTOR} ${JOB_04_SPINE} \
+                     ${JOB_05_IMMUNE} ${JOB_05_PANC} ${JOB_05_AD} ${JOB_05_INHIB} ${JOB_05_MOTOR} ${JOB_05_SPINE} \
+                     ${JOB_05B_IMMUNE} ${JOB_05B_PANC} ${JOB_05B_AD} ${JOB_05B_INHIB} ${JOB_05B_MOTOR} ${JOB_05B_SPINE} \
                      ${JOB_06}" \
                | tr ' ' '\n' | grep -E '^[0-9]+$' | tr '\n' ',' | sed 's/,$//')
     echo "  squeue -j ${JOB_LIST}"

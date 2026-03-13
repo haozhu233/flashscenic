@@ -27,7 +27,7 @@ import pandas as pd
 REPO_ROOT = Path(__file__).parent.parent.parent.parent  # flashscenic repo root
 sys.path.insert(0, str(REPO_ROOT))
 sys.path.insert(0, str(Path(__file__).parent))
-from config import DATASETS, DATA_DIR, EMBEDDINGS_DIR, METRICS_DIR, FIGURES_DIR
+from config import DATASETS, DATA_DIR, EMBEDDINGS_DIR, METRICS_DIR, FIGURES_DIR, MIN_CELLS_PER_CT
 
 from flashscenic.binarize_aucell import binarize_auc_matrix
 from flashscenic.rss import regulon_specificity_scores
@@ -60,9 +60,20 @@ def compute_rss(name: str, cfg: dict) -> dict | None:
 
     adata = ad.read_h5ad(h5ad_path)
     ct_key = cfg["cell_type_key"]
-    cell_type_labels = adata.obs[ct_key].astype(str).values
-    n_types = len(set(cell_type_labels))
-    print(f"  Cell types ({ct_key}): {n_types}")
+    raw_labels = adata.obs[ct_key].astype(str).values
+
+    # Filter out cell types with fewer than MIN_CELLS_PER_CT cells
+    ct_counts = pd.Series(raw_labels).value_counts()
+    keep_cts = set(ct_counts[ct_counts >= MIN_CELLS_PER_CT].index)
+    skipped = sorted(set(raw_labels) - keep_cts)
+    if skipped:
+        for ct in skipped:
+            print(f"  [skip CT] {ct!r}: {ct_counts[ct]:,} cells < {MIN_CELLS_PER_CT} threshold")
+    keep_mask = np.array([l in keep_cts for l in raw_labels])
+    cell_type_labels = raw_labels[keep_mask]
+    auc_scores = auc_scores[keep_mask]
+    n_types = len(keep_cts)
+    print(f"  Cell types ({ct_key}): {n_types} (after ≥{MIN_CELLS_PER_CT} cell filter)")
 
     print(f"  Binarizing AUCell scores (GMM) ...")
     binary = binarize_auc_matrix(auc_scores)
@@ -104,22 +115,24 @@ def fig_rss_heatmap(rss_result: dict, name: str) -> None:
     sub_names = [regulon_names[i] for i in selected_cols]
 
     n_shown = len(selected_cols)
-    fig_w = max(10, n_shown * 0.45)
-    fig_h = max(5, n_types * 0.38 + 1.5)
+    # Transposed layout: TFs on y-axis, cell types on x-axis
+    plot_matrix = sub_matrix.T   # (n_shown_regulons, n_types)
+    fig_w = max(5, n_types * 0.6 + 1.5)
+    fig_h = max(8, n_shown * 0.35 + 1.5)
 
     fig, ax = plt.subplots(figsize=(fig_w, fig_h))
 
-    im = ax.imshow(sub_matrix, aspect="auto", cmap="YlOrRd", vmin=0, vmax=1)
+    im = ax.imshow(plot_matrix, aspect="auto", cmap="YlOrRd", vmin=0, vmax=1)
 
-    ax.set_xticks(range(n_shown))
-    ax.set_xticklabels(sub_names, rotation=60, ha="right", fontsize=7)
-    ax.set_yticks(range(n_types))
-    ax.set_yticklabels(cell_types, fontsize=8)
+    ax.set_xticks(range(n_types))
+    ax.set_xticklabels(cell_types, rotation=45, ha="right", fontsize=8)
+    ax.set_yticks(range(n_shown))
+    ax.set_yticklabels(sub_names, fontsize=7)
 
     # Annotate cells with RSS value where >= threshold
-    for ridx in range(n_types):
-        for cidx in range(n_shown):
-            val = sub_matrix[ridx, cidx]
+    for ridx in range(n_shown):
+        for cidx in range(n_types):
+            val = plot_matrix[ridx, cidx]
             if val >= RSS_ANNOT_THR:
                 ax.text(cidx, ridx, f"{val:.2f}",
                         ha="center", va="center", fontsize=5.5,
@@ -127,15 +140,17 @@ def fig_rss_heatmap(rss_result: dict, name: str) -> None:
 
     plt.colorbar(im, ax=ax, fraction=0.02, pad=0.02, label="RSS (0–1)")
     ax.set_title(
-        f"{name} — Regulon Specificity Scores\n"
+        f"Regulon Specificity Scores\n"
         f"(binary AUCell, top {N_TOP} regulons per cell type)",
-        fontsize=11, fontweight="bold", pad=10,
+        fontsize=12, fontweight="bold", pad=10,
     )
 
     plt.tight_layout()
 
+    fig_dir = FIGURES_DIR / name
+    fig_dir.mkdir(parents=True, exist_ok=True)
     for ext in ["pdf", "png"]:
-        out = FIGURES_DIR / f"fig5_rss_{name}.{ext}"
+        out = fig_dir / f"fig5_rss_{name}.{ext}"
         plt.savefig(out, bbox_inches="tight", dpi=150)
     plt.close()
     print(f"  Saved fig5_rss_{name}  ({n_shown} regulons × {n_types} cell types)")

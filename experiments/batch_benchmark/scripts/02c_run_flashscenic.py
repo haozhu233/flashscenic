@@ -22,6 +22,7 @@ from pathlib import Path
 
 import anndata as ad
 import numpy as np
+import pandas as pd
 import scipy.sparse as sp
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -38,8 +39,9 @@ def run_flashscenic(name: str, cfg: dict, subsample: int = None,
 
     fs_path = EMBEDDINGS_DIR / f"{name}_flashscenic.npy"
     regulon_names_path = EMBEDDINGS_DIR / f"{name}_flashscenic_regulon_names.npy"
+    grn_path = EMBEDDINGS_DIR / f"{name}_flashscenic_regulons.csv"
 
-    if fs_path.exists() and regulon_names_path.exists() and not force:
+    if fs_path.exists() and regulon_names_path.exists() and grn_path.exists() and not force:
         print(f"  [skip] flashscenic embedding already exists for {name}")
         return
 
@@ -146,11 +148,27 @@ def run_flashscenic(name: str, cfg: dict, subsample: int = None,
         )
         print(f"  Full-dataset AUCell scores: {auc_scores.shape}")
 
-    # Save
+    # Save AUCell scores and regulon names
     np.save(fs_path, auc_scores)
     np.save(regulon_names_path, np.array(regulon_names))
     print(f"  Saved embeddings to {fs_path.name}")
     print(f"  Saved regulon names to {regulon_names_path.name}")
+
+    # Save TF-target table (GRN regulon membership)
+    regulons_list = result.get("regulons", [])
+    if regulons_list:
+        rows = []
+        for reg in regulons_list:
+            reg_name = reg["name"]
+            tf = reg_name.split("(")[0]
+            for gene in reg["genes"]:
+                rows.append({"regulon": reg_name, "tf": tf, "target_gene": gene})
+        grn_df = pd.DataFrame(rows, columns=["regulon", "tf", "target_gene"])
+        grn_df.to_csv(grn_path, index=False)
+        print(f"  Saved TF-target table: {grn_path.name}  "
+              f"({len(grn_df):,} edges, {grn_df['tf'].nunique()} TFs)")
+    else:
+        print("  [warn] No regulon gene lists returned; TF-target table not saved.")
 
     print(f"  Embedding saved as .npy — h5ad will be merged by 02d_merge_embeddings.py")
 
