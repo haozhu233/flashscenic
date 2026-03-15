@@ -168,13 +168,13 @@ def fig_umaps(adata: ad.AnnData, cfg: dict, name: str) -> None:
 
     axes[0, 0].legend(
         handles=handles_batch, title="Batch",
-        loc="upper right", bbox_to_anchor=(-0.05, 1.0),
+        loc="upper right", bbox_to_anchor=(-0.20, 1.0),
         fontsize=7, title_fontsize=8, frameon=True, ncol=1,
         borderaxespad=0,
     )
     axes[1, 0].legend(
         handles=handles_ct, title="Cell type",
-        loc="upper right", bbox_to_anchor=(-0.05, 1.0),
+        loc="upper right", bbox_to_anchor=(-0.20, 1.0),
         fontsize=7, title_fontsize=8, frameon=True, ncol=1,
         borderaxespad=0,
     )
@@ -193,7 +193,7 @@ def fig_umaps(adata: ad.AnnData, cfg: dict, name: str) -> None:
         ]
         axes[2, 0].legend(
             handles=handles_dis, title="Disease",
-            loc="upper right", bbox_to_anchor=(-0.05, 1.0),
+            loc="upper right", bbox_to_anchor=(-0.20, 1.0),
             fontsize=7, title_fontsize=8, frameon=True, ncol=1,
             borderaxespad=0,
         )
@@ -326,8 +326,12 @@ def fig_ml_bars(name: str) -> None:
         colors = [METHOD_COLORS.get(m, "grey") for m in methods]
         labels = [METHOD_LABELS.get(m, m)      for m in methods]
 
+        # Clip upper error bars so whiskers never exceed 1.0
+        yerr_upper = [min(e, 1.0 - v) for v, e in zip(y, yerr)]
+        yerr_clipped = [yerr, yerr_upper]  # [lower, upper]
+
         ax.bar(range(len(methods)), y, color=colors, edgecolor="white", linewidth=0.5,
-               yerr=yerr, error_kw={"ecolor": "black", "capsize": 4, "lw": 1.2})
+               yerr=yerr_clipped, error_kw={"ecolor": "black", "capsize": 4, "lw": 1.2})
         ax.axhline(0.5, color="gray", linestyle="--", lw=1, label="Random (0.5)")
         ax.set_xticks(range(len(methods)))
         ax.set_xticklabels(labels, rotation=20, ha="right", fontsize=10)
@@ -336,36 +340,14 @@ def fig_ml_bars(name: str) -> None:
         ax.set_ylim(0, 1.05)
         ax.axhline(1.0, color="black", lw=0.5, alpha=0.3)
 
-        # Donor-level AUROC overlay (diamond markers)
-        donor_col = col.replace("test_AUROC", "test_donor_AUROC")
-        if donor_col in df.columns:
-            donor_legend_added = False
-            for xi, m in enumerate(methods):
-                if m == "flashscenic_metacell":
-                    val = float(meta_row.get("test_donor_AUROC", np.nan)) \
-                          if meta_row is not None else np.nan
-                    if not np.isnan(val):
-                        ax.scatter(xi, val, marker="D", s=55,
-                                   color="white", edgecolors=colors[xi],
-                                   linewidths=1.5, zorder=5,
-                                   label="Donor AUROC (◆)" if not donor_legend_added else "")
-                        donor_legend_added = True
-                    continue
-                row = df.loc[df["method"] == m, donor_col]
-                if len(row) and not pd.isna(row.values[0]):
-                    ax.scatter(xi, row.values[0], marker="D", s=55,
-                               color="white", edgecolors=colors[xi],
-                               linewidths=1.5, zorder=5,
-                               label="Donor AUROC (◆)" if not donor_legend_added else "")
-                    donor_legend_added = True
-            if donor_legend_added:
-                ax.legend(fontsize=8, loc="lower right")
-
-        if "flashscenic" in methods:
-            idx = methods.index("flashscenic")
-            ax.text(idx, y[idx] + max(yerr[idx], 0.02) + 0.02, "★",
+        # Star on the best bar (metacell if present, else flashscenic)
+        best_m = "flashscenic_metacell" if "flashscenic_metacell" in methods else (
+                 "flashscenic" if "flashscenic" in methods else None)
+        if best_m:
+            idx = methods.index(best_m)
+            ax.text(idx, min(y[idx] + max(yerr_upper[idx], 0.02) + 0.02, 1.03), "★",
                     ha="center", va="bottom",
-                    fontsize=14, color=METHOD_COLORS["flashscenic"])
+                    fontsize=14, color=METHOD_COLORS[best_m])
 
     fig.suptitle("ML Biological Signal Preservation",
                  fontsize=12, fontweight="bold", y=1.02)
@@ -458,6 +440,86 @@ def fig_coef_bars(name: str) -> None:
             plt.savefig(out, bbox_inches="tight", dpi=150)
         plt.close()
         print(f"    Saved fig5_coef_{task}_{name}")
+
+
+# ---------------------------------------------------------------------------
+# Figure 5b: Per-cell-type coefficient bar charts
+# ---------------------------------------------------------------------------
+
+def fig_coef_bars_per_ct(name: str, task: str = "disease", top_n: int = 20) -> None:
+    """Horizontal bar charts of top-N pos/neg ElasticNet coefficients for each
+    per-cell-type model.  Prefers metacell CSVs; falls back to cell-level.
+    Saves one PDF+PNG per cell type to FIGURES_DIR/name/model_coefficients/.
+    """
+    import matplotlib.patches as mpatches
+
+    # Discover per-CT coefficient files (metacell preferred, cell-level fallback)
+    prefix_meta = f"ml_coef_{name}_flashscenic_{task}_metacells_"
+    prefix_cell = f"ml_coef_{name}_flashscenic_{task}_"
+
+    # Build dict: cell_type -> (csv_path, is_metacell)
+    ct_files: dict[str, tuple[Path, bool]] = {}
+    for csv in sorted(METRICS_DIR.glob(f"ml_coef_{name}_flashscenic_{task}_metacells_*.csv")):
+        ct = csv.stem[len(prefix_meta):]
+        if ct:
+            ct_files[ct] = (csv, True)
+    for csv in sorted(METRICS_DIR.glob(f"ml_coef_{name}_flashscenic_{task}_*.csv")):
+        stem = csv.stem[len(prefix_cell):]
+        # skip global metacell file and already-found metacell per-CT files
+        if stem in ("", "metacells") or stem.startswith("metacells_"):
+            continue
+        ct = stem
+        if ct not in ct_files:
+            ct_files[ct] = (csv, False)
+
+    if not ct_files:
+        print(f"  [skip per-CT coef] no per-cell-type coefficient CSVs found for {task}")
+        return
+
+    out_dir = FIGURES_DIR / name / "model_coefficients"
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    print(f"  Per-CT coefficient plots → {out_dir.relative_to(FIGURES_DIR.parent.parent)}")
+
+    for ct, (csv, is_meta) in sorted(ct_files.items()):
+        df = pd.read_csv(csv).sort_values("coefficient")
+        neg = df[df["coefficient"] < 0].tail(top_n)
+        pos = df[df["coefficient"] > 0].tail(top_n)
+        plot_df = pd.concat([neg, pos]).reset_index(drop=True)
+
+        if plot_df.empty:
+            print(f"    [skip] {ct}: all coefficients zero")
+            continue
+
+        # Legend labels from saved class columns
+        if "class_0" in df.columns and "class_1" in df.columns:
+            label_neg = f"associated with {df['class_0'].iloc[0]}"
+            label_pos = f"associated with {df['class_1'].iloc[0]}"
+        else:
+            label_neg, label_pos = "associated with class 0", "associated with class 1"
+
+        mc_tag = " (metacell)" if is_meta else ""
+        n_bars = len(plot_df)
+        fig, ax = plt.subplots(figsize=(10, max(6, 0.25 * n_bars + 1.5)))
+        colors = ["#E84646" if c < 0 else "#4878CF" for c in plot_df["coefficient"]]
+        ax.barh(plot_df["feature"], plot_df["coefficient"], color=colors)
+        ax.axvline(0, color="black", lw=0.8)
+        ax.set_xlabel("ElasticNet coefficient", fontsize=10)
+        ax.set_title(f"{task.capitalize()} predictor — {ct}{mc_tag}",
+                     fontsize=12, fontweight="bold")
+        ax.legend(handles=[
+            mpatches.Patch(color="#4878CF", label=f"Positive ({label_pos})"),
+            mpatches.Patch(color="#E84646", label=f"Negative ({label_neg})"),
+        ], fontsize=8, loc="lower right")
+
+        plt.tight_layout()
+        ct_clean = ct.replace(" ", "_")
+        mc_file_tag = "_metacells" if is_meta else ""
+        for ext in ["pdf", "png"]:
+            out = out_dir / f"coef_{task}_{ct_clean}{mc_file_tag}.{ext}"
+            plt.savefig(out, bbox_inches="tight", dpi=150)
+        plt.close()
+        print(f"    Saved coef_{task}_{ct_clean}{mc_file_tag}")
 
 
 # ---------------------------------------------------------------------------
@@ -722,6 +784,103 @@ def fig_ml_per_ct(name: str) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Combined panel figures (stitch existing PNGs into a grid)
+# ---------------------------------------------------------------------------
+
+def fig_combined_panels(
+    png_paths: list[Path],
+    out_path: Path,
+    n_cols: int = 2,
+    title: str = "",
+    pad: int = 20,
+) -> None:
+    """Stitch a list of PNG files into a grid and save as PNG + PDF.
+
+    Images are tiled left-to-right, top-to-bottom with `pad` pixels between
+    them.  Each cell is sized to the maximum width/height across all images
+    so the grid is uniform.
+    """
+    from PIL import Image, ImageDraw, ImageFont
+
+    if not png_paths:
+        return
+
+    imgs = [Image.open(p) for p in png_paths]
+    cell_w = max(im.width  for im in imgs)
+    cell_h = max(im.height for im in imgs)
+
+    n_rows = (len(imgs) + n_cols - 1) // n_cols
+    title_h = 60 if title else 0
+
+    canvas_w = n_cols * cell_w + (n_cols + 1) * pad
+    canvas_h = n_rows * cell_h + (n_rows + 1) * pad + title_h
+
+    canvas = Image.new("RGB", (canvas_w, canvas_h), color=(255, 255, 255))
+
+    if title:
+        draw = ImageDraw.Draw(canvas)
+        try:
+            font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 36)
+        except Exception:
+            font = ImageFont.load_default()
+        draw.text((canvas_w // 2, pad), title, fill=(30, 30, 30),
+                  font=font, anchor="mt")
+
+    for idx, im in enumerate(imgs):
+        row = idx // n_cols
+        col = idx % n_cols
+        x = pad + col * (cell_w + pad)
+        y = title_h + pad + row * (cell_h + pad)
+        # Center image in cell
+        x_off = (cell_w - im.width)  // 2
+        y_off = (cell_h - im.height) // 2
+        canvas.paste(im, (x + x_off, y + y_off))
+
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    canvas.save(str(out_path))
+    # Also save PDF via matplotlib
+    import matplotlib.pyplot as plt
+    dpi = 150
+    fig_w = canvas_w / dpi
+    fig_h = canvas_h / dpi
+    fig, ax = plt.subplots(figsize=(fig_w, fig_h))
+    ax.imshow(np.array(canvas))
+    ax.axis("off")
+    plt.tight_layout(pad=0)
+    plt.savefig(str(out_path).replace(".png", ".pdf"), bbox_inches="tight", dpi=dpi)
+    plt.close()
+    print(f"    Saved {out_path.name} ({len(imgs)} panels, {n_cols} cols)")
+
+
+def fig_combined_de_tfs(name: str) -> None:
+    """Stitch all per-cell-type DE TF plots into one figure."""
+    src_dir = FIGURES_DIR / name / "de_tfs_metacell"
+    pngs = sorted(p for p in src_dir.glob(f"de_tfs_{name}_*.png")
+                  if "_all" not in p.stem and "_combined" not in p.stem)
+    if not pngs:
+        print(f"  [skip] no per-CT DE TF PNGs found in {src_dir.name}")
+        return
+    n_cols = 3
+    out = src_dir / f"de_tfs_{name}_combined.png"
+    fig_combined_panels(pngs, out, n_cols=n_cols,
+                        title="Differential TF Activity per Cell Type")
+
+
+def fig_combined_coef(name: str) -> None:
+    """Stitch all per-cell-type coefficient plots into one figure."""
+    src_dir = FIGURES_DIR / name / "model_coefficients"
+    pngs = sorted(p for p in src_dir.glob("coef_disease_*_metacells.png")
+                  if "_combined" not in p.stem)
+    if not pngs:
+        print(f"  [skip] no per-CT coefficient PNGs found in {src_dir.name}")
+        return
+    n_cols = 3
+    out = src_dir / f"coef_disease_{name}_combined.png"
+    fig_combined_panels(pngs, out, n_cols=n_cols,
+                        title="Disease Prediction Coefficients per Cell Type (metacell)")
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -766,8 +925,17 @@ def main():
         print(f"\n  Figure 5: flashSCENIC coefficient bar charts")
         fig_coef_bars(name)
 
+        print(f"\n  Figure 5b: Per-cell-type coefficient bar charts")
+        fig_coef_bars_per_ct(name)
+
         print(f"\n  Figure 6: TF overlap Venn diagrams ({args.de_method})")
         fig_venn_tfs(name, de_method=args.de_method)
+
+        print(f"\n  Combined: DE TF panels")
+        fig_combined_de_tfs(name)
+
+        print(f"\n  Combined: coefficient panels")
+        fig_combined_coef(name)
 
     print(f"\nAll figures saved to {FIGURES_DIR}")
     print("Run 06_summarize.py to generate the final report.")

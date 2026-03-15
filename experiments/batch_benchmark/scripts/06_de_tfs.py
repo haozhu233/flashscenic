@@ -19,7 +19,6 @@ Usage:
 """
 
 import argparse
-import re
 import sys
 import warnings
 from pathlib import Path
@@ -250,6 +249,7 @@ def run_de_pseudobulk(
     test_indices = np.where(test_mask)[0]
     pvals         = np.ones(len(regulon_names))
     disease_coefs = raw_delta.copy()
+    n_fallback    = 0
 
     donor_meta = donor_meta.copy()
     for i in test_indices:
@@ -259,10 +259,15 @@ def run_de_pseudobulk(
             pvals[i]         = fit.pvalues.get(disease_col, np.nan)
             disease_coefs[i] = fit.params.get(disease_col, np.nan)
         except Exception:
-            # Singular matrix → fall back to Welch t-test
+            # Singular matrix → fall back to Welch t-test (coef stays as raw_delta)
             dis_vals  = auc_pb[donor_meta["disease"].values == disease_label, i]
             ctrl_vals = auc_pb[donor_meta["disease"].values == control_label, i]
             _, pvals[i] = ttest_ind(dis_vals, ctrl_vals, equal_var=False)
+            n_fallback += 1
+
+    if n_fallback:
+        print(f"    [pseudobulk] {n_fallback} / {len(test_indices)} TFs used Welch t-test fallback "
+              f"(singular OLS matrix; coef = raw Δ mean)")
 
     # Replace NaN p-values / coefficients with safe defaults
     pvals = np.where(np.isnan(pvals), 1.0, pvals)
@@ -307,6 +312,7 @@ def run_de_metacell(
     seed: int = 42,
     min_donors: int = 3,
     expected_reuse: float | None = 2.5,
+    delta_weighting: str = "donor",
 ) -> pd.DataFrame | None:
     """
     Metacell-level Mann-Whitney U test per regulon.
@@ -320,6 +326,12 @@ def run_de_metacell(
 
     Cell-type homogeneity is guaranteed by the calling code: obs is always
     pre-filtered to a single cell type before this function is invoked.
+
+    delta_weighting:
+        "donor"    → mean_disease / mean_control are averages of per-donor means
+                     (each donor contributes equally regardless of cell count)
+        "metacell" → grand mean across all pooled metacells
+                     (larger donors dominate proportionally to cell count)
     """
     labels = _resolve_disease_labels(obs[disease_key])
     if labels is None:
@@ -337,22 +349,35 @@ def run_de_metacell(
               f"(need ≥ {min_donors} each)")
         return None
 
-    meta_scores, meta_labels, _ = _make_metacells_de(
+    meta_scores, meta_labels, meta_donors = _make_metacells_de(
         auc_scores, donors, disease_labels,
         n_metacells=n_metacells, metacell_size=metacell_size, seed=seed,
         expected_reuse=expected_reuse,
     )
 
-    dis_mat  = meta_scores[meta_labels == disease_label]
-    ctrl_mat = meta_scores[meta_labels == control_label]
+    dis_mask  = meta_labels == disease_label
+    ctrl_mask = meta_labels == control_label
+    dis_mat   = meta_scores[dis_mask]
+    ctrl_mat  = meta_scores[ctrl_mask]
 
     n_regs = dis_mat.shape[1]
     pvals = np.empty(n_regs)
     for i in range(n_regs):
         _, pvals[i] = mannwhitneyu(dis_mat[:, i], ctrl_mat[:, i], alternative="two-sided")
 
-    mean_dis  = dis_mat.mean(axis=0)
-    mean_ctrl = ctrl_mat.mean(axis=0)
+    if delta_weighting == "donor":
+        # Average metacells within each donor first → equal weight per donor
+        dis_donors  = np.unique(meta_donors[dis_mask])
+        ctrl_donors = np.unique(meta_donors[ctrl_mask])
+        mean_dis  = np.stack([meta_scores[(meta_donors == d) & dis_mask].mean(axis=0)
+                              for d in dis_donors]).mean(axis=0)
+        mean_ctrl = np.stack([meta_scores[(meta_donors == d) & ctrl_mask].mean(axis=0)
+                              for d in ctrl_donors]).mean(axis=0)
+    else:
+        # Grand mean across all pooled metacells (larger donors dominate)
+        mean_dis  = dis_mat.mean(axis=0)
+        mean_ctrl = ctrl_mat.mean(axis=0)
+
     delta_means = mean_dis - mean_ctrl
     _, qvals, _, _ = multipletests(pvals, method="fdr_bh")
     neglog10q = -np.log10(np.clip(qvals, 1e-300, 1.0))
@@ -369,7 +394,8 @@ def run_de_metacell(
     }).sort_values("qval")
 
     reuse_str = f"k={expected_reuse}" if expected_reuse is not None else f"fixed n={n_metacells}"
-    print(f"    DE complete (metacell MWU, {reuse_str}×{metacell_size} cells/donor): "
+    print(f"    DE complete (metacell MWU, {reuse_str}×{metacell_size} cells/donor, "
+          f"Δ weighted by {delta_weighting}): "
           f"{len(dis_mat):,} disease vs {len(ctrl_mat):,} control metacells — "
           f"{(qvals < 0.05).sum()} TFs at FDR < 0.05")
     return result
@@ -634,6 +660,124 @@ def dotplot_summary(
     plt.rcdefaults()
 
 
+def dotplot_de_by_delta(
+    de_df: pd.DataFrame,
+    title: str,
+    outfile: Path,
+    top_n: int = 10,
+    fdr_threshold: float = 0.05,
+) -> None:
+    """Dotplot ordered by delta_mean: top (top_n/2) up + top (top_n/2) down TFs by |delta|.
+
+    Mirrors the TF selection criterion used in heatmap_summary so individual
+    cell-type plots are consistent with the summary heatmap.
+    """
+    sns.set_theme(style="whitegrid", font_scale=1.0)
+
+    df = de_df.copy()
+    sig = df[df["qval"] < fdr_threshold]
+
+    half = top_n // 2
+    top_up   = sig[sig["delta_mean"] > 0].nlargest(half,   "delta_mean")
+    top_down = sig[sig["delta_mean"] < 0].nsmallest(half,  "delta_mean")
+    plot_df  = pd.concat([top_up, top_down])
+
+    if plot_df.empty:
+        print(f"    [skip by-Δ] no significant TFs for {title}")
+        return
+
+    # Sort ascending so highest delta (most disease-up) is at the top of the plot
+    plot_df = plot_df.sort_values("delta_mean", ascending=True)
+
+    neglogq     = plot_df["neglog10q"].values
+    max_neglogq = np.nanmax(neglogq) if np.nanmax(neglogq) > 0 else 1.0
+    size_scaled = 200 * (neglogq / max_neglogq)
+    colors      = [COLOR_UP if d > 0 else COLOR_DOWN for d in plot_df["delta_mean"]]
+
+    fig, ax = plt.subplots(figsize=(8, max(4, 0.28 * len(plot_df) + 1.5)))
+    ax.scatter(plot_df["delta_mean"].values, np.arange(len(plot_df)),
+               s=size_scaled, c=colors, alpha=0.85, linewidths=0.5,
+               edgecolors="white")
+
+    ax.axvline(0, color="gray", linestyle="--", lw=1)
+    ax.set_yticks(np.arange(len(plot_df)))
+    ax.set_yticklabels(plot_df["TF"].values, fontsize=8)
+    ax.set_xlabel("Δ mean AUCell (disease − control)", fontsize=10)
+    ax.set_title(title, fontsize=11, fontweight="bold")
+
+    legend_elems = [
+        mpatches.Patch(color=COLOR_UP,   label="↑ in disease"),
+        mpatches.Patch(color=COLOR_DOWN, label="↓ in disease"),
+    ]
+    for frac in [0.25, 0.5, 1.0]:
+        legend_elems.append(
+            ax.scatter([], [], s=200 * frac, c="gray", alpha=0.85,
+                       label=f"−log₁₀(q) = {frac * max_neglogq:.1f}")
+        )
+    ax.legend(handles=legend_elems, fontsize=8, loc="lower right")
+
+    plt.tight_layout()
+    for ext in ["pdf", "png"]:
+        plt.savefig(outfile.with_suffix(f".{ext}"), bbox_inches="tight", dpi=150)
+    plt.close()
+    plt.rcdefaults()
+
+
+def _stitch_pngs(
+    png_paths: list[Path],
+    out_path: Path,
+    n_cols: int = 3,
+    title: str = "",
+    pad: int = 20,
+) -> None:
+    """Stitch PNG files into a grid and save as PNG + PDF."""
+    from PIL import Image, ImageDraw, ImageFont
+
+    if not png_paths:
+        return
+
+    imgs   = [Image.open(p) for p in png_paths]
+    cell_w = max(im.width  for im in imgs)
+    cell_h = max(im.height for im in imgs)
+    n_rows = (len(imgs) + n_cols - 1) // n_cols
+    title_h = 60 if title else 0
+
+    canvas_w = n_cols * cell_w + (n_cols + 1) * pad
+    canvas_h = n_rows * cell_h + (n_rows + 1) * pad + title_h
+    canvas   = Image.new("RGB", (canvas_w, canvas_h), color=(255, 255, 255))
+
+    if title:
+        draw = ImageDraw.Draw(canvas)
+        try:
+            font = ImageFont.truetype(
+                "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 36)
+        except Exception:
+            font = ImageFont.load_default()
+        draw.text((canvas_w // 2, pad), title, fill=(30, 30, 30),
+                  font=font, anchor="mt")
+
+    for idx, im in enumerate(imgs):
+        row = idx // n_cols
+        col = idx % n_cols
+        x   = pad + col * (cell_w + pad)
+        y   = title_h + pad + row * (cell_h + pad)
+        canvas.paste(im, (x + (cell_w - im.width) // 2,
+                          y + (cell_h - im.height) // 2))
+
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    canvas.save(str(out_path))
+    dpi   = 150
+    fig_w = canvas_w / dpi
+    fig_h = canvas_h / dpi
+    fig, ax = plt.subplots(figsize=(fig_w, fig_h))
+    ax.imshow(np.array(canvas))
+    ax.axis("off")
+    plt.tight_layout(pad=0)
+    plt.savefig(str(out_path).replace(".png", ".pdf"), bbox_inches="tight", dpi=dpi)
+    plt.close()
+    print(f"    Saved {out_path.name} ({len(imgs)} panels, {n_cols} cols)")
+
+
 def _add_top_label(ax: plt.Axes, x_frac: float, text: str, color: str) -> None:
     """Add a group label above the x-axis at a given axes-fraction x position."""
     ax.annotate(
@@ -887,6 +1031,7 @@ def main():
                     n_metacells=ML["n_metacells"],
                     metacell_size=ML["metacell_size"],
                     expected_reuse=ML.get("expected_reuse", 2.5),
+                    delta_weighting=ML.get("de_delta_weighting", "donor"),
                 ),
                 0.05,
                 True,
@@ -927,6 +1072,18 @@ def main():
                     fdr_threshold=fdr_threshold,
                 )
                 print(f"    Saved de_tfs_{name}_{safe_name}.pdf/.png")
+
+                # Extra: per-cell-type plot ordered by Δ (metacell only — consistent with summary heatmap)
+                if subset_name != "all" and method_name == "metacell":
+                    fig_out_delta = de_fig_dir / f"de_tfs_{name}_{safe_name}_by_delta.pdf"
+                    dotplot_de_by_delta(
+                        de_df,
+                        title=f"DE TFs — {subset_name} (by Δ)",
+                        outfile=fig_out_delta,
+                        top_n=10,
+                        fdr_threshold=fdr_threshold,
+                    )
+                    print(f"    Saved de_tfs_{name}_{safe_name}_by_delta.pdf/.png")
 
             # --- Summary figures (MWU only; pseudobulk too underpowered) ---
             if make_summary and len([k for k in ct_results if k != "all"]) >= 2:
@@ -970,6 +1127,19 @@ def main():
                     fdr_threshold=fdr_threshold,
                 )
                 print(f"    Saved {heatmap_bal_out.name[:-4]}.pdf/.png")
+
+                # Combined figure of per-cell-type by-delta plots
+                pngs_delta = sorted(
+                    p for p in de_fig_dir.glob(f"de_tfs_{name}_*_by_delta.png")
+                    if "_combined" not in p.stem
+                )
+                if pngs_delta:
+                    print(f"\n  Building combined by-Δ panel ({method_name}) …")
+                    combined_delta_out = de_fig_dir / f"de_tfs_{name}_by_delta_combined.png"
+                    _stitch_pngs(
+                        pngs_delta, combined_delta_out, n_cols=3,
+                        title="Differential TF Activity per Cell Type (by Δ)",
+                    )
 
     print("\nDE TF analysis done.")
 

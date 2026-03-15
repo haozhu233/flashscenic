@@ -171,6 +171,12 @@ ML = {
     # Adaptive metacell count: n_mc = max(1, round(expected_reuse * n_cells / metacell_size))
     # Set to None to use fixed n_metacells instead.
     "expected_reuse": 2.5,      # expected times one cell appears across metacells per donor
+    # How to compute delta_mean / mean_disease / mean_control for DE TF output:
+    #   "donor"   → average metacells within each donor first, then average donor means
+    #               (equal weight per donor regardless of cell count — recommended)
+    #   "metacell" → pool all metacells and take the grand mean
+    #                (larger donors dominate proportionally to their cell count)
+    "de_delta_weighting": "donor",
 }
 
 # ---------------------------------------------------------------------------

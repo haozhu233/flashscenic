@@ -27,4 +27,5 @@ experiments/batch_benchmark/data/
 experiments/batch_benchmark/flashscenic_data/
 experiments/batch_benchmark/logs/
 experiments/batch_benchmark/results/
+manuscript/
 experiments/batch_benchmark/__pycache__

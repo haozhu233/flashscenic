@@ -1,8 +1,8 @@
 """
-Step 5b: Regulon Specificity Scores (RSS) from binary AUCell activity.
+Step 5b: Regulon Specificity Scores (RSS) from continuous AUCell activity.
 
-Binarizes flashSCENIC AUCell scores per regulon (GMM threshold, SCENIC protocol),
-computes RSS to identify cell-type-specific TF regulons, and plots a heatmap of
+Computes RSS (Jensen-Shannon divergence) directly on continuous flashSCENIC
+AUCell scores to identify cell-type-specific TF regulons, and plots a heatmap of
 the top regulons per cell type.
 
 Outputs:
@@ -29,7 +29,6 @@ sys.path.insert(0, str(REPO_ROOT))
 sys.path.insert(0, str(Path(__file__).parent))
 from config import DATASETS, DATA_DIR, EMBEDDINGS_DIR, METRICS_DIR, FIGURES_DIR, MIN_CELLS_PER_CT
 
-from flashscenic.binarize_aucell import binarize_auc_matrix
 from flashscenic.rss import regulon_specificity_scores
 
 warnings.filterwarnings("ignore")
@@ -75,14 +74,9 @@ def compute_rss(name: str, cfg: dict) -> dict | None:
     n_types = len(keep_cts)
     print(f"  Cell types ({ct_key}): {n_types} (after ≥{MIN_CELLS_PER_CT} cell filter)")
 
-    print(f"  Binarizing AUCell scores (GMM) ...")
-    binary = binarize_auc_matrix(auc_scores)
-    active_frac = binary.mean()
-    print(f"  Active fraction after binarization: {active_frac:.3f}")
-
     print(f"  Computing RSS ...")
     rss_result = regulon_specificity_scores(
-        binary.astype(np.float64),
+        auc_scores,
         cell_type_labels,
         regulon_names=regulon_names,
     )
@@ -141,7 +135,7 @@ def fig_rss_heatmap(rss_result: dict, name: str) -> None:
     plt.colorbar(im, ax=ax, fraction=0.02, pad=0.02, label="RSS (0–1)")
     ax.set_title(
         f"Regulon Specificity Scores\n"
-        f"(binary AUCell, top {N_TOP} regulons per cell type)",
+        f"(continuous AUCell, top {N_TOP} regulons per cell type)",
         fontsize=12, fontweight="bold", pad=10,
     )
 
@@ -161,7 +155,7 @@ def fig_rss_heatmap(rss_result: dict, name: str) -> None:
 # ---------------------------------------------------------------------------
 
 def main():
-    parser = argparse.ArgumentParser(description="Compute and plot RSS from binary AUCell scores")
+    parser = argparse.ArgumentParser(description="Compute and plot RSS from continuous AUCell scores")
     parser.add_argument("--dataset", default="all",
                         choices=list(DATASETS.keys()) + ["all"])
     args = parser.parse_args()
