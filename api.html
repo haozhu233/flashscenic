@@ -30,7 +30,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -408,6 +408,8 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.select_top_n_per_target"><code class="docutils literal notranslate"><span class="pre">select_top_n_per_target()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.filter_by_min_targets"><code class="docutils literal notranslate"><span class="pre">filter_by_min_targets()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.filter_by_mapped_fraction"><code class="docutils literal notranslate"><span class="pre">filter_by_mapped_fraction()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.select_mixture_model_targets"><code class="docutils literal notranslate"><span class="pre">select_mixture_model_targets()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.select_knee_targets"><code class="docutils literal notranslate"><span class="pre">select_knee_targets()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.get_target_indices"><code class="docutils literal notranslate"><span class="pre">get_target_indices()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.binarize"><code class="docutils literal notranslate"><span class="pre">binarize()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.to_numpy"><code class="docutils literal notranslate"><span class="pre">to_numpy()</span></code></a></li>
@@ -964,6 +966,12 @@ Filtered result dict (all tensors remain on original device)</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="apidocs/flashscenic/flashscenic.modules.html#flashscenic.modules.filter_by_mapped_fraction" title="flashscenic.modules.filter_by_mapped_fraction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flashscenic.modules.filter_by_mapped_fraction</span></code></a></p></td>
 <td><p>Filter out TFs where less than min_fraction of targets can be mapped to a reference.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="apidocs/flashscenic/flashscenic.modules.html#flashscenic.modules.select_mixture_model_targets" title="flashscenic.modules.select_mixture_model_targets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flashscenic.modules.select_mixture_model_targets</span></code></a></p></td>
+<td><p>Select targets using Gaussian mixture model to separate signal from noise.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="apidocs/flashscenic/flashscenic.modules.html#flashscenic.modules.select_knee_targets" title="flashscenic.modules.select_knee_targets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flashscenic.modules.select_knee_targets</span></code></a></p></td>
+<td><p>Select targets using knee/elbow detection on the sorted edge weight curve.</p></td>
+</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="apidocs/flashscenic/flashscenic.modules.html#flashscenic.modules.get_target_indices" title="flashscenic.modules.get_target_indices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flashscenic.modules.get_target_indices</span></code></a></p></td>
 <td><p>Get indices of non-zero targets for each TF.</p></td>
 </tr>
@@ -980,7 +988,7 @@ Filtered result dict (all tensors remain on original device)</p>
 <dt class="sig sig-object py" id="flashscenic.modules.select_topk_targets">
 <span class="sig-prename descclassname"><span class="pre">flashscenic.modules.</span></span><span class="sig-name descname"><span class="pre">select_topk_targets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flashscenic.modules.ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_tf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tf_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">flashscenic.modules.ArrayLike</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="_modules/flashscenic/modules.html#select_topk_targets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.modules.select_topk_targets" title="Link to this definition">#</a></dt>
 <dd><p>Select top-k targets per TF from adjacency matrix.</p>
-<p class="rubric" id="id31">Parameters</p>
+<p class="rubric" id="id35">Parameters</p>
 <p>adj : array-like
 Adjacency matrix (n_tfs x n_genes) with edge weights
 k : int, default=50
@@ -992,17 +1000,17 @@ Index of each TF in the gene list. Required if include_tf=True and
 TFs are part of the gene set.
 device : str, default=’cuda’
 Device for computation</p>
-<p class="rubric" id="id32">Returns</p>
+<p class="rubric" id="id36">Returns</p>
 <p>torch.Tensor
 Filtered adjacency matrix with only top-k targets per TF
 Shape: (n_tfs, n_genes)</p>
-<p class="rubric" id="id33">Example</p>
+<p class="rubric" id="id37">Example</p>
 <blockquote>
 <div><blockquote>
 <div><blockquote>
 <div><p>adj = torch.rand(100, 5000)  # 100 TFs, 5000 genes
 filtered = select_topk_targets(adj, k=50)</p>
-<p class="rubric" id="id34">Each row now has at most 50 non-zero values</p>
+<p class="rubric" id="id38">Each row now has at most 50 non-zero values</p>
 </div></blockquote>
 </div></blockquote>
 </div></blockquote>
@@ -1012,7 +1020,7 @@ filtered = select_topk_targets(adj, k=50)</p>
 <dt class="sig sig-object py" id="flashscenic.modules.select_threshold_targets">
 <span class="sig-prename descclassname"><span class="pre">flashscenic.modules.</span></span><span class="sig-name descname"><span class="pre">select_threshold_targets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flashscenic.modules.ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_tf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tf_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">flashscenic.modules.ArrayLike</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="_modules/flashscenic/modules.html#select_threshold_targets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.modules.select_threshold_targets" title="Link to this definition">#</a></dt>
 <dd><p>Select targets above threshold from adjacency matrix.</p>
-<p class="rubric" id="id35">Parameters</p>
+<p class="rubric" id="id39">Parameters</p>
 <p>adj : array-like
 Adjacency matrix (n_tfs x n_genes) with edge weights
 threshold : float, default=0.0
@@ -1026,7 +1034,7 @@ tf_indices : array-like, optional
 Index of each TF in the gene list
 device : str, default=’cuda’
 Device for computation</p>
-<p class="rubric" id="id36">Returns</p>
+<p class="rubric" id="id40">Returns</p>
 <p>torch.Tensor
 Filtered adjacency matrix</p>
 </dd></dl>
@@ -1038,7 +1046,7 @@ Filtered adjacency matrix</p>
 <p>For each target gene, finds its N strongest regulators (TFs). The result
 is regrouped back into the standard (n_tfs, n_genes) layout. This is the
 inverted view used by pySCENIC’s “top N per target” module type.</p>
-<p class="rubric" id="id37">Parameters</p>
+<p class="rubric" id="id41">Parameters</p>
 <p>adj : array-like
 Adjacency matrix (n_tfs x n_genes) with edge weights
 n : int, default=5
@@ -1050,7 +1058,7 @@ Index of each TF in the gene list. Required if include_tf=True and
 TFs are part of the gene set.
 device : str, default=’cuda’
 Device for computation</p>
-<p class="rubric" id="id38">Returns</p>
+<p class="rubric" id="id42">Returns</p>
 <p>torch.Tensor
 Filtered adjacency matrix with only top-N-per-target entries
 Shape: (n_tfs, n_genes)</p>
@@ -1062,7 +1070,7 @@ Shape: (n_tfs, n_genes)</p>
 <dd><p>Filter out TFs with fewer than min_targets or below min_fraction of targets.</p>
 <p>This function supports both absolute count filtering (like pySCENIC’s min_genes=20)
 and percentage-based filtering (like pySCENIC’s 80% mapping requirement).</p>
-<p class="rubric" id="id39">Parameters</p>
+<p class="rubric" id="id43">Parameters</p>
 <p>adj : array-like
 Adjacency matrix (n_tfs x n_genes)
 min_targets : int, default=20
@@ -1075,20 +1083,20 @@ of skipping modules where less than 80% of genes can be mapped.
 Set to None to disable fraction-based filtering.
 device : str, default=’cuda’
 Device for computation</p>
-<p class="rubric" id="id40">Returns</p>
+<p class="rubric" id="id44">Returns</p>
 <p>Tuple[torch.Tensor, torch.Tensor]
 - Filtered adjacency matrix (n_valid_tfs x n_genes)
 - Boolean mask indicating which TFs were kept</p>
-<p class="rubric" id="id41">Examples</p>
+<p class="rubric" id="id45">Examples</p>
 <blockquote>
 <div><blockquote>
 <div><blockquote>
 <div><p>adj = torch.rand(100, 5000) &gt; 0.5  # Random binary adjacency</p>
-<p class="rubric" id="id42">Filter by absolute count (default pySCENIC behavior)</p>
+<p class="rubric" id="id46">Filter by absolute count (default pySCENIC behavior)</p>
 <p>filtered, mask = filter_by_min_targets(adj, min_targets=20)</p>
-<p class="rubric" id="id43">Filter by percentage (pySCENIC’s 80% rule)</p>
+<p class="rubric" id="id47">Filter by percentage (pySCENIC’s 80% rule)</p>
 <p>filtered, mask = filter_by_min_targets(adj, min_targets=0, min_fraction=0.8)</p>
-<p class="rubric" id="id44">Combine both filters</p>
+<p class="rubric" id="id48">Combine both filters</p>
 <p>filtered, mask = filter_by_min_targets(adj, min_targets=20, min_fraction=0.8)</p>
 </div></blockquote>
 </div></blockquote>
@@ -1101,7 +1109,7 @@ Device for computation</p>
 <dd><p>Filter out TFs where less than min_fraction of targets can be mapped to a reference.</p>
 <p>This mimics pySCENIC’s behavior of skipping modules where “less than 80% of
 the genes could be mapped to the ranking database” (transform.py:298-307).</p>
-<p class="rubric" id="id45">Parameters</p>
+<p class="rubric" id="id49">Parameters</p>
 <p>adj : array-like
 Adjacency matrix (n_tfs x n_genes)
 reference_indices : array-like, optional
@@ -1112,22 +1120,22 @@ Minimum fraction of targets that must be mappable to the reference.
 Default 0.8 matches pySCENIC’s 80% threshold.
 device : str, default=’cuda’
 Device for computation</p>
-<p class="rubric" id="id46">Returns</p>
+<p class="rubric" id="id50">Returns</p>
 <p>Tuple[torch.Tensor, torch.Tensor]
 - Filtered adjacency matrix (n_valid_tfs x n_genes)
 - Boolean mask indicating which TFs were kept</p>
-<p class="rubric" id="id47">Notes</p>
+<p class="rubric" id="id51">Notes</p>
 <p>pySCENIC’s logic (from transform.py):
 n_missing = len(module) - len(genes)  # genes not in ranking DB
 frac_missing = float(n_missing) / len(module)
 if frac_missing &gt;= 0.20:  # i.e., less than 80% mapped
 skip this module</p>
-<p class="rubric" id="id48">Examples</p>
+<p class="rubric" id="id52">Examples</p>
 <blockquote>
 <div><blockquote>
 <div><blockquote>
 <div><p>adj = torch.rand(100, 5000) &gt; 0.5  # 100 TFs, 5000 genes</p>
-<p class="rubric" id="id49">Assume only genes 0-4000 are in the ranking database</p>
+<p class="rubric" id="id53">Assume only genes 0-4000 are in the ranking database</p>
 <p>db_gene_indices = torch.arange(4000)
 filtered, mask = filter_by_mapped_fraction(adj, db_gene_indices, min_fraction=0.8)</p>
 </div></blockquote>
@@ -1136,16 +1144,83 @@ filtered, mask = filter_by_mapped_fraction(adj, db_gene_indices, min_fraction=0.
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.modules.select_mixture_model_targets">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.modules.</span></span><span class="sig-name descname"><span class="pre">select_mixture_model_targets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flashscenic.modules.ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'intersection'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_tf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tf_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">flashscenic.modules.ArrayLike</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/flashscenic/modules.html#select_mixture_model_targets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.modules.select_mixture_model_targets" title="Link to this definition">#</a></dt>
+<dd><p>Select targets using Gaussian mixture model to separate signal from noise.</p>
+<p>Fits a GMM to the non-zero edge weights across the full adjacency matrix.
+The threshold is derived from the fitted components, providing a data-driven
+alternative to fixed thresholds like <code class="docutils literal notranslate"><span class="pre">adj[adj</span> <span class="pre">&lt;</span> <span class="pre">1.0]</span> <span class="pre">=</span> <span class="pre">0</span></code>.</p>
+<p class="rubric" id="id54">Parameters</p>
+<p>adj : array-like
+Adjacency matrix (n_tfs x n_genes) with edge weights.
+n_components : int, default=2
+Number of Gaussian components (2 = noise + signal).
+method : str, default=’intersection’
+How to derive the threshold from the fitted GMM:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>- ``&#39;intersection&#39;``: weight where the posterior probabilities of the
+  two components cross (between the two means).
+- ``&#39;posterior&#39;``: keep edges with P(signal | weight) &gt; 0.5.
+- ``&#39;noise_quantile&#39;``: noise_mean + 2 * noise_std.
+</pre></div>
+</div>
+<p>include_tf : bool, default=True
+Include TF itself in its module.
+tf_indices : array-like, optional
+Index of each TF in the gene list.
+device : str, default=’cuda’
+Device for output tensor.</p>
+<p class="rubric" id="id55">Returns</p>
+<p>Tuple[torch.Tensor, dict]
+- Filtered adjacency matrix (n_tfs, n_genes) on <em>device</em>.
+- Info dict with keys: <code class="docutils literal notranslate"><span class="pre">threshold</span></code>, <code class="docutils literal notranslate"><span class="pre">means</span></code>, <code class="docutils literal notranslate"><span class="pre">stds</span></code>,
+<code class="docutils literal notranslate"><span class="pre">weights</span></code>, <code class="docutils literal notranslate"><span class="pre">converged</span></code>, <code class="docutils literal notranslate"><span class="pre">method</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.modules.select_knee_targets">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.modules.</span></span><span class="sig-name descname"><span class="pre">select_knee_targets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flashscenic.modules.ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sensitivity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_tf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_tf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tf_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">flashscenic.modules.ArrayLike</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/flashscenic/modules.html#select_knee_targets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.modules.select_knee_targets" title="Link to this definition">#</a></dt>
+<dd><p>Select targets using knee/elbow detection on the sorted edge weight curve.</p>
+<p>Sorts non-zero edge weights in descending order and finds the “knee” point
+where the rate of decrease changes most sharply. This provides a data-driven
+threshold without assuming a parametric distribution.</p>
+<p class="rubric" id="id56">Parameters</p>
+<p>adj : array-like
+Adjacency matrix (n_tfs x n_genes) with edge weights.
+sensitivity : float, default=1.0
+Controls how aggressively the knee is detected. Higher values detect
+the knee earlier (more aggressive pruning). Values in [0.5, 3.0] are
+typical.
+per_tf : bool, default=False
+If True, find a separate knee per TF row. If False, find a single
+global knee across all weights.
+include_tf : bool, default=True
+Include TF itself in its module.
+tf_indices : array-like, optional
+Index of each TF in the gene list.
+device : str, default=’cuda’
+Device for output tensor.</p>
+<p class="rubric" id="id57">Returns</p>
+<p>Tuple[torch.Tensor, dict]
+- Filtered adjacency matrix (n_tfs, n_genes) on <em>device</em>.
+- Info dict with keys:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>  - ``threshold``: float (global) or list of float (per-TF)
+  - ``knee_index``: int or list of int
+  - ``per_tf``: bool
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="flashscenic.modules.get_target_indices">
 <span class="sig-prename descclassname"><span class="pre">flashscenic.modules.</span></span><span class="sig-name descname"><span class="pre">get_target_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flashscenic.modules.ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/flashscenic/modules.html#get_target_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.modules.get_target_indices" title="Link to this definition">#</a></dt>
 <dd><p>Get indices of non-zero targets for each TF.</p>
 <p>Useful for cisTarget pruning which needs gene indices.</p>
-<p class="rubric" id="id50">Parameters</p>
+<p class="rubric" id="id58">Parameters</p>
 <p>adj : array-like
 Adjacency matrix (n_tfs x n_genes)
 device : str, default=’cuda’
 Device for computation</p>
-<p class="rubric" id="id51">Returns</p>
+<p class="rubric" id="id59">Returns</p>
 <p>Tuple[torch.Tensor, torch.Tensor]
 - Flat tensor of gene indices
 - Tensor of (start, end) positions for each TF’s targets</p>
@@ -1155,11 +1230,11 @@ Device for computation</p>
 <dt class="sig sig-object py" id="flashscenic.modules.binarize">
 <span class="sig-prename descclassname"><span class="pre">flashscenic.modules.</span></span><span class="sig-name descname"><span class="pre">binarize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">flashscenic.modules.ArrayLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cuda'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="_modules/flashscenic/modules.html#binarize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.modules.binarize" title="Link to this definition">#</a></dt>
 <dd><p>Convert weighted adjacency matrix to binary (0/1).</p>
-<p class="rubric" id="id52">Parameters</p>
+<p class="rubric" id="id60">Parameters</p>
 <p>adj : array-like
 Adjacency matrix (n_tfs x n_genes)
 device : str, default=’cuda’</p>
-<p class="rubric" id="id53">Returns</p>
+<p class="rubric" id="id61">Returns</p>
 <p>torch.Tensor
 Binary adjacency matrix</p>
 </dd></dl>
@@ -1180,7 +1255,7 @@ Binary adjacency matrix</p>
 <p>RSS quantifies how specific each regulon’s activity is to each cell type.
 A score close to 1 means the regulon is exclusively active in that cell type.</p>
 <p>Reference: Suo et al. 2018 (doi: 10.1016/j.celrep.2018.10.045)</p>
-<p class="rubric" id="id54">Parameters</p>
+<p class="rubric" id="id62">Parameters</p>
 <p>auc_matrix : np.ndarray
 AUCell scores of shape (n_cells, n_regulons).
 cell_type_labels : array-like
@@ -1188,7 +1263,7 @@ Cell type label per cell (length n_cells). Can be a list, numpy array,
 or pandas Series.
 regulon_names : list of str, optional
 Names for each regulon column. If None, integer indices are used.</p>
-<p class="rubric" id="id55">Returns</p>
+<p class="rubric" id="id63">Returns</p>
 <p>dict
 ‘rss’ : np.ndarray of shape (n_cell_types, n_regulons)
 RSS values. Higher means more specific.
@@ -1205,12 +1280,12 @@ Regulon names (column labels of rss).</p>
 <dt class="sig sig-object py" id="flashscenic.regulons_to_adjacency">
 <span class="sig-prename descclassname"><span class="pre">flashscenic.</span></span><span class="sig-name descname"><span class="pre">regulons_to_adjacency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regulons</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/flashscenic.html#regulons_to_adjacency"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.regulons_to_adjacency" title="Link to this definition">#</a></dt>
 <dd><p>Convert list of regulon dicts to adjacency matrix for AUCell.</p>
-<p class="rubric" id="id56">Parameters</p>
+<p class="rubric" id="id64">Parameters</p>
 <p>regulons : list of dict
 Output from CisTargetPruner.prune_modules(), each dict has ‘genes’ key
 gene_names : list of str
 List of gene names matching columns of expression matrix</p>
-<p class="rubric" id="id57">Returns</p>
+<p class="rubric" id="id65">Returns</p>
 <p>np.ndarray
 Binary adjacency matrix of shape (n_regulons, n_genes)</p>
 </dd></dl>
@@ -1309,6 +1384,8 @@ Binary adjacency matrix of shape (n_regulons, n_genes)</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.select_top_n_per_target"><code class="docutils literal notranslate"><span class="pre">select_top_n_per_target()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.filter_by_min_targets"><code class="docutils literal notranslate"><span class="pre">filter_by_min_targets()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.filter_by_mapped_fraction"><code class="docutils literal notranslate"><span class="pre">filter_by_mapped_fraction()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.select_mixture_model_targets"><code class="docutils literal notranslate"><span class="pre">select_mixture_model_targets()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.select_knee_targets"><code class="docutils literal notranslate"><span class="pre">select_knee_targets()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.get_target_indices"><code class="docutils literal notranslate"><span class="pre">get_target_indices()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.binarize"><code class="docutils literal notranslate"><span class="pre">binarize()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.modules.to_numpy"><code class="docutils literal notranslate"><span class="pre">to_numpy()</span></code></a></li>

@@ -43,6 +43,14 @@
   - ```{autodoc2-docstring} flashscenic.modules.binarize
     :summary:
     ```
+* - {py:obj}`select_mixture_model_targets <flashscenic.modules.select_mixture_model_targets>`
+  - ```{autodoc2-docstring} flashscenic.modules.select_mixture_model_targets
+    :summary:
+    ```
+* - {py:obj}`select_knee_targets <flashscenic.modules.select_knee_targets>`
+  - ```{autodoc2-docstring} flashscenic.modules.select_knee_targets
+    :summary:
+    ```
 * - {py:obj}`to_numpy <flashscenic.modules.to_numpy>`
   - ```{autodoc2-docstring} flashscenic.modules.to_numpy
     :summary:
@@ -119,6 +127,20 @@
 :canonical: flashscenic.modules.binarize
 
 ```{autodoc2-docstring} flashscenic.modules.binarize
+```
+````
+
+````{py:function} select_mixture_model_targets(adj: flashscenic.modules.ArrayLike, n_components: int = 2, method: str = 'intersection', include_tf: bool = True, tf_indices: typing.Optional[flashscenic.modules.ArrayLike] = None, device: str = 'cuda') -> typing.Tuple[torch.Tensor, dict]
+:canonical: flashscenic.modules.select_mixture_model_targets
+
+```{autodoc2-docstring} flashscenic.modules.select_mixture_model_targets
+```
+````
+
+````{py:function} select_knee_targets(adj: flashscenic.modules.ArrayLike, sensitivity: float = 1.0, per_tf: bool = False, include_tf: bool = True, tf_indices: typing.Optional[flashscenic.modules.ArrayLike] = None, device: str = 'cuda') -> typing.Tuple[torch.Tensor, dict]
+:canonical: flashscenic.modules.select_knee_targets
+
+```{autodoc2-docstring} flashscenic.modules.select_knee_targets
 ```
 ````
 

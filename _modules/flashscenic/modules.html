@@ -29,7 +29,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -750,6 +750,300 @@ document.write(`
     <span class="n">adj</span> <span class="o">=</span> <span class="n">adj</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="p">(</span><span class="n">adj</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="select_mixture_model_targets">
+<a class="viewcode-back" href="../../apidocs/flashscenic/flashscenic.modules.html#flashscenic.modules.select_mixture_model_targets">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">select_mixture_model_targets</span><span class="p">(</span>
+    <span class="n">adj</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">n_components</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;intersection&#39;</span><span class="p">,</span>
+    <span class="n">include_tf</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">tf_indices</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;cuda&#39;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Select targets using Gaussian mixture model to separate signal from noise.</span>
+
+<span class="sd">    Fits a GMM to the non-zero edge weights across the full adjacency matrix.</span>
+<span class="sd">    The threshold is derived from the fitted components, providing a data-driven</span>
+<span class="sd">    alternative to fixed thresholds like ``adj[adj &lt; 1.0] = 0``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    adj : array-like</span>
+<span class="sd">        Adjacency matrix (n_tfs x n_genes) with edge weights.</span>
+<span class="sd">    n_components : int, default=2</span>
+<span class="sd">        Number of Gaussian components (2 = noise + signal).</span>
+<span class="sd">    method : str, default=&#39;intersection&#39;</span>
+<span class="sd">        How to derive the threshold from the fitted GMM:</span>
+
+<span class="sd">        - ``&#39;intersection&#39;``: weight where the posterior probabilities of the</span>
+<span class="sd">          two components cross (between the two means).</span>
+<span class="sd">        - ``&#39;posterior&#39;``: keep edges with P(signal | weight) &gt; 0.5.</span>
+<span class="sd">        - ``&#39;noise_quantile&#39;``: noise_mean + 2 * noise_std.</span>
+<span class="sd">    include_tf : bool, default=True</span>
+<span class="sd">        Include TF itself in its module.</span>
+<span class="sd">    tf_indices : array-like, optional</span>
+<span class="sd">        Index of each TF in the gene list.</span>
+<span class="sd">    device : str, default=&#39;cuda&#39;</span>
+<span class="sd">        Device for output tensor.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Tuple[torch.Tensor, dict]</span>
+<span class="sd">        - Filtered adjacency matrix (n_tfs, n_genes) on *device*.</span>
+<span class="sd">        - Info dict with keys: ``threshold``, ``means``, ``stds``,</span>
+<span class="sd">          ``weights``, ``converged``, ``method``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.mixture</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianMixture</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">brentq</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="n">adj_np</span> <span class="o">=</span> <span class="n">adj</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">adj_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="c1"># Collect non-zero weights</span>
+    <span class="n">nonzero</span> <span class="o">=</span> <span class="n">adj_np</span><span class="p">[</span><span class="n">adj_np</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nonzero</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">adj_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">adj_np</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">adj_t</span><span class="p">,</span> <span class="p">{</span>
+            <span class="s1">&#39;threshold&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;means&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;stds&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;weights&#39;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s1">&#39;converged&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span>
+        <span class="p">}</span>
+
+    <span class="c1"># Fit GMM</span>
+    <span class="n">gmm</span> <span class="o">=</span> <span class="n">GaussianMixture</span><span class="p">(</span>
+        <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">gmm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">nonzero</span><span class="p">)</span>
+
+    <span class="n">means</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">means_</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="n">stds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">gmm</span><span class="o">.</span><span class="n">covariances_</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
+    <span class="n">mix_weights</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">weights_</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+    <span class="c1"># Identify noise (lower mean) and signal (higher mean) components</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">means</span><span class="p">)</span>
+    <span class="n">noise_idx</span><span class="p">,</span> <span class="n">signal_idx</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">order</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;intersection&#39;</span><span class="p">:</span>
+        <span class="c1"># Find where posterior probabilities cross between the two means</span>
+        <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span> <span class="o">=</span> <span class="n">means</span><span class="p">[</span><span class="n">noise_idx</span><span class="p">],</span> <span class="n">means</span><span class="p">[</span><span class="n">signal_idx</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">lo</span> <span class="o">&gt;=</span> <span class="n">hi</span><span class="p">:</span>
+            <span class="n">threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">lo</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">_posterior_diff</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+                <span class="n">pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">x</span><span class="p">]])</span>
+                <span class="n">probs</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">pts</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">return</span> <span class="n">probs</span><span class="p">[</span><span class="n">signal_idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">probs</span><span class="p">[</span><span class="n">noise_idx</span><span class="p">]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">brentq</span><span class="p">(</span><span class="n">_posterior_diff</span><span class="p">,</span> <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="c1"># Fallback: midpoint</span>
+                <span class="n">threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">((</span><span class="n">lo</span> <span class="o">+</span> <span class="n">hi</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;posterior&#39;</span><span class="p">:</span>
+        <span class="c1"># Keep edges where P(signal | weight) &gt; 0.5</span>
+        <span class="n">probs</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">nonzero</span><span class="p">)</span>
+        <span class="c1"># Threshold is the minimum weight with signal prob &gt; 0.5</span>
+        <span class="n">signal_mask</span> <span class="o">=</span> <span class="n">probs</span><span class="p">[:,</span> <span class="n">signal_idx</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.5</span>
+        <span class="k">if</span> <span class="n">signal_mask</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">nonzero</span><span class="p">[</span><span class="n">signal_mask</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">nonzero</span><span class="o">.</span><span class="n">max</span><span class="p">())</span> <span class="o">+</span> <span class="mf">1.0</span>  <span class="c1"># nothing passes</span>
+
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;noise_quantile&#39;</span><span class="p">:</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">means</span><span class="p">[</span><span class="n">noise_idx</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">stds</span><span class="p">[</span><span class="n">noise_idx</span><span class="p">])</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown method: </span><span class="si">{</span><span class="n">method</span><span class="si">!r}</span><span class="s2">. &quot;</span>
+                         <span class="sa">f</span><span class="s2">&quot;Choose from &#39;intersection&#39;, &#39;posterior&#39;, &#39;noise_quantile&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Apply threshold on GPU</span>
+    <span class="n">adj_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">adj_np</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">adj_t</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">adj_t</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">adj_t</span><span class="p">))</span>
+
+    <span class="c1"># Include TF in its own module</span>
+    <span class="k">if</span> <span class="n">include_tf</span> <span class="ow">and</span> <span class="n">tf_indices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tf_indices</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">tf_indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">tf_indices</span><span class="p">)</span>
+        <span class="n">tf_indices</span> <span class="o">=</span> <span class="n">tf_indices</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+        <span class="n">n_genes</span> <span class="o">=</span> <span class="n">adj_t</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">tf_idx</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tf_indices</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">tf_idx</span> <span class="o">&lt;</span> <span class="n">n_genes</span><span class="p">:</span>
+                <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">tf_idx</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+    <span class="n">info</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;threshold&#39;</span><span class="p">:</span> <span class="n">threshold</span><span class="p">,</span>
+        <span class="s1">&#39;means&#39;</span><span class="p">:</span> <span class="n">means</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+        <span class="s1">&#39;stds&#39;</span><span class="p">:</span> <span class="n">stds</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+        <span class="s1">&#39;weights&#39;</span><span class="p">:</span> <span class="n">mix_weights</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+        <span class="s1">&#39;converged&#39;</span><span class="p">:</span> <span class="n">gmm</span><span class="o">.</span><span class="n">converged_</span><span class="p">,</span>
+        <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">info</span></div>
+
+
+
+<div class="viewcode-block" id="select_knee_targets">
+<a class="viewcode-back" href="../../apidocs/flashscenic/flashscenic.modules.html#flashscenic.modules.select_knee_targets">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">select_knee_targets</span><span class="p">(</span>
+    <span class="n">adj</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">sensitivity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">per_tf</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">include_tf</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">tf_indices</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;cuda&#39;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Select targets using knee/elbow detection on the sorted edge weight curve.</span>
+
+<span class="sd">    Sorts non-zero edge weights in descending order and finds the &quot;knee&quot; point</span>
+<span class="sd">    where the rate of decrease changes most sharply. This provides a data-driven</span>
+<span class="sd">    threshold without assuming a parametric distribution.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    adj : array-like</span>
+<span class="sd">        Adjacency matrix (n_tfs x n_genes) with edge weights.</span>
+<span class="sd">    sensitivity : float, default=1.0</span>
+<span class="sd">        Controls how aggressively the knee is detected. Higher values detect</span>
+<span class="sd">        the knee earlier (more aggressive pruning). Values in [0.5, 3.0] are</span>
+<span class="sd">        typical.</span>
+<span class="sd">    per_tf : bool, default=False</span>
+<span class="sd">        If True, find a separate knee per TF row. If False, find a single</span>
+<span class="sd">        global knee across all weights.</span>
+<span class="sd">    include_tf : bool, default=True</span>
+<span class="sd">        Include TF itself in its module.</span>
+<span class="sd">    tf_indices : array-like, optional</span>
+<span class="sd">        Index of each TF in the gene list.</span>
+<span class="sd">    device : str, default=&#39;cuda&#39;</span>
+<span class="sd">        Device for output tensor.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Tuple[torch.Tensor, dict]</span>
+<span class="sd">        - Filtered adjacency matrix (n_tfs, n_genes) on *device*.</span>
+<span class="sd">        - Info dict with keys:</span>
+
+<span class="sd">          - ``threshold``: float (global) or list of float (per-TF)</span>
+<span class="sd">          - ``knee_index``: int or list of int</span>
+<span class="sd">          - ``per_tf``: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="n">adj_np</span> <span class="o">=</span> <span class="n">adj</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">adj_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="n">n_tfs</span><span class="p">,</span> <span class="n">n_genes</span> <span class="o">=</span> <span class="n">adj_np</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_find_knee</span><span class="p">(</span><span class="n">values_sorted_desc</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">S</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find knee in a sorted (descending) 1-D array. Returns (threshold, index).&quot;&quot;&quot;</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">values_sorted_desc</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">values_sorted_desc</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="mi">0</span>
+
+        <span class="c1"># Normalize to [0, 1]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span> <span class="o">=</span> <span class="n">values_sorted_desc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">values_sorted_desc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">y_range</span> <span class="o">=</span> <span class="n">y_max</span> <span class="o">-</span> <span class="n">y_min</span>
+        <span class="k">if</span> <span class="n">y_range</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">values_sorted_desc</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="mi">0</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">values_sorted_desc</span> <span class="o">-</span> <span class="n">y_min</span><span class="p">)</span> <span class="o">/</span> <span class="n">y_range</span>
+
+        <span class="c1"># Difference from the diagonal (line from first to last point)</span>
+        <span class="n">diagonal</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">x</span>  <span class="c1"># descending: starts at 1, ends at 0</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">diagonal</span>
+
+        <span class="c1"># Knee: point of maximum positive difference, adjusted by sensitivity</span>
+        <span class="c1"># Smooth the difference curve with a small window to reduce noise</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="n">kernel_size</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">n</span> <span class="o">//</span> <span class="mi">50</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">kernel_size</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">kernel_size</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">pad</span> <span class="o">=</span> <span class="n">kernel_size</span> <span class="o">//</span> <span class="mi">2</span>
+            <span class="n">diff_padded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">pad</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;edge&#39;</span><span class="p">)</span>
+            <span class="n">diff_smooth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span>
+                <span class="n">diff_padded</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">kernel_size</span><span class="p">)</span> <span class="o">/</span> <span class="n">kernel_size</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;valid&#39;</span><span class="p">,</span>
+            <span class="p">)[:</span><span class="n">n</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">diff_smooth</span> <span class="o">=</span> <span class="n">diff</span>
+
+        <span class="c1"># Scale by sensitivity: higher S → earlier knee detection</span>
+        <span class="n">threshold_line</span> <span class="o">=</span> <span class="n">S</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">knee_candidates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">diff_smooth</span> <span class="o">&lt;</span> <span class="n">threshold_line</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">knee_candidates</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">knee_idx</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># First point where diff drops below threshold</span>
+            <span class="n">knee_idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">knee_candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="n">knee_idx</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">knee_idx</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">values_sorted_desc</span><span class="p">[</span><span class="n">knee_idx</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">knee_idx</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">per_tf</span><span class="p">:</span>
+        <span class="n">thresholds</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">knee_indices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">adj_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">adj_np</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">adj_t</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_tfs</span><span class="p">):</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="n">adj_np</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">nonzero</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">row</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nonzero</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">thresholds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+                <span class="n">knee_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="n">sorted_desc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">nonzero</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">thr</span><span class="p">,</span> <span class="n">ki</span> <span class="o">=</span> <span class="n">_find_knee</span><span class="p">(</span><span class="n">sorted_desc</span><span class="p">,</span> <span class="n">sensitivity</span><span class="p">)</span>
+            <span class="n">thresholds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">thr</span><span class="p">)</span>
+            <span class="n">knee_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ki</span><span class="p">)</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">adj_t</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">thr</span>
+            <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">adj_t</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">adj_t</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+
+        <span class="n">info</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;threshold&#39;</span><span class="p">:</span> <span class="n">thresholds</span><span class="p">,</span>
+            <span class="s1">&#39;knee_index&#39;</span><span class="p">:</span> <span class="n">knee_indices</span><span class="p">,</span>
+            <span class="s1">&#39;per_tf&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">nonzero</span> <span class="o">=</span> <span class="n">adj_np</span><span class="p">[</span><span class="n">adj_np</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nonzero</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">adj_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_tfs</span><span class="p">,</span> <span class="n">n_genes</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">adj_t</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;threshold&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;knee_index&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;per_tf&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+
+        <span class="n">sorted_desc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">nonzero</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">threshold</span><span class="p">,</span> <span class="n">knee_idx</span> <span class="o">=</span> <span class="n">_find_knee</span><span class="p">(</span><span class="n">sorted_desc</span><span class="p">,</span> <span class="n">sensitivity</span><span class="p">)</span>
+
+        <span class="n">adj_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">adj_np</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">adj_t</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">adj_t</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">adj_t</span><span class="p">))</span>
+
+        <span class="n">info</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;threshold&#39;</span><span class="p">:</span> <span class="n">threshold</span><span class="p">,</span>
+            <span class="s1">&#39;knee_index&#39;</span><span class="p">:</span> <span class="n">knee_idx</span><span class="p">,</span>
+            <span class="s1">&#39;per_tf&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">}</span>
+
+    <span class="c1"># Include TF in its own module</span>
+    <span class="k">if</span> <span class="n">include_tf</span> <span class="ow">and</span> <span class="n">tf_indices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tf_indices</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">tf_indices_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">tf_indices</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tf_indices</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+            <span class="n">tf_indices_t</span> <span class="o">=</span> <span class="n">tf_indices</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tf_indices_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">tf_indices</span><span class="p">)</span>
+        <span class="n">tf_indices_t</span> <span class="o">=</span> <span class="n">tf_indices_t</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">tf_idx</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tf_indices_t</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">tf_idx</span> <span class="o">&lt;</span> <span class="n">n_genes</span><span class="p">:</span>
+                <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">tf_idx</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+    <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">info</span></div>
 
 
 

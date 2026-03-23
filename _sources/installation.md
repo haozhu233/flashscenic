@@ -6,7 +6,7 @@
 pip install flashscenic
 ```
 
-This installs the core package with dependencies: `numpy`, `torch`, and `regdiffusion`.
+This installs the core package with dependencies: `numpy`, `torch`, `regdiffusion`, and `scipy`.
 
 ## GPU Support
 
