@@ -1,53 +1,0 @@
-[config] Reading paths from config.py...
-  PREPROCESSED_PATH : /orcd/data/omarabu/001/gonzalo/flashscenic_2/flashscenic/experiments/robustness/results/als_preprocessed.h5ad
-  GRN_DATA_PATH     : /orcd/data/omarabu/001/gonzalo/flashscenic_2/flashscenic/experiments/robustness/results/als_grn_subsample.h5ad
-  FIGURES_DIR       : /orcd/data/omarabu/001/gonzalo/flashscenic_2/flashscenic/experiments/robustness/results/figures
-  SPECIES           : human
-  N_RUNS            : 10
-  N_STEPS           : 1000
-  DEVICE            : cuda
-
-[1/4] Preprocessing outputs already exist — skipping.
-      /orcd/data/omarabu/001/gonzalo/flashscenic_2/flashscenic/experiments/robustness/results/als_preprocessed.h5ad
-      /orcd/data/omarabu/001/gonzalo/flashscenic_2/flashscenic/experiments/robustness/results/als_grn_subsample.h5ad
-
-[2/4] Experiment 1: Bland-Altman adjacency deviation...
-Loading /orcd/data/omarabu/001/gonzalo/flashscenic_2/flashscenic/experiments/robustness/results/als_grn_subsample.h5ad...
-  62711 cells × 11728 genes
-Running RegDiffusion 10 times...
-  GRN run 1/10...
-  GRN run 2/10...
-  GRN run 3/10...
-  GRN run 4/10...
-  GRN run 5/10...
-  GRN run 6/10...
-  GRN run 7/10...
-  GRN run 8/10...
-  GRN run 9/10...
-  GRN run 10/10...
-Saved /orcd/data/omarabu/001/gonzalo/flashscenic_2/flashscenic/experiments/robustness/results/figures/exp1_bland_altman.pdf
-      Done. → /orcd/data/omarabu/001/gonzalo/flashscenic_2/flashscenic/experiments/robustness/results/figures/exp1_bland_altman.pdf
-
-[3/4] Experiment 2: Regulon set Jaccard convergence...
-Loading /orcd/data/omarabu/001/gonzalo/flashscenic_2/flashscenic/experiments/robustness/results/als_grn_subsample.h5ad...
-  62711 cells × 11728 genes
-Preparing resources...
-Downloading scenic/human/v10 resources to flashscenic_data/
-
-  [Human 500bp/100bp ranking database (v10)] 10.0 / 298.5 MB (3%)  [Human 500bp/100bp ranking database (v10)] 20.0 / 298.5 MB (7%)  [Human 500bp/100bp ranking database (v10)] 30.0 / 298.5 MB (10%)  [Human 500bp/100bp ranking database (v10)] 40.0 / 298.5 MB (13%)  [Human 500bp/100bp ranking database (v10)] 50.0 / 298.5 MB (17%)  [Human 500bp/100bp ranking database (v10)] 60.0 / 298.5 MB (20%)  [Human 500bp/100bp ranking database (v10)] 70.0 / 298.5 MB (23%)  [Human 500bp/100bp ranking database (v10)] 80.0 / 298.5 MB (27%)  [Human 500bp/100bp ranking database (v10)] 90.0 / 298.5 MB (30%)  [Human 500bp/100bp ranking database (v10)] 100.0 / 298.5 MB (34%)  [Human 500bp/100bp ranking database (v10)] 110.0 / 298.5 MB (37%)  [Human 500bp/100bp ranking database (v10)] 120.0 / 298.5 MB (40%)  [Human 500bp/100bp ranking database (v10)] 130.0 / 298.5 MB (44%)  [Human 500bp/100bp ranking database (v10)] 140.0 / 298.5 MB (47%)  [Human 500bp/100bp ranking database (v10)] 150.0 / 298.5 MB (50%)  [Human 500bp/100bp ranking database (v10)] 160.0 / 298.5 MB (54%)  [Human 500bp/100bp ranking database (v10)] 170.0 / 298.5 MB (57%)  [Human 500bp/100bp ranking database (v10)] 180.0 / 298.5 MB (60%)  [Human 500bp/100bp ranking database (v10)] 190.0 / 298.5 MB (64%)  [Human 500bp/100bp ranking database (v10)] 200.0 / 298.5 MB (67%)  [Human 500bp/100bp ranking database (v10)] 210.0 / 298.5 MB (70%)  [Human 500bp/100bp ranking database (v10)] 220.0 / 298.5 MB (74%)  [Human 500bp/100bp ranking database (v10)] 230.0 / 298.5 MB (77%)  [Human 500bp/100bp ranking database (v10)] 240.0 / 298.5 MB (80%)  [Human 500bp/100bp ranking database (v10)] 250.0 / 298.5 MB (84%)  [Human 500bp/100bp ranking database (v10)] 260.0 / 298.5 MB (87%)  [Human 500bp/100bp ranking database (v10)] 270.0 / 298.5 MB (90%)  [Human 500bp/100bp ranking database (v10)] 280.0 / 298.5 MB (94%)  [Human 500bp/100bp ranking database (v10)] 290.0 / 298.5 MB (97%)
-  [Human 10kbp ranking database (v10)] 10.0 / 296.9 MB (3%)  [Human 10kbp ranking database (v10)] 20.0 / 296.9 MB (7%)  [Human 10kbp ranking database (v10)] 30.0 / 296.9 MB (10%)  [Human 10kbp ranking database (v10)] 40.0 / 296.9 MB (13%)  [Human 10kbp ranking database (v10)] 50.0 / 296.9 MB (17%)  [Human 10kbp ranking database (v10)] 60.0 / 296.9 MB (20%)  [Human 10kbp ranking database (v10)] 70.0 / 296.9 MB (24%)  [Human 10kbp ranking database (v10)] 80.0 / 296.9 MB (27%)  [Human 10kbp ranking database (v10)] 90.0 / 296.9 MB (30%)  [Human 10kbp ranking database (v10)] 100.0 / 296.9 MB (34%)  [Human 10kbp ranking database (v10)] 110.0 / 296.9 MB (37%)  [Human 10kbp ranking database (v10)] 120.0 / 296.9 MB (40%)  [Human 10kbp ranking database (v10)] 130.0 / 296.9 MB (44%)  [Human 10kbp ranking database (v10)] 140.0 / 296.9 MB (47%)  [Human 10kbp ranking database (v10)] 150.0 / 296.9 MB (51%)  [Human 10kbp ranking database (v10)] 160.0 / 296.9 MB (54%)  [Human 10kbp ranking database (v10)] 170.0 / 296.9 MB (57%)  [Human 10kbp ranking database (v10)] 180.0 / 296.9 MB (61%)  [Human 10kbp ranking database (v10)] 190.0 / 296.9 MB (64%)  [Human 10kbp ranking database (v10)] 200.0 / 296.9 MB (67%)  [Human 10kbp ranking database (v10)] 210.0 / 296.9 MB (71%)  [Human 10kbp ranking database (v10)] 220.0 / 296.9 MB (74%)  [Human 10kbp ranking database (v10)] 230.0 / 296.9 MB (77%)  [Human 10kbp ranking database (v10)] 240.0 / 296.9 MB (81%)  [Human 10kbp ranking database (v10)] 250.0 / 296.9 MB (84%)  [Human 10kbp ranking database (v10)] 260.0 / 296.9 MB (88%)  [Human 10kbp ranking database (v10)] 270.0 / 296.9 MB (91%)  [Human 10kbp ranking database (v10)] 280.0 / 296.9 MB (94%)  [Human 10kbp ranking database (v10)] 290.0 / 296.9 MB (98%)
-  [Human motif annotations (v10)] 10.0 / 94.1 MB (11%)  [Human motif annotations (v10)] 20.0 / 94.1 MB (21%)  [Human motif annotations (v10)] 30.0 / 94.1 MB (32%)  [Human motif annotations (v10)] 40.0 / 94.1 MB (42%)  [Human motif annotations (v10)] 50.0 / 94.1 MB (53%)  [Human motif annotations (v10)] 60.0 / 94.1 MB (64%)  [Human motif annotations (v10)] 70.0 / 94.1 MB (74%)  [Human motif annotations (v10)] 80.0 / 94.1 MB (85%)  [Human motif annotations (v10)] 90.0 / 94.1 MB (96%)
-Download complete.
-Running RegDiffusion 10 times (mean-adj strategy)...
-  GRN run 1/10...
-  GRN run 2/10...
-  GRN run 3/10...
-  GRN run 4/10...
-  GRN run 5/10...
-  GRN run 6/10...
-  GRN run 7/10...
-  GRN run 8/10...
-  GRN run 9/10...
-  GRN run 10/10...
-Running full pipeline 10 times (freq-baseline strategy)...
-  Full run 1/10...
