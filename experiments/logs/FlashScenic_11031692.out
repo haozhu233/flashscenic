@@ -1,0 +1,10 @@
+[config] Reading paths from config.py...
+  PREPROCESSED_PATH : 
+  GRN_DATA_PATH     : 
+  FIGURES_DIR       : 
+  SPECIES           : 
+  N_RUNS            : 10
+  N_STEPS           : 1000
+  DEVICE            : cuda
+
+[1/4] Running preprocessing...

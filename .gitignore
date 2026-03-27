@@ -23,5 +23,8 @@ CLAUDE.md
 TODO.md
 .csv
 .txt
-experiments/
 figures/implementation_comparison.html
+experiments/robustness/__pycache__/
+experiments/robustness/flashscenic_data/
+experiments/robustness/flashscenic_data/
+experiments/robustness/results/

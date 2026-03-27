@@ -1,0 +1,14 @@
+[config] Reading paths from config.py...
+  PREPROCESSED_PATH : /orcd/data/omarabu/001/gonzalo/flashscenic_2/flashscenic/experiments/robustness/results/als_preprocessed.h5ad
+  GRN_DATA_PATH     : /orcd/data/omarabu/001/gonzalo/flashscenic_2/flashscenic/experiments/robustness/results/als_grn_subsample.h5ad
+  FIGURES_DIR       : /orcd/data/omarabu/001/gonzalo/flashscenic_2/flashscenic/experiments/robustness/results/figures
+  SPECIES           : human
+  N_RUNS            : 10
+  N_STEPS           : 1000
+  DEVICE            : cuda
+
+[1/4] Preprocessing outputs already exist — skipping.
+      /orcd/data/omarabu/001/gonzalo/flashscenic_2/flashscenic/experiments/robustness/results/als_preprocessed.h5ad
+      /orcd/data/omarabu/001/gonzalo/flashscenic_2/flashscenic/experiments/robustness/results/als_grn_subsample.h5ad
+
+[2/4] Experiment 1: Bland-Altman adjacency deviation...

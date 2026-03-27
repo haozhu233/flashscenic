@@ -1,0 +1,127 @@
+[config] Reading paths from config.py...
+  PREPROCESSED_PATH : /orcd/data/omarabu/001/gonzalo/flashscenic_2/flashscenic/experiments/robustness/results/als_preprocessed.h5ad
+  GRN_DATA_PATH     : /orcd/data/omarabu/001/gonzalo/flashscenic_2/flashscenic/experiments/robustness/results/als_grn_subsample.h5ad
+  FIGURES_DIR       : /orcd/data/omarabu/001/gonzalo/flashscenic_2/flashscenic/experiments/robustness/results/figures
+  SPECIES           : human
+  N_RUNS            : 5
+  N_STEPS           : 1000
+  DEVICE            : cuda
+
+[1/4] Preprocessing outputs already exist — skipping.
+      /orcd/data/omarabu/001/gonzalo/flashscenic_2/flashscenic/experiments/robustness/results/als_preprocessed.h5ad
+      /orcd/data/omarabu/001/gonzalo/flashscenic_2/flashscenic/experiments/robustness/results/als_grn_subsample.h5ad
+
+[2/4] Experiment 1: Bland-Altman adjacency deviation...
+Loading /orcd/data/omarabu/001/gonzalo/flashscenic_2/flashscenic/experiments/robustness/results/als_grn_subsample.h5ad...
+  62711 cells × 11728 genes
+Running RegDiffusion 5 times...
+  GRN run 1/5...
+  GRN run 2/5...
+  GRN run 3/5...
+  GRN run 4/5...
+  GRN run 5/5...
+Saved /orcd/data/omarabu/001/gonzalo/flashscenic_2/flashscenic/experiments/robustness/results/figures/exp1_bland_altman.pdf
+      Done. → /orcd/data/omarabu/001/gonzalo/flashscenic_2/flashscenic/experiments/robustness/results/figures/exp1_bland_altman.pdf
+
+[3/4] Experiment 2: Regulon set Jaccard convergence...
+Loading /orcd/data/omarabu/001/gonzalo/flashscenic_2/flashscenic/experiments/robustness/results/als_grn_subsample.h5ad...
+  62711 cells × 11728 genes
+Preparing resources...
+Downloading scenic/human/v10 resources to flashscenic_data/
+  [Human TF list (hg38)] Already cached: allTFs_hg38.txt
+  [Human 500bp/100bp ranking database (v10)] Already cached: hg38_500bp_up_100bp_down_full_tx_v10_clust.genes_vs_motifs.rankings.feather
+  [Human 10kbp ranking database (v10)] Already cached: hg38_10kbp_up_10kbp_down_full_tx_v10_clust.genes_vs_motifs.rankings.feather
+  [Human motif annotations (v10)] Already cached: motifs-v10nr_clust-nr.hgnc-m0.001-o0.0.tbl
+Download complete.
+Running RegDiffusion 5 times (mean-adj strategy)...
+  GRN run 1/5...
+  GRN run 2/5...
+  GRN run 3/5...
+  GRN run 4/5...
+  GRN run 5/5...
+Running full pipeline 5 times (freq-baseline strategy)...
+  Full run 1/5...
+Loaded database 'hg38_500bp_up_100bp_down_full_tx_v10_clust.genes_vs_motifs.rankings': 5876 motifs × 27015 genes
+Loaded database 'hg38_10kbp_up_10kbp_down_full_tx_v10_clust.genes_vs_motifs.rankings': 5876 motifs × 27090 genes
+Loaded 2 databases
+Reading annotation file: flashscenic_data/motifs-v10nr_clust-nr.hgnc-m0.001-o0.0.tbl
+Column indices: motif_id=0, gene_name=5, similarity_qvalue=6, ortho_identity=9, description=12
+Read 253096 rows, 253096 passed filters
+Loaded 177084 motif annotations (27072 unique motifs, 1605 unique TFs)
+Loaded motif annotations (filter_for_annotation=True)
+
+Pruning with database 1/2: hg38_500bp_up_100bp_down_full_tx_v10_clust.genes_vs_motifs.rankings
+
+Pruning with database 2/2: hg38_10kbp_up_10kbp_down_full_tx_v10_clust.genes_vs_motifs.rankings
+
+Total regulons before merging: 1302
+Total regulons after merging: 913
+Total regulons after TF merging: 177
+  Full run 2/5...
+Loaded database 'hg38_500bp_up_100bp_down_full_tx_v10_clust.genes_vs_motifs.rankings': 5876 motifs × 27015 genes
+Loaded database 'hg38_10kbp_up_10kbp_down_full_tx_v10_clust.genes_vs_motifs.rankings': 5876 motifs × 27090 genes
+Loaded 2 databases
+Reading annotation file: flashscenic_data/motifs-v10nr_clust-nr.hgnc-m0.001-o0.0.tbl
+Column indices: motif_id=0, gene_name=5, similarity_qvalue=6, ortho_identity=9, description=12
+Read 253096 rows, 253096 passed filters
+Loaded 177084 motif annotations (27072 unique motifs, 1605 unique TFs)
+Loaded motif annotations (filter_for_annotation=True)
+
+Pruning with database 1/2: hg38_500bp_up_100bp_down_full_tx_v10_clust.genes_vs_motifs.rankings
+
+Pruning with database 2/2: hg38_10kbp_up_10kbp_down_full_tx_v10_clust.genes_vs_motifs.rankings
+
+Total regulons before merging: 1191
+Total regulons after merging: 829
+Total regulons after TF merging: 176
+  Full run 3/5...
+Loaded database 'hg38_500bp_up_100bp_down_full_tx_v10_clust.genes_vs_motifs.rankings': 5876 motifs × 27015 genes
+Loaded database 'hg38_10kbp_up_10kbp_down_full_tx_v10_clust.genes_vs_motifs.rankings': 5876 motifs × 27090 genes
+Loaded 2 databases
+Reading annotation file: flashscenic_data/motifs-v10nr_clust-nr.hgnc-m0.001-o0.0.tbl
+Column indices: motif_id=0, gene_name=5, similarity_qvalue=6, ortho_identity=9, description=12
+Read 253096 rows, 253096 passed filters
+Loaded 177084 motif annotations (27072 unique motifs, 1605 unique TFs)
+Loaded motif annotations (filter_for_annotation=True)
+
+Pruning with database 1/2: hg38_500bp_up_100bp_down_full_tx_v10_clust.genes_vs_motifs.rankings
+
+Pruning with database 2/2: hg38_10kbp_up_10kbp_down_full_tx_v10_clust.genes_vs_motifs.rankings
+
+Total regulons before merging: 1303
+Total regulons after merging: 932
+Total regulons after TF merging: 191
+  Full run 4/5...
+Loaded database 'hg38_500bp_up_100bp_down_full_tx_v10_clust.genes_vs_motifs.rankings': 5876 motifs × 27015 genes
+Loaded database 'hg38_10kbp_up_10kbp_down_full_tx_v10_clust.genes_vs_motifs.rankings': 5876 motifs × 27090 genes
+Loaded 2 databases
+Reading annotation file: flashscenic_data/motifs-v10nr_clust-nr.hgnc-m0.001-o0.0.tbl
+Column indices: motif_id=0, gene_name=5, similarity_qvalue=6, ortho_identity=9, description=12
+Read 253096 rows, 253096 passed filters
+Loaded 177084 motif annotations (27072 unique motifs, 1605 unique TFs)
+Loaded motif annotations (filter_for_annotation=True)
+
+Pruning with database 1/2: hg38_500bp_up_100bp_down_full_tx_v10_clust.genes_vs_motifs.rankings
+
+Pruning with database 2/2: hg38_10kbp_up_10kbp_down_full_tx_v10_clust.genes_vs_motifs.rankings
+
+Total regulons before merging: 1273
+Total regulons after merging: 931
+Total regulons after TF merging: 198
+  Full run 5/5...
+Loaded database 'hg38_500bp_up_100bp_down_full_tx_v10_clust.genes_vs_motifs.rankings': 5876 motifs × 27015 genes
+Loaded database 'hg38_10kbp_up_10kbp_down_full_tx_v10_clust.genes_vs_motifs.rankings': 5876 motifs × 27090 genes
+Loaded 2 databases
+Reading annotation file: flashscenic_data/motifs-v10nr_clust-nr.hgnc-m0.001-o0.0.tbl
+Column indices: motif_id=0, gene_name=5, similarity_qvalue=6, ortho_identity=9, description=12
+Read 253096 rows, 253096 passed filters
+Loaded 177084 motif annotations (27072 unique motifs, 1605 unique TFs)
+Loaded motif annotations (filter_for_annotation=True)
+
+Pruning with database 1/2: hg38_500bp_up_100bp_down_full_tx_v10_clust.genes_vs_motifs.rankings
+
+Pruning with database 2/2: hg38_10kbp_up_10kbp_down_full_tx_v10_clust.genes_vs_motifs.rankings
+
+Total regulons before merging: 1251
+Total regulons after merging: 893
+Total regulons after TF merging: 186
