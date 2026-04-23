@@ -9,11 +9,13 @@ of results. No AnnData or scanpy dependency.
 import numpy as np
 import torch
 from typing import Dict, List, Optional
+from tqdm.auto import tqdm
 
 
 def run_flashscenic(
     exp_matrix: np.ndarray,
     gene_names: List[str],
+    cell_names: Optional[List[str]] = None,
     species: str = "human",
     *,
     # --- Data source / caching ---
@@ -46,6 +48,11 @@ def run_flashscenic(
     aucell_k: Optional[int] = None,
     aucell_auc_threshold: float = 0.05,
     aucell_batch_size: int = 32,
+    # --- Multirun ---
+    multirun: int = 1,
+    threshold_occurrence: float = 0.8,
+    min_gene_per_regulon: int = 5,
+    tqdm_multirun: bool = True,
     # --- General ---
     device: str = "cuda",
     seed: Optional[int] = None,
@@ -65,6 +72,9 @@ def run_flashscenic(
     gene_names : list of str
         Gene names corresponding to columns of exp_matrix. Length must
         equal exp_matrix.shape[1].
+    cell_names : list of str or None
+        Cell names corresponding to rows of exp_matrix. Length must
+        equal exp_matrix.shape[0]. Optional, used for AUCell output.
     species : str, default='human'
         Species for TF list and ranking databases. One of 'human', 'mouse',
         'drosophila'.
@@ -130,6 +140,19 @@ def run_flashscenic(
     aucell_batch_size : int, default=32
         Batch size for AUCell computation.
 
+    multirun : int, default=1
+        Number of iterations of pipeline runs before AUC computation to
+        increase robustness. Default to no multirun.
+    threshold_occurrence : float, default=0.8
+        Minimum occurrence in all runs of target gene per regulon. Default
+        to 80% as pySCENIC multirun default.
+    min_gene_per_regulon : int, default=5
+        Minimum of target genes in each regulon. Default to 5 as pySCENIC
+        multirun default.
+    tqdm_multirun : bool, default=True
+        Whether to show a tqdm progress bar for multirun iterations
+        or for each regdiffusion step. Set to False to log runs instead.
+
     device : str, default='cuda'
         PyTorch device ('cuda' or 'cpu').
     seed : int or None
@@ -142,9 +165,14 @@ def run_flashscenic(
     dict
         - ``'auc_scores'``: np.ndarray of shape (n_cells, n_regulons)
         - ``'regulon_names'``: list of regulon name strings
-        - ``'regulons'``: list of regulon dicts from cisTarget
+        - ``'regulons'``: list of regulon dicts from cisTarget merged for all runs
         - ``'regulon_adj'``: np.ndarray of shape (n_regulons, n_genes)
+        - ``'regulon_occurrence'``: np.ndarray of shape (n_regulons, n_genes)
+        - ``'regulon_names_occurrence'``: list of regulon name strings for occurrence matrix
+        - ``'genes_names'``: list of gene name strings
+        - ``'cell_names'``: list of cell name strings
         - ``'parameters'``: dict of all parameters used
+
 
     Raises
     ------
@@ -165,8 +193,10 @@ def run_flashscenic(
     from .aucell import get_aucell
     from .cistarget import CisTargetPruner
     from .modules import (
-        select_topk_targets, select_threshold_targets,
-        select_top_n_per_target, filter_by_min_targets,
+       select_topk_targets,
+       select_threshold_targets,
+       select_top_n_per_target,
+       filter_by_min_targets,
     )
     from . import regulons_to_adjacency
 
@@ -181,15 +211,16 @@ def run_flashscenic(
     n_cells, n_genes = exp_matrix.shape
     if len(gene_names) != n_genes:
         raise ValueError(
-            f"gene_names length ({len(gene_names)}) != "
-            f"exp_matrix columns ({n_genes})"
+            f"gene_names length ({len(gene_names)}) != exp_matrix columns ({n_genes})"
         )
 
     # ---- Step 0: Download resources if needed ----
-    _log("Step 0/5: Preparing resources...")
-    if (tf_list_path is None
-            or ranking_db_paths is None
-            or motif_annotation_path is None):
+    _log("Step 0/6: Preparing resources...")
+    if (
+        tf_list_path is None
+        or ranking_db_paths is None
+        or motif_annotation_path is None
+    ):
         resources = download_data(
             species=species,
             version=version,
@@ -203,142 +234,264 @@ def run_flashscenic(
         if motif_annotation_path is None:
             motif_annotation_path = str(resources.motif_annotation)
 
-    # ---- Step 1: GRN Inference ----
-    _log(f"Step 1/5: Running RegDiffusion GRN inference "
-         f"({n_cells} cells, {n_genes} genes, {grn_n_steps} steps)...")
-    exp_float32 = np.asarray(exp_matrix, dtype=np.float32)
-    rd_trainer = rd.RegDiffusionTrainer(
-        exp_float32, n_steps=grn_n_steps, device=device,
-    )
-    rd_trainer.train()
-    adj_matrix = rd_trainer.get_adj()
-    _log(f"  Adjacency matrix: {adj_matrix.shape}")
+    # Initiate multirun
+    multirun_adj = []
+    merged_regulon_dict = {}
 
-    # ---- Step 2: TF Filtering ----
-    _log("Step 2/5: Filtering to known TFs...")
-    with open(tf_list_path, "r") as f:
-        known_tfs = set(line.strip() for line in f if line.strip())
-
-    tf_indices = [i for i, g in enumerate(gene_names) if g in known_tfs]
-    adj_matrix = adj_matrix[tf_indices, :]
-    tf_names = [gene_names[i] for i in tf_indices]
-
-    # Sparsify weak edges
-    adj_matrix[adj_matrix < grn_sparsity_threshold] = 0
-    _log(f"  {len(tf_names)} TFs found, sparsified at "
-         f"threshold={grn_sparsity_threshold}")
-
-    if len(tf_names) == 0:
-        raise ValueError(
-            "No TFs found in gene_names. Check that the TF list matches "
-            "your gene naming convention."
+    for run_id in tqdm(range(multirun), disable=not tqdm_multirun, desc="Multirun iterations"):
+        if not tqdm_multirun:
+            _log(
+                f"Starting run {run_id + 1} on {multirun}"
+            )  # Python index at 0, adding one so it is more intuitive
+        
+        # ---- Step 1: GRN Inference ----
+        _log(
+            f"Step 1/6: Running RegDiffusion GRN inference "
+            f"({n_cells} cells, {n_genes} genes, {grn_n_steps} steps)..."
         )
-
-    # ---- Step 3: Module Filtering ----
-    _log("Step 3/5: Creating and filtering modules...")
-    tf_indices_tensor = torch.tensor(tf_indices, device=device)
-    adj_tensor = torch.from_numpy(adj_matrix).to(device=device, dtype=torch.float32) \
-        if isinstance(adj_matrix, np.ndarray) else adj_matrix
-
-    # Generate multiple module types from the same adjacency matrix
-    module_type_adjs = []  # list of (filtered_adj, label)
-
-    # Type 1: Top-k targets (always included)
-    topk_adj = select_topk_targets(
-        adj_tensor, k=module_k, include_tf=module_include_tf,
-        tf_indices=tf_indices_tensor, device=device,
-    )
-    module_type_adjs.append((topk_adj, f"top{module_k}"))
-
-    # Type 2: Percentile threshold modules
-    for pct in module_percentile_thresholds:
-        pct_adj = select_threshold_targets(
-            adj_tensor, percentile=pct, include_tf=module_include_tf,
-            tf_indices=tf_indices_tensor, device=device,
-        )
-        module_type_adjs.append((pct_adj, f"pct{pct}"))
-
-    # Type 3: Top-N-per-target modules
-    for n_val in module_top_n_per_target:
-        npt_adj = select_top_n_per_target(
-            adj_tensor, n=n_val, include_tf=module_include_tf,
-            tf_indices=tf_indices_tensor, device=device,
-        )
-        module_type_adjs.append((npt_adj, f"top{n_val}pertarget"))
-
-    _log(f"  {len(module_type_adjs)} module types: "
-         f"{[label for _, label in module_type_adjs]}")
-
-    # Filter each module type and collect all modules + TF names
-    modules = []
-    valid_tf_names = []
-    total_modules = 0
-
-    for type_adj, label in module_type_adjs:
-        filtered_adj, tf_mask = filter_by_min_targets(
-            type_adj,
-            min_targets=module_min_targets,
-            min_fraction=module_min_fraction,
+        exp_float32 = np.asarray(exp_matrix, dtype=np.float32)
+        rd_trainer = rd.RegDiffusionTrainer(
+            exp_float32,
+            n_steps=grn_n_steps,
             device=device,
         )
-        mask_np = tf_mask.cpu().numpy()
-        type_tf_names = [tf_names[i] for i, keep in enumerate(mask_np) if keep]
-        n_type_tfs = len(type_tf_names)
-        total_modules += n_type_tfs
+        rd_trainer.train()
+        adj_matrix = rd_trainer.get_adj()
+        _log(f"  Adjacency matrix: {adj_matrix.shape}")
 
-        for i in range(n_type_tfs):
-            target_mask = filtered_adj[i] > 0
-            target_indices = torch.where(target_mask)[0]
-            modules.append(target_indices)
+        # ---- Step 2: TF Filtering ----
+        _log("Step 2/6: Filtering to known TFs...")
+        with open(tf_list_path, "r") as f:
+            known_tfs = set(line.strip() for line in f if line.strip())
 
-        valid_tf_names.extend(type_tf_names)
-        _log(f"    {label}: {n_type_tfs} TF modules")
+        tf_indices = [i for i, g in enumerate(gene_names) if g in known_tfs]
+        adj_matrix = adj_matrix[tf_indices, :]
+        tf_names = [gene_names[i] for i in tf_indices]
 
-    _log(f"  {total_modules} total modules across all types")
-
-    if total_modules == 0:
-        raise ValueError(
-            "No TF modules survived filtering. Consider lowering "
-            "module_min_targets, module_min_fraction, or "
-            "grn_sparsity_threshold."
+        # Sparsify weak edges
+        adj_matrix[adj_matrix < grn_sparsity_threshold] = 0
+        _log(
+            f"  {len(tf_names)} TFs found, sparsified at "
+            f"threshold={grn_sparsity_threshold}"
         )
 
-    # ---- Step 4: cisTarget Pruning ----
-    _log(f"Step 4/5: Running cisTarget pruning "
-         f"({len(ranking_db_paths)} databases)...")
-    pruner = CisTargetPruner(
-        rank_threshold=pruning_rank_threshold,
-        auc_threshold=pruning_auc_threshold,
-        nes_threshold=pruning_nes_threshold,
-        device=device,
-        min_genes_per_regulon=pruning_min_genes,
-        merge_strategy=pruning_merge_strategy,
-    )
-    pruner.load_database(ranking_db_paths)
-    pruner.load_annotations(
-        motif_annotation_path,
-        filter_for_annotation=True,
-        motif_similarity_fdr=annotation_motif_similarity_fdr,
-        orthologous_identity_threshold=annotation_orthologous_identity,
-    )
+        if len(tf_names) == 0:
+            raise ValueError(
+                "No TFs found in gene_names. Check that the TF list matches "
+                "your gene naming convention."
+            )
 
-    merged_regulons = pruner.prune_modules(
-        modules, valid_tf_names, list(gene_names),
-    )
-    _log(f"  {len(merged_regulons)} regulons after pruning")
-
-    # Free GPU memory
-    pruner.clear_gpu_memory()
-
-    if len(merged_regulons) == 0:
-        raise ValueError(
-            "No regulons survived cisTarget pruning. Consider lowering "
-            "pruning_nes_threshold or grn_sparsity_threshold."
+        # ---- Step 3: Module Filtering ----
+        _log("Step 3/6: Creating and filtering modules...")
+        tf_indices_tensor = torch.tensor(tf_indices, device=device)
+        adj_tensor = (
+            torch.from_numpy(adj_matrix).to(device=device, dtype=torch.float32)
+            if isinstance(adj_matrix, np.ndarray)
+            else adj_matrix
         )
 
-    # ---- Step 5: AUCell Scoring ----
-    _log("Step 5/5: Computing AUCell scores...")
-    regulon_adj = regulons_to_adjacency(merged_regulons, list(gene_names))
+        # Generate multiple module types from the same adjacency matrix
+        module_type_adjs = []  # list of (filtered_adj, label)
+
+        # Type 1: Top-k targets (always included)
+        topk_adj = select_topk_targets(
+            adj_tensor,
+            k=module_k,
+            include_tf=module_include_tf,
+            tf_indices=tf_indices_tensor,
+            device=device,
+        )
+        module_type_adjs.append((topk_adj, f"top{module_k}"))
+
+        # Type 2: Percentile threshold modules
+        for pct in module_percentile_thresholds:
+            pct_adj = select_threshold_targets(
+                adj_tensor,
+                percentile=pct,
+                include_tf=module_include_tf,
+                tf_indices=tf_indices_tensor,
+                device=device,
+            )
+            module_type_adjs.append((pct_adj, f"pct{pct}"))
+
+        # Type 3: Top-N-per-target modules
+        for n_val in module_top_n_per_target:
+            npt_adj = select_top_n_per_target(
+                adj_tensor,
+                n=n_val,
+                include_tf=module_include_tf,
+                tf_indices=tf_indices_tensor,
+                device=device,
+            )
+            module_type_adjs.append((npt_adj, f"top{n_val}pertarget"))
+
+        _log(
+            f"  {len(module_type_adjs)} module types: "
+            f"{[label for _, label in module_type_adjs]}"
+        )
+
+        # Filter each module type and collect all modules + TF names
+        modules = []
+        valid_tf_names = []
+        total_modules = 0
+
+        for type_adj, label in module_type_adjs:
+            filtered_adj, tf_mask = filter_by_min_targets(
+                type_adj,
+                min_targets=module_min_targets,
+                min_fraction=module_min_fraction,
+                device=device,
+            )
+            mask_np = tf_mask.cpu().numpy()
+            type_tf_names = [tf_names[i] for i, keep in enumerate(mask_np) if keep]
+            n_type_tfs = len(type_tf_names)
+            total_modules += n_type_tfs
+
+            for i in range(n_type_tfs):
+                target_mask = filtered_adj[i] > 0
+                target_indices = torch.where(target_mask)[0]
+                modules.append(target_indices)
+
+            valid_tf_names.extend(type_tf_names)
+            _log(f"    {label}: {n_type_tfs} TF modules")
+
+        _log(f"  {total_modules} total modules across all types")
+
+        if total_modules == 0:
+            raise ValueError(
+                "No TF modules survived filtering. Consider lowering "
+                "module_min_targets, module_min_fraction, or "
+                "grn_sparsity_threshold."
+            )
+
+        # ---- Step 4: cisTarget Pruning ----
+        _log(
+            f"Step 4/6: Running cisTarget pruning "
+            f"({len(ranking_db_paths)} databases)..."
+        )
+        pruner = CisTargetPruner(
+            rank_threshold=pruning_rank_threshold,
+            auc_threshold=pruning_auc_threshold,
+            nes_threshold=pruning_nes_threshold,
+            device=device,
+            min_genes_per_regulon=pruning_min_genes,
+            merge_strategy=pruning_merge_strategy,
+        )
+        pruner.load_database(ranking_db_paths)
+        pruner.load_annotations(
+            motif_annotation_path,
+            filter_for_annotation=True,
+            motif_similarity_fdr=annotation_motif_similarity_fdr,
+            orthologous_identity_threshold=annotation_orthologous_identity,
+        )
+
+        merged_regulons = pruner.prune_modules(
+            modules,
+            valid_tf_names,
+            list(gene_names),
+        )
+        _log(f"  {len(merged_regulons)} regulons after pruning")
+
+        # Free GPU memory
+        pruner.clear_gpu_memory()
+
+        if len(merged_regulons) == 0:
+            raise ValueError(
+                "No regulons survived cisTarget pruning. Consider lowering "
+                "pruning_nes_threshold or grn_sparsity_threshold."
+            )
+
+        # ---- Step 5: Merge multirun results ----
+        # Handle adjacencies from multiruns
+        regulon_adj_run = regulons_to_adjacency(merged_regulons, list(gene_names))
+        regulon_names_run = [reg["name"] for reg in merged_regulons]
+        multirun_adj.append(
+            {"matrix": regulon_adj_run, "regulon_names": regulon_names_run}
+        )
+
+        # Put all regulons results to a list and remove genes and n_genes for rebuilding with adjacency
+        for reg in merged_regulons:
+            # remove number of genes and genes to rebuild with adjacency
+            reg.pop("genes", None)
+            reg.pop("n_genes", None)
+
+            # Convert other non-name/tf keys to single-item lists to be merged on multiple passes
+            for key in reg.keys() - {"name", "tf"}:
+                reg[key] = [reg[key]]
+
+            # Merge in the dictionnary on "name" key
+            reg_name = reg["name"]
+            if reg_name in merged_regulon_dict:
+                for key in reg.keys() - {"name", "tf"}:
+                    merged_regulon_dict[reg_name][key].extend(reg[key])
+                    # Remove duplicate in each item
+                    merged_regulon_dict[reg_name][key] = list(
+                        set(merged_regulon_dict[reg_name][key])
+                    )
+            else:
+                merged_regulon_dict[reg_name] = reg
+
+    # End of multirun for loop
+    # Covert back to a list to respect previous type
+    _log("Step 5/6: Merging multiruns...")
+    multirun_regulon = list(merged_regulon_dict.values())
+
+    # Make occurrence matrix
+    # Collect all TFs names across runs
+    regulon_names_occurrence = sorted(
+        set(tf for run in multirun_adj for tf in run["regulon_names"])
+    )
+
+    n_tfs = len(regulon_names_occurrence)
+    n_genes = len(gene_names)
+    tf_index = {tf: i for i, tf in enumerate(regulon_names_occurrence)}
+
+    # Accumulate counts into a (n_all_tfs, n_genes) matrix
+    accumulated = np.zeros((n_tfs, n_genes), dtype=float)
+
+    for run in multirun_adj:
+        for local_row, tf in enumerate(run["regulon_names"]):
+            global_row = tf_index[tf]
+            accumulated[global_row] += run["matrix"][local_row]
+
+    # Divide by number of runs to make the occurence matrix
+    regulon_occ_adj = accumulated / len(multirun_adj)
+
+    # Binarize
+    regulon_adj = np.where(regulon_occ_adj >= threshold_occurrence, 1, 0)
+
+    # Find TFs that have at least min_gene_per_regulon target genes
+    tf_mask = regulon_adj.sum(axis=1) >= min_gene_per_regulon
+
+    # Filter both the matrix and the TF list
+    regulon_adj = regulon_adj[tf_mask]
+    regulon_names = [
+        regulon for regulon, keep in zip(regulon_names_occurrence, tf_mask) if keep
+    ]
+
+    # Get the gene names and number per regulon in a dictionnary
+    regulons_genes_map = {}
+    for i, reg_name in enumerate(regulon_names):
+        consensus_gene_mask = regulon_adj[i].astype(bool)
+        consensus_genes = [
+            g for g, keep in zip(gene_names, consensus_gene_mask) if keep
+        ]
+
+        regulons_genes_map[reg_name] = {
+            "n_genes": len(consensus_genes),
+            "genes": consensus_genes,
+        }
+
+    # Filter the regulon on adjacency and add gene names and number back in a dictionnary
+    regulons_filtered_adj = []
+    for entry in multirun_regulon:
+        if entry["name"] in set(regulon_names):
+            entry["n_genes"] = regulons_genes_map[entry["name"]]["n_genes"]
+            entry["genes"] = regulons_genes_map[entry["name"]]["genes"]
+            regulons_filtered_adj.append(entry)
+
+    # ---- Step 6: AUCell Scoring ----
+    _log("Step 6/6: Computing AUCell scores...")
 
     auc_scores = get_aucell(
         exp_float32,
@@ -350,19 +503,24 @@ def run_flashscenic(
         seed=seed,
     )
 
-    regulon_names = [reg["name"] for reg in merged_regulons]
-    _log(f"Done! {len(regulon_names)} regulons, "
-         f"AUCell scores shape: {auc_scores.shape}")
+    _log(
+        f"Done! {len(regulon_names)} regulons, AUCell scores shape: {auc_scores.shape}"
+    )
 
     return {
         "auc_scores": auc_scores,
         "regulon_names": regulon_names,
-        "regulons": merged_regulons,
+        "regulons": regulons_filtered_adj,
         "regulon_adj": regulon_adj,
+        "regulon_occurrence": regulon_occ_adj,
+        "regulon_names_occurrence": regulon_names_occurrence,
+        "gene_names": gene_names,
+        "cell_names": cell_names,
         "parameters": {
             "species": species,
             "datasource": datasource,
             "version": version,
+            "number_of_runs": multirun,
             "grn_n_steps": grn_n_steps,
             "grn_sparsity_threshold": grn_sparsity_threshold,
             "module_k": module_k,
@@ -378,6 +536,8 @@ def run_flashscenic(
             "pruning_merge_strategy": pruning_merge_strategy,
             "annotation_motif_similarity_fdr": annotation_motif_similarity_fdr,
             "annotation_orthologous_identity": annotation_orthologous_identity,
+            "min_gene_per_regulon": min_gene_per_regulon,
+            "threshold_occurrence": threshold_occurrence,
             "aucell_k": aucell_k,
             "aucell_auc_threshold": aucell_auc_threshold,
             "aucell_batch_size": aucell_batch_size,
@@ -386,6 +546,6 @@ def run_flashscenic(
             "n_cells": n_cells,
             "n_genes": n_genes,
             "n_modules": total_modules,
-            "n_regulons": len(merged_regulons),
+            "n_regulons": len(regulons_filtered_adj),
         },
     }
