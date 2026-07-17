@@ -46,6 +46,8 @@ def run_flashscenic(
     aucell_k: Optional[int] = None,
     aucell_auc_threshold: float = 0.05,
     aucell_batch_size: int = 32,
+    # --- Pre-computed adjacency (skips RegDiffusion) ---
+    adj_matrix: Optional[np.ndarray] = None,
     # --- General ---
     device: str = "cuda",
     seed: Optional[int] = None,
@@ -130,6 +132,12 @@ def run_flashscenic(
     aucell_batch_size : int, default=32
         Batch size for AUCell computation.
 
+    adj_matrix : np.ndarray or None
+        Pre-computed adjacency matrix of shape (n_genes, n_genes). If
+        provided, Step 1 (RegDiffusion GRN inference) is skipped entirely
+        and this matrix is used directly. Intended for use by
+        ``multi_run_flashscenic``, which averages k independent GRN
+        matrices before calling this function.
     device : str, default='cuda'
         PyTorch device ('cuda' or 'cpu').
     seed : int or None
@@ -159,8 +167,6 @@ def run_flashscenic(
     >>> result = fs.run_flashscenic(exp_matrix, gene_names, species='human')
     >>> auc_scores = result['auc_scores']  # (n_cells, n_regulons)
     """
-    import regdiffusion as rd
-
     from .data import download_data
     from .aucell import get_aucell
     from .cistarget import CisTargetPruner
@@ -204,14 +210,18 @@ def run_flashscenic(
             motif_annotation_path = str(resources.motif_annotation)
 
     # ---- Step 1: GRN Inference ----
-    _log(f"Step 1/5: Running RegDiffusion GRN inference "
-         f"({n_cells} cells, {n_genes} genes, {grn_n_steps} steps)...")
     exp_float32 = np.asarray(exp_matrix, dtype=np.float32)
-    rd_trainer = rd.RegDiffusionTrainer(
-        exp_float32, n_steps=grn_n_steps, device=device,
-    )
-    rd_trainer.train()
-    adj_matrix = rd_trainer.get_adj()
+    if adj_matrix is None:
+        import regdiffusion as rd
+        _log(f"Step 1/5: Running RegDiffusion GRN inference "
+             f"({n_cells} cells, {n_genes} genes, {grn_n_steps} steps)...")
+        rd_trainer = rd.RegDiffusionTrainer(
+            exp_float32, n_steps=grn_n_steps, device=device,
+        )
+        rd_trainer.train()
+        adj_matrix = rd_trainer.get_adj()
+    else:
+        _log("Step 1/5: Using pre-computed adjacency matrix (skipping RegDiffusion).")
     _log(f"  Adjacency matrix: {adj_matrix.shape}")
 
     # ---- Step 2: TF Filtering ----
