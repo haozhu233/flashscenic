@@ -164,7 +164,7 @@ import flashscenic as fs
 
 result = fs.multi_run_flashscenic(
     exp_matrix, gene_names, species='human',
-    n_runs=10,          # number of independent RegDiffusion runs to average
+    n_runs=15,          # number of independent RegDiffusion runs to average (default)
     cv_threshold=None,  # default: no masking, use the raw mean (set a float to mask unstable edges)
     seed=42,            # reduces (does not guarantee-eliminate) GPU run-to-run variation
 )
@@ -179,7 +179,7 @@ This differs architecturally from post-pruning frequency aggregation (e.g. runni
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
-| `n_runs` | `5` | Number of independent RegDiffusion runs to average |
+| `n_runs` | `15` | Number of independent RegDiffusion runs to average |
 | `cv_threshold` | `None` | Edges with std/&#124;mean&#124; &ge; this are zeroed in the consensus. `None` (default) disables masking and uses the raw mean; set a float to additionally mask unstable edges |
 | `seeds` | `None` | Per-run seeds (list of length `n_runs`), passed to `torch.manual_seed` before each RegDiffusion training. Takes priority over `seed` below if both are set |
 | `seed` | `None` | Single seed for the whole ensemble. If `seeds` is not set, `n_runs` per-run seeds are derived from it (via `numpy.random.SeedSequence(seed).spawn(n_runs)`) and reused for every run; also forwarded to the downstream `run_flashscenic()` call for AUCell's tie-breaking noise |
@@ -247,6 +247,7 @@ Full documentation including a tutorial notebook is available at [docs/](docs/):
 - [Installation](docs/installation.md)
 - [Quick Start](docs/quickstart.md)
 - [Pipeline Guide](docs/pipeline.md) -- detailed parameter tuning
+- [Multi-Run Ensemble](docs/multirun.md) -- averaging across multiple RegDiffusion runs
 - [API Reference](docs/api.md)
 - [Tutorial](docs/tutorial.ipynb) -- end-to-end example with the Immune ALL Human dataset
 
