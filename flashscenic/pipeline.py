@@ -141,7 +141,12 @@ def run_flashscenic(
     device : str, default='cuda'
         PyTorch device ('cuda' or 'cpu').
     seed : int or None
-        Random seed for reproducibility.
+        Random seed. Applied via torch.manual_seed before RegDiffusion
+        training (Step 1, only when `adj_matrix` is not provided — skipped
+        entirely if a precomputed adjacency is passed) and before AUCell's
+        tie-breaking noise (Step 5). Reduces but does not guarantee-eliminate
+        run-to-run variation on GPU, since some CUDA ops are non-deterministic
+        regardless of seed.
     verbose : bool, default=True
         Print progress messages.
 
@@ -213,6 +218,8 @@ def run_flashscenic(
     exp_float32 = np.asarray(exp_matrix, dtype=np.float32)
     if adj_matrix is None:
         import regdiffusion as rd
+        if seed is not None:
+            torch.manual_seed(seed)
         _log(f"Step 1/5: Running RegDiffusion GRN inference "
              f"({n_cells} cells, {n_genes} genes, {grn_n_steps} steps)...")
         rd_trainer = rd.RegDiffusionTrainer(
