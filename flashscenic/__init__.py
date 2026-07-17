@@ -3,6 +3,7 @@ import numpy as np
 from .aucell import get_aucell
 from .data import download_data, DownloadedResources, list_available_resources
 from .pipeline import run_flashscenic
+from .multi_run import multi_run_flashscenic
 from .cistarget import (
     CisTargetPruner,
     GPUCisTargetPruner,  # backwards compat alias
@@ -62,6 +63,7 @@ def regulons_to_adjacency(regulons: list[dict], gene_names: list[str]) -> np.nda
 __all__ = [
     # Pipeline
     'run_flashscenic',
+    'multi_run_flashscenic',
     # Data download
     'download_data',
     'DownloadedResources',
