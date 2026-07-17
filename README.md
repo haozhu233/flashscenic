@@ -204,6 +204,33 @@ print(resources.motif_annotation)  # Path to motif annotation file
 |----------|-------------|
 | `get_aucell()` | GPU-accelerated AUCell scoring |
 | `regulon_specificity_scores()` | Regulon Specificity Scores (RSS) per cell type |
+| `run_umap()` | 2D UMAP embedding with a GPU-computed kNN graph |
+| `gpu_knn()` | Exact brute-force k-nearest-neighbors on GPU |
+
+## Visualizing AUCell Space
+
+A common next step is to embed the AUCell scores into 2D with UMAP. `run_umap()`
+computes the k-nearest-neighbor graph -- the bottleneck on large datasets -- on the
+GPU, then hands it to [umap-learn](https://umap-learn.readthedocs.io/) for the
+layout. This accelerates the expensive step without pulling in the heavy
+RAPIDS/cuML stack. It requires the optional `viz` extra:
+
+```bash
+pip install flashscenic[viz]
+```
+
+```python
+import flashscenic as fs
+
+result = fs.run_flashscenic(exp_matrix, gene_names, species='human')
+
+# (n_cells, 2) embedding computed on the AUCell feature space
+embedding = fs.run_umap(result['auc_scores'], n_neighbors=15, device='cuda')
+```
+
+The kNN uses exact brute-force distances (fast for the small regulon dimension).
+Peak GPU memory scales as roughly `knn_batch_size * n_cells * 4` bytes -- lower
+`knn_batch_size` if you hit out-of-memory on very large datasets.
 
 ## Documentation
 

@@ -30,6 +30,9 @@ docs = [
     "sphinx-autodoc2",
     "myst-nb",
 ]
+viz = [
+    "umap-learn>=0.5.2",
+]
 tutorial = [
     "scanpy",
     "matplotlib",

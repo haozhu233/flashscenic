@@ -110,6 +110,19 @@ flashscenic.modules.to_numpy
 ```{autodoc2-object} flashscenic.rss.regulon_specificity_scores
 ```
 
+## Embedding
+
+```{autodoc2-summary}
+flashscenic.embedding.run_umap
+flashscenic.embedding.gpu_knn
+```
+
+```{autodoc2-object} flashscenic.embedding.run_umap
+```
+
+```{autodoc2-object} flashscenic.embedding.gpu_knn
+```
+
 ## Helpers
 
 ```{autodoc2-object} flashscenic.regulons_to_adjacency

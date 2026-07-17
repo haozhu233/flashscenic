@@ -14,6 +14,7 @@ from .cistarget import (
     prune_single_module,
 )
 from .rss import regulon_specificity_scores
+from .embedding import run_umap, gpu_knn
 from .modules import (
     select_topk_targets,
     select_threshold_targets,
@@ -79,6 +80,9 @@ __all__ = [
     'prune_single_module',
     # Analysis
     'regulon_specificity_scores',
+    # Embedding
+    'run_umap',
+    'gpu_knn',
     # Module selection
     'select_topk_targets',
     'select_threshold_targets',
