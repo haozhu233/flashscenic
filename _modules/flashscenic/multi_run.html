@@ -1,0 +1,657 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>flashscenic.multi_run &#8212; flashscenic</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/flashscenic/multi_run';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">flashscenic</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Downstream Analysis with flashscenic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pipeline.html">Pipeline Guide</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/haozhu233/flashscenic" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/haozhu233/flashscenic/issues/new?title=Issue%20on%20page%20%2F_modules/flashscenic/multi_run.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for flashscenic.multi_run</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Multi-run flashscenic wrapper with GRN consensus aggregation.</span>
+
+<span class="sd">Runs RegDiffusion k times, averages the resulting adjacency matrices into a</span>
+<span class="sd">consensus, optionally masks high-CV edges, and runs the rest of the pipeline</span>
+<span class="sd">(module selection, cisTarget pruning, AUCell) once on the stable consensus.</span>
+
+<span class="sd">This is architecturally superior to post-pruning frequency aggregation because</span>
+<span class="sd">it operates on continuous edge weights before any binary thresholding occurs.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+
+<div class="viewcode-block" id="multi_run_flashscenic">
+<a class="viewcode-back" href="../../apidocs/flashscenic/flashscenic.multi_run.html#flashscenic.multi_run.multi_run_flashscenic">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">multi_run_flashscenic</span><span class="p">(</span>
+    <span class="n">exp_matrix</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">gene_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="n">species</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;human&quot;</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="c1"># --- Multi-run / aggregation ---</span>
+    <span class="n">n_runs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="n">cv_threshold</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">return_adj_matrices</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">seeds</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="c1"># --- All run_flashscenic kwargs (same defaults) ---</span>
+    <span class="n">datasource</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;scenic&quot;</span><span class="p">,</span>
+    <span class="n">version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;v10&quot;</span><span class="p">,</span>
+    <span class="n">cache_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">tf_list_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">ranking_db_paths</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">motif_annotation_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">grn_n_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+    <span class="n">grn_sparsity_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">,</span>
+    <span class="n">module_k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
+    <span class="n">module_percentile_thresholds</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">75</span><span class="p">,),</span>
+    <span class="n">module_top_n_per_target</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span>
+    <span class="n">module_min_targets</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="n">module_min_fraction</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">module_include_tf</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">pruning_rank_threshold</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">,</span>
+    <span class="n">pruning_auc_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">pruning_nes_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">3.0</span><span class="p">,</span>
+    <span class="n">pruning_min_genes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">pruning_merge_strategy</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;union&quot;</span><span class="p">,</span>
+    <span class="n">annotation_motif_similarity_fdr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span>
+    <span class="n">annotation_orthologous_identity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">aucell_k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">aucell_auc_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">aucell_batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span><span class="p">,</span>
+    <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run flashscenic k times, aggregate GRN adjacency matrices, then run the</span>
+<span class="sd">    downstream pipeline once on the consensus.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    exp_matrix : np.ndarray</span>
+<span class="sd">        Expression matrix of shape (n_cells, n_genes). Should be</span>
+<span class="sd">        log-transformed and (optionally) subset to highly variable genes.</span>
+<span class="sd">    gene_names : list of str</span>
+<span class="sd">        Gene names corresponding to columns of exp_matrix.</span>
+<span class="sd">    species : str, default=&#39;human&#39;</span>
+<span class="sd">        Species for TF list and ranking databases.</span>
+
+<span class="sd">    n_runs : int, default=5</span>
+<span class="sd">        Number of independent RegDiffusion GRN inference runs.</span>
+<span class="sd">    cv_threshold : float or None, default=None</span>
+<span class="sd">        Coefficient of variation threshold for edge masking. Edges with</span>
+<span class="sd">        std/|mean| &gt;= cv_threshold are zeroed in the consensus. Default is</span>
+<span class="sd">        None (no masking — use the raw mean; downstream `grn_sparsity_threshold`</span>
+<span class="sd">        still applies). Set to a float to additionally mask unstable edges.</span>
+
+<span class="sd">        Recommended values:</span>
+
+<span class="sd">        +-----------+--------------------------------------------------+</span>
+<span class="sd">        | threshold | effect                                           |</span>
+<span class="sd">        +===========+==================================================+</span>
+<span class="sd">        | None      | no filtering — use raw mean                      |</span>
+<span class="sd">        | 2.0       | lenient: only highly unstable edges removed      |</span>
+<span class="sd">        | 1.0       | balanced: std &gt; mean means noise-dominated       |</span>
+<span class="sd">        | 0.5       | strict: only edges with std &lt; half the mean kept |</span>
+<span class="sd">        +-----------+--------------------------------------------------+</span>
+
+<span class="sd">    return_adj_matrices : bool, default=False</span>
+<span class="sd">        If True, include all k raw adjacency matrices in the output under</span>
+<span class="sd">        ``&#39;adj_matrices&#39;``. Disabled by default to save memory for large</span>
+<span class="sd">        expression matrices.</span>
+<span class="sd">    seeds : list of int or None</span>
+<span class="sd">        Per-run random seeds passed to ``torch.manual_seed`` before each</span>
+<span class="sd">        RegDiffusion training. Length must equal n_runs. If None and</span>
+<span class="sd">        ``seed`` is also None, all runs are fully stochastic. If None and</span>
+<span class="sd">        ``seed`` is set, n_runs per-run seeds are deterministically derived</span>
+<span class="sd">        from ``seed`` (see below) — explicit ``seeds`` always take priority.</span>
+
+<span class="sd">    All remaining parameters are forwarded unchanged to</span>
+<span class="sd">    :func:`run_flashscenic` (Steps 2–5 only), with one exception: ``seed``</span>
+<span class="sd">    additionally seeds the ensemble itself. If ``seed`` is set and ``seeds``</span>
+<span class="sd">    is not, it is expanded into n_runs per-run seeds (via</span>
+<span class="sd">    ``numpy.random.SeedSequence(seed).spawn(n_runs)``) so the whole</span>
+<span class="sd">    multi-run — GRN ensemble and the downstream AUCell tie-breaking — is</span>
+<span class="sd">    reproducible from a single seed. ``seed`` is also forwarded as-is to</span>
+<span class="sd">    the downstream ``run_flashscenic`` call for AUCell.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        All fields returned by :func:`run_flashscenic`, plus:</span>
+
+<span class="sd">        - ``&#39;adj_mean&#39;``: np.ndarray (n_genes, n_genes) — consensus adjacency</span>
+<span class="sd">        - ``&#39;adj_cv&#39;``: np.ndarray (n_genes, n_genes) — per-edge CV</span>
+<span class="sd">        - ``&#39;adj_matrices&#39;``: list of np.ndarray or None</span>
+<span class="sd">        - ``&#39;n_runs&#39;``: int</span>
+<span class="sd">        - ``&#39;cv_threshold&#39;``: float or None</span>
+<span class="sd">        - ``&#39;n_edges_cv_filtered&#39;``: int — edges removed by the CV mask</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If seeds is provided but its length does not equal n_runs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">regdiffusion</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rd</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">download_data</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_flashscenic</span>
+
+    <span class="k">if</span> <span class="n">seeds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">seeds</span><span class="p">)</span> <span class="o">!=</span> <span class="n">n_runs</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;seeds length (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">seeds</span><span class="p">)</span><span class="si">}</span><span class="s2">) must equal n_runs (</span><span class="si">{</span><span class="n">n_runs</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">seeds</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Derive n_runs independent per-run seeds from the single `seed` so</span>
+        <span class="c1"># the whole ensemble (not just the downstream AUCell step) is</span>
+        <span class="c1"># reproducible from one value. SeedSequence.spawn avoids the subtle</span>
+        <span class="c1"># correlations that naive `seed + i` offsets can introduce.</span>
+        <span class="n">seeds</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">generate_state</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">SeedSequence</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span><span class="o">.</span><span class="n">spawn</span><span class="p">(</span><span class="n">n_runs</span><span class="p">)</span>
+        <span class="p">]</span>
+
+    <span class="n">n_genes</span> <span class="o">=</span> <span class="n">exp_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">gene_names</span><span class="p">)</span> <span class="o">!=</span> <span class="n">n_genes</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;gene_names length (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">gene_names</span><span class="p">)</span><span class="si">}</span><span class="s2">) != &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;exp_matrix columns (</span><span class="si">{</span><span class="n">n_genes</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">n_runs</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;n_runs must be &gt;= 1, got </span><span class="si">{</span><span class="n">n_runs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n_runs</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;n_runs=</span><span class="si">{</span><span class="n">n_runs</span><span class="si">}</span><span class="s2">: with fewer than 2 runs, per-edge std is always &quot;</span>
+            <span class="s2">&quot;0, so adj_cv is always 0 and cv_threshold has no filtering effect.&quot;</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_log</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[flashscenic] </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># ---- Phase 0: Pre-download resources once ----</span>
+    <span class="n">_log</span><span class="p">(</span><span class="s2">&quot;Preparing resources...&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">tf_list_path</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="ow">or</span> <span class="n">ranking_db_paths</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="ow">or</span> <span class="n">motif_annotation_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">resources</span> <span class="o">=</span> <span class="n">download_data</span><span class="p">(</span>
+            <span class="n">species</span><span class="o">=</span><span class="n">species</span><span class="p">,</span>
+            <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">,</span>
+            <span class="n">datasource</span><span class="o">=</span><span class="n">datasource</span><span class="p">,</span>
+            <span class="n">cache_dir</span><span class="o">=</span><span class="n">cache_dir</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">tf_list_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tf_list_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">resources</span><span class="o">.</span><span class="n">tf_list</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ranking_db_paths</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ranking_db_paths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">resources</span><span class="o">.</span><span class="n">ranking_dbs</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">motif_annotation_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">motif_annotation_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">resources</span><span class="o">.</span><span class="n">motif_annotation</span><span class="p">)</span>
+
+    <span class="c1"># ---- Phase 1: Run RegDiffusion k times ----</span>
+    <span class="k">if</span> <span class="n">seeds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running RegDiffusion </span><span class="si">{</span><span class="n">n_runs</span><span class="si">}</span><span class="s2"> times with seeds=</span><span class="si">{</span><span class="n">seeds</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running RegDiffusion </span><span class="si">{</span><span class="n">n_runs</span><span class="si">}</span><span class="s2"> times (unseeded, stochastic)...&quot;</span><span class="p">)</span>
+    <span class="n">exp_float32</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">exp_matrix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">adj_matrices</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_runs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">seeds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="n">seeds</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">trainer</span> <span class="o">=</span> <span class="n">rd</span><span class="o">.</span><span class="n">RegDiffusionTrainer</span><span class="p">(</span>
+            <span class="n">exp_float32</span><span class="p">,</span> <span class="n">n_steps</span><span class="o">=</span><span class="n">grn_n_steps</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+        <span class="c1"># get_adj() returns float16; upcast immediately so the mean/std/CV</span>
+        <span class="c1"># aggregation below isn&#39;t computed at float16 precision (numpy does</span>
+        <span class="c1"># not promote float16 accumulators the way it does int/bool).</span>
+        <span class="n">adj_matrices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trainer</span><span class="o">.</span><span class="n">get_adj</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>  <span class="c1"># (n_genes, n_genes)</span>
+        <span class="n">_log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  GRN run </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">n_runs</span><span class="si">}</span><span class="s2"> done&quot;</span><span class="p">)</span>
+
+    <span class="c1"># ---- Phase 2: Aggregate adjacency matrices ----</span>
+    <span class="n">_log</span><span class="p">(</span><span class="s2">&quot;Aggregating adjacency matrices...&quot;</span><span class="p">)</span>
+    <span class="n">A_stack</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">adj_matrices</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>   <span class="c1"># (k, n_genes, n_genes)</span>
+    <span class="n">A_mean</span> <span class="o">=</span> <span class="n">A_stack</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>              <span class="c1"># (n_genes, n_genes)</span>
+    <span class="n">A_std</span> <span class="o">=</span> <span class="n">A_stack</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># CV = std / |mean|, so repressive (negative-mean) edges are handled</span>
+    <span class="c1"># symmetrically with activating ones. 0 where mean == 0 to avoid division</span>
+    <span class="c1"># by zero.</span>
+    <span class="n">A_abs_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">A_mean</span><span class="p">)</span>
+    <span class="n">A_cv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">A_std</span><span class="p">,</span> <span class="n">A_abs_mean</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">A_mean</span><span class="p">),</span> <span class="n">where</span><span class="o">=</span><span class="n">A_abs_mean</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">cv_threshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">A_consensus</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">A_cv</span> <span class="o">&lt;</span> <span class="n">cv_threshold</span><span class="p">,</span> <span class="n">A_mean</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">n_filtered</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">A_abs_mean</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">A_cv</span> <span class="o">&gt;=</span> <span class="n">cv_threshold</span><span class="p">)))</span>
+        <span class="n">_log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  CV filter (threshold=</span><span class="si">{</span><span class="n">cv_threshold</span><span class="si">}</span><span class="s2">) removed </span><span class="si">{</span><span class="n">n_filtered</span><span class="si">}</span><span class="s2"> edges&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">A_consensus</span> <span class="o">=</span> <span class="n">A_mean</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">n_filtered</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># ---- Phase 3: Run Steps 2–5 once on consensus ----</span>
+    <span class="n">_log</span><span class="p">(</span><span class="s2">&quot;Running downstream pipeline on consensus adjacency...&quot;</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">run_flashscenic</span><span class="p">(</span>
+        <span class="n">exp_matrix</span><span class="p">,</span>
+        <span class="n">gene_names</span><span class="p">,</span>
+        <span class="n">species</span><span class="p">,</span>
+        <span class="n">adj_matrix</span><span class="o">=</span><span class="n">A_consensus</span><span class="p">,</span>
+        <span class="n">datasource</span><span class="o">=</span><span class="n">datasource</span><span class="p">,</span>
+        <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">,</span>
+        <span class="n">cache_dir</span><span class="o">=</span><span class="n">cache_dir</span><span class="p">,</span>
+        <span class="n">tf_list_path</span><span class="o">=</span><span class="n">tf_list_path</span><span class="p">,</span>
+        <span class="n">ranking_db_paths</span><span class="o">=</span><span class="n">ranking_db_paths</span><span class="p">,</span>
+        <span class="n">motif_annotation_path</span><span class="o">=</span><span class="n">motif_annotation_path</span><span class="p">,</span>
+        <span class="n">grn_n_steps</span><span class="o">=</span><span class="n">grn_n_steps</span><span class="p">,</span>
+        <span class="n">grn_sparsity_threshold</span><span class="o">=</span><span class="n">grn_sparsity_threshold</span><span class="p">,</span>
+        <span class="n">module_k</span><span class="o">=</span><span class="n">module_k</span><span class="p">,</span>
+        <span class="n">module_percentile_thresholds</span><span class="o">=</span><span class="n">module_percentile_thresholds</span><span class="p">,</span>
+        <span class="n">module_top_n_per_target</span><span class="o">=</span><span class="n">module_top_n_per_target</span><span class="p">,</span>
+        <span class="n">module_min_targets</span><span class="o">=</span><span class="n">module_min_targets</span><span class="p">,</span>
+        <span class="n">module_min_fraction</span><span class="o">=</span><span class="n">module_min_fraction</span><span class="p">,</span>
+        <span class="n">module_include_tf</span><span class="o">=</span><span class="n">module_include_tf</span><span class="p">,</span>
+        <span class="n">pruning_rank_threshold</span><span class="o">=</span><span class="n">pruning_rank_threshold</span><span class="p">,</span>
+        <span class="n">pruning_auc_threshold</span><span class="o">=</span><span class="n">pruning_auc_threshold</span><span class="p">,</span>
+        <span class="n">pruning_nes_threshold</span><span class="o">=</span><span class="n">pruning_nes_threshold</span><span class="p">,</span>
+        <span class="n">pruning_min_genes</span><span class="o">=</span><span class="n">pruning_min_genes</span><span class="p">,</span>
+        <span class="n">pruning_merge_strategy</span><span class="o">=</span><span class="n">pruning_merge_strategy</span><span class="p">,</span>
+        <span class="n">annotation_motif_similarity_fdr</span><span class="o">=</span><span class="n">annotation_motif_similarity_fdr</span><span class="p">,</span>
+        <span class="n">annotation_orthologous_identity</span><span class="o">=</span><span class="n">annotation_orthologous_identity</span><span class="p">,</span>
+        <span class="n">aucell_k</span><span class="o">=</span><span class="n">aucell_k</span><span class="p">,</span>
+        <span class="n">aucell_auc_threshold</span><span class="o">=</span><span class="n">aucell_auc_threshold</span><span class="p">,</span>
+        <span class="n">aucell_batch_size</span><span class="o">=</span><span class="n">aucell_batch_size</span><span class="p">,</span>
+        <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+        <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># ---- Phase 4: Attach multi-run diagnostics ----</span>
+    <span class="n">result</span><span class="p">[</span><span class="s1">&#39;adj_mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">A_mean</span>
+    <span class="n">result</span><span class="p">[</span><span class="s1">&#39;adj_cv&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">A_cv</span>
+    <span class="n">result</span><span class="p">[</span><span class="s1">&#39;adj_matrices&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adj_matrices</span> <span class="k">if</span> <span class="n">return_adj_matrices</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="n">result</span><span class="p">[</span><span class="s1">&#39;n_runs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_runs</span>
+    <span class="n">result</span><span class="p">[</span><span class="s1">&#39;cv_threshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cv_threshold</span>
+    <span class="n">result</span><span class="p">[</span><span class="s1">&#39;n_edges_cv_filtered&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_filtered</span>
+    <span class="n">result</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+        <span class="s1">&#39;n_runs&#39;</span><span class="p">:</span> <span class="n">n_runs</span><span class="p">,</span>
+        <span class="s1">&#39;cv_threshold&#39;</span><span class="p">:</span> <span class="n">cv_threshold</span><span class="p">,</span>
+        <span class="s1">&#39;seeds&#39;</span><span class="p">:</span> <span class="n">seeds</span><span class="p">,</span>
+    <span class="p">})</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Hao Zhu, Donna Slonim
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025-2026, Hao Zhu, Donna Slonim.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

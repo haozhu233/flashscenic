@@ -313,6 +313,7 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">.aucell</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_aucell</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">download_data</span><span class="p">,</span> <span class="n">DownloadedResources</span><span class="p">,</span> <span class="n">list_available_resources</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_flashscenic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.multi_run</span><span class="w"> </span><span class="kn">import</span> <span class="n">multi_run_flashscenic</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.cistarget</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">CisTargetPruner</span><span class="p">,</span>
     <span class="n">GPUCisTargetPruner</span><span class="p">,</span>  <span class="c1"># backwards compat alias</span>
@@ -374,6 +375,7 @@ document.write(`
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="c1"># Pipeline</span>
     <span class="s1">&#39;run_flashscenic&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;multi_run_flashscenic&#39;</span><span class="p">,</span>
     <span class="c1"># Data download</span>
     <span class="s1">&#39;download_data&#39;</span><span class="p">,</span>
     <span class="s1">&#39;DownloadedResources&#39;</span><span class="p">,</span>

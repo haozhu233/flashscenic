@@ -358,6 +358,8 @@ document.write(`
     <span class="n">aucell_k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">aucell_auc_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
     <span class="n">aucell_batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+    <span class="c1"># --- Pre-computed adjacency (skips RegDiffusion) ---</span>
+    <span class="n">adj_matrix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="c1"># --- General ---</span>
     <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span><span class="p">,</span>
     <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -442,10 +444,21 @@ document.write(`
 <span class="sd">    aucell_batch_size : int, default=32</span>
 <span class="sd">        Batch size for AUCell computation.</span>
 
+<span class="sd">    adj_matrix : np.ndarray or None</span>
+<span class="sd">        Pre-computed adjacency matrix of shape (n_genes, n_genes). If</span>
+<span class="sd">        provided, Step 1 (RegDiffusion GRN inference) is skipped entirely</span>
+<span class="sd">        and this matrix is used directly. Intended for use by</span>
+<span class="sd">        ``multi_run_flashscenic``, which averages k independent GRN</span>
+<span class="sd">        matrices before calling this function.</span>
 <span class="sd">    device : str, default=&#39;cuda&#39;</span>
 <span class="sd">        PyTorch device (&#39;cuda&#39; or &#39;cpu&#39;).</span>
 <span class="sd">    seed : int or None</span>
-<span class="sd">        Random seed for reproducibility.</span>
+<span class="sd">        Random seed. Applied via torch.manual_seed before RegDiffusion</span>
+<span class="sd">        training (Step 1, only when `adj_matrix` is not provided — skipped</span>
+<span class="sd">        entirely if a precomputed adjacency is passed) and before AUCell&#39;s</span>
+<span class="sd">        tie-breaking noise (Step 5). Reduces but does not guarantee-eliminate</span>
+<span class="sd">        run-to-run variation on GPU, since some CUDA ops are non-deterministic</span>
+<span class="sd">        regardless of seed.</span>
 <span class="sd">    verbose : bool, default=True</span>
 <span class="sd">        Print progress messages.</span>
 
@@ -471,8 +484,6 @@ document.write(`
 <span class="sd">    &gt;&gt;&gt; result = fs.run_flashscenic(exp_matrix, gene_names, species=&#39;human&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; auc_scores = result[&#39;auc_scores&#39;]  # (n_cells, n_regulons)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">import</span><span class="w"> </span><span class="nn">regdiffusion</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rd</span>
-
     <span class="kn">from</span><span class="w"> </span><span class="nn">.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">download_data</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.aucell</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_aucell</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.cistarget</span><span class="w"> </span><span class="kn">import</span> <span class="n">CisTargetPruner</span>
@@ -516,14 +527,20 @@ document.write(`
             <span class="n">motif_annotation_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">resources</span><span class="o">.</span><span class="n">motif_annotation</span><span class="p">)</span>
 
     <span class="c1"># ---- Step 1: GRN Inference ----</span>
-    <span class="n">_log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Step 1/5: Running RegDiffusion GRN inference &quot;</span>
-         <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">n_cells</span><span class="si">}</span><span class="s2"> cells, </span><span class="si">{</span><span class="n">n_genes</span><span class="si">}</span><span class="s2"> genes, </span><span class="si">{</span><span class="n">grn_n_steps</span><span class="si">}</span><span class="s2"> steps)...&quot;</span><span class="p">)</span>
     <span class="n">exp_float32</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">exp_matrix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-    <span class="n">rd_trainer</span> <span class="o">=</span> <span class="n">rd</span><span class="o">.</span><span class="n">RegDiffusionTrainer</span><span class="p">(</span>
-        <span class="n">exp_float32</span><span class="p">,</span> <span class="n">n_steps</span><span class="o">=</span><span class="n">grn_n_steps</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">rd_trainer</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
-    <span class="n">adj_matrix</span> <span class="o">=</span> <span class="n">rd_trainer</span><span class="o">.</span><span class="n">get_adj</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">adj_matrix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">regdiffusion</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rd</span>
+        <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+        <span class="n">_log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Step 1/5: Running RegDiffusion GRN inference &quot;</span>
+             <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">n_cells</span><span class="si">}</span><span class="s2"> cells, </span><span class="si">{</span><span class="n">n_genes</span><span class="si">}</span><span class="s2"> genes, </span><span class="si">{</span><span class="n">grn_n_steps</span><span class="si">}</span><span class="s2"> steps)...&quot;</span><span class="p">)</span>
+        <span class="n">rd_trainer</span> <span class="o">=</span> <span class="n">rd</span><span class="o">.</span><span class="n">RegDiffusionTrainer</span><span class="p">(</span>
+            <span class="n">exp_float32</span><span class="p">,</span> <span class="n">n_steps</span><span class="o">=</span><span class="n">grn_n_steps</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">rd_trainer</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+        <span class="n">adj_matrix</span> <span class="o">=</span> <span class="n">rd_trainer</span><span class="o">.</span><span class="n">get_adj</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_log</span><span class="p">(</span><span class="s2">&quot;Step 1/5: Using pre-computed adjacency matrix (skipping RegDiffusion).&quot;</span><span class="p">)</span>
     <span class="n">_log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Adjacency matrix: </span><span class="si">{</span><span class="n">adj_matrix</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># ---- Step 2: TF Filtering ----</span>

@@ -14,11 +14,12 @@
 :maxdepth: 1
 
 flashscenic.aucell
-flashscenic.pipeline
-flashscenic.cistarget
 flashscenic.data
 flashscenic.rss
+flashscenic.pipeline
 flashscenic.modules
+flashscenic.multi_run
+flashscenic.cistarget
 ```
 
 ## Package Contents
@@ -59,7 +60,7 @@ flashscenic.modules
 ````{py:data} __all__
 :canonical: flashscenic.__all__
 :value: >
-   ['run_flashscenic', 'download_data', 'DownloadedResources', 'list_available_resources', 'get_aucell'...
+   ['run_flashscenic', 'multi_run_flashscenic', 'download_data', 'DownloadedResources', 'list_available...
 
 ```{autodoc2-docstring} flashscenic.__all__
 ```
