@@ -22,7 +22,7 @@ def multi_run_flashscenic(
     species: str = "human",
     *,
     # --- Multi-run / aggregation ---
-    n_runs: int = 5,
+    n_runs: int = 15,
     cv_threshold: Optional[float] = None,
     return_adj_matrices: bool = False,
     seeds: Optional[List[int]] = None,
@@ -69,7 +69,7 @@ def multi_run_flashscenic(
     species : str, default='human'
         Species for TF list and ranking databases.
 
-    n_runs : int, default=5
+    n_runs : int, default=15
         Number of independent RegDiffusion GRN inference runs.
     cv_threshold : float or None, default=None
         Coefficient of variation threshold for edge masking. Edges with
@@ -77,16 +77,15 @@ def multi_run_flashscenic(
         None (no masking — use the raw mean; downstream `grn_sparsity_threshold`
         still applies). Set to a float to additionally mask unstable edges.
 
-        Recommended values:
-
-        +-----------+--------------------------------------------------+
-        | threshold | effect                                           |
-        +===========+==================================================+
-        | None      | no filtering — use raw mean                      |
-        | 2.0       | lenient: only highly unstable edges removed      |
-        | 1.0       | balanced: std > mean means noise-dominated       |
-        | 0.5       | strict: only edges with std < half the mean kept |
-        +-----------+--------------------------------------------------+
+        In practice, thresholds >= 1.0 rarely filter anything: edges that
+        survive `grn_sparsity_threshold` (Step 2) already tend to have low
+        run-to-run variability, so CV masking only has a visible effect
+        around 0.25 or lower. Robustness testing against an independent TF-
+        target database (CollecTRI) did not find that strict CV filtering
+        improves downstream regulon quality — stricter thresholds performed
+        no better, and sometimes worse, than the unfiltered mean. Treat this
+        as an available knob for your own experimentation rather than
+        something to enable by default.
 
     return_adj_matrices : bool, default=False
         If True, include all k raw adjacency matrices in the output under
