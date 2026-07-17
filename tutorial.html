@@ -5574,6 +5574,9 @@ Example regulons: [&#39;E2F2(+)&#39;, &#39;RUNX3(+)&#39;, &#39;TAL1(+)&#39;, &#3
 <section id="aucell-umap-vs-gene-expression-umap">
 <h2>3. AUCell UMAP vs Gene Expression UMAP<a class="headerlink" href="#aucell-umap-vs-gene-expression-umap" title="Link to this heading">#</a></h2>
 <p>A key advantage of regulon-based analysis: cells are represented by their <strong>regulatory program activity</strong> rather than raw gene expression. This often produces cleaner separation of cell types and naturally reduces batch effects, since regulon activity is more biologically stable across experimental conditions.</p>
+<blockquote>
+<div><p><strong>Tip – GPU-accelerated UMAP.</strong> The cell below uses scanpy’s CPU UMAP so we can use the <code class="docutils literal notranslate"><span class="pre">correlation</span></code> metric for the cell-type comparison. If you want the neighbor search on the GPU instead, flashscenic provides <code class="docutils literal notranslate"><span class="pre">fs.run_umap(auc_scores,</span> <span class="pre">n_neighbors=15,</span> <span class="pre">device='cuda')</span></code>, which computes the kNN graph on the GPU and runs the layout with umap-learn (install with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">flashscenic[viz]</span></code>). It returns an <code class="docutils literal notranslate"><span class="pre">(n_cells,</span> <span class="pre">2)</span></code> array you can store in <code class="docutils literal notranslate"><span class="pre">adata.obsm['X_umap_aucell']</span></code>.</p>
+</div></blockquote>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute neighbors and UMAP on AUCell space</span>

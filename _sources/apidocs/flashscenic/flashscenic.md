@@ -14,6 +14,7 @@
 :maxdepth: 1
 
 flashscenic.aucell
+flashscenic.embedding
 flashscenic.data
 flashscenic.rss
 flashscenic.pipeline

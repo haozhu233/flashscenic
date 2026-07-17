@@ -420,6 +420,11 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.rss.regulon_specificity_scores"><code class="docutils literal notranslate"><span class="pre">regulon_specificity_scores()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#embedding">Embedding</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.embedding.run_umap"><code class="docutils literal notranslate"><span class="pre">run_umap()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.embedding.gpu_knn"><code class="docutils literal notranslate"><span class="pre">gpu_knn()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#helpers">Helpers</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.regulons_to_adjacency"><code class="docutils literal notranslate"><span class="pre">regulons_to_adjacency()</span></code></a></li>
 </ul>
@@ -1286,18 +1291,96 @@ Regulon names (column labels of rss).</p>
 </dd></dl>
 
 </section>
+<section id="embedding">
+<h2>Embedding<a class="headerlink" href="#embedding" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="apidocs/flashscenic/flashscenic.embedding.html#flashscenic.embedding.run_umap" title="flashscenic.embedding.run_umap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flashscenic.embedding.run_umap</span></code></a></p></td>
+<td><p>UMAP embedding with a GPU-computed k-nearest-neighbor graph.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="apidocs/flashscenic/flashscenic.embedding.html#flashscenic.embedding.gpu_knn" title="flashscenic.embedding.gpu_knn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flashscenic.embedding.gpu_knn</span></code></a></p></td>
+<td><p>Exact brute-force k-nearest-neighbors on GPU (Euclidean metric).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.embedding.run_umap">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.embedding.</span></span><span class="sig-name descname"><span class="pre">run_umap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_neighbors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'euclidean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cuda'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">knn_batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1024</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">umap_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flashscenic/embedding.html#run_umap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.embedding.run_umap" title="Link to this definition">#</a></dt>
+<dd><p>UMAP embedding with a GPU-computed k-nearest-neighbor graph.</p>
+<p>The kNN graph (the expensive part on large single-cell data) is computed on
+the GPU with :func:<code class="docutils literal notranslate"><span class="pre">gpu_knn</span></code>, then handed to umap-learn as a precomputed kNN
+so the fuzzy-simplicial-set construction and layout optimization run on CPU
+without repeating the neighbor search. This avoids the heavy RAPIDS/cuML
+dependency while still accelerating the bottleneck.</p>
+<p>Requires the optional <code class="docutils literal notranslate"><span class="pre">umap-learn</span></code> dependency:
+<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">flashscenic[viz]</span></code>.</p>
+<p class="rubric" id="id68">Parameters</p>
+<p>X : np.ndarray
+Feature matrix of shape (n_samples, n_features), e.g. the AUCell score
+matrix (n_cells, n_regulons).
+n_neighbors : int
+UMAP <code class="docutils literal notranslate"><span class="pre">n_neighbors</span></code> (also the k used for the kNN graph). Default is 15.
+n_components : int
+Embedding dimensionality. Default is 2.
+min_dist : float
+UMAP <code class="docutils literal notranslate"><span class="pre">min_dist</span></code>. Default is 0.1.
+metric : str
+Metric for the UMAP layout. The GPU kNN uses Euclidean distances, so
+keep this ‘euclidean’ (the default) for consistent results.
+device : str
+Device for the kNN computation, ‘cpu’ or ‘cuda’. Default is ‘cuda’.
+knn_batch_size : int
+Query batch size for the GPU kNN. Lower it if you hit GPU OOM on large
+datasets. Default is 1024.
+random_state : int
+Random seed passed to UMAP for reproducibility. Default is 42.
+**umap_kwargs
+Extra keyword arguments forwarded to <code class="docutils literal notranslate"><span class="pre">umap.UMAP</span></code>.</p>
+<p class="rubric" id="id69">Returns</p>
+<p>np.ndarray
+Embedding of shape (n_samples, n_components).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flashscenic.embedding.gpu_knn">
+<span class="sig-prename descclassname"><span class="pre">flashscenic.embedding.</span></span><span class="sig-name descname"><span class="pre">gpu_knn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_neighbors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cuda'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1024</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flashscenic/embedding.html#gpu_knn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.embedding.gpu_knn" title="Link to this definition">#</a></dt>
+<dd><p>Exact brute-force k-nearest-neighbors on GPU (Euclidean metric).</p>
+<p>Computes distances in batches of query points against all points, so peak
+memory scales as ~ <code class="docutils literal notranslate"><span class="pre">batch_size</span> <span class="pre">*</span> <span class="pre">n_samples</span> <span class="pre">*</span> <span class="pre">4</span></code> bytes. For very large
+datasets, lower <code class="docutils literal notranslate"><span class="pre">batch_size</span></code>.</p>
+<p>The point itself is returned as its own first neighbor (distance ~0), which
+matches the convention umap-learn expects for a precomputed kNN.</p>
+<p class="rubric" id="id70">Parameters</p>
+<p>X : np.ndarray
+Feature matrix of shape (n_samples, n_features). For flashscenic this is
+typically the AUCell score matrix (n_cells, n_regulons).
+n_neighbors : int
+Number of neighbors to return per point (including self).
+device : str
+Device, ‘cpu’ or ‘cuda’. Default is ‘cuda’.
+batch_size : int
+Number of query points per batch. Default is 1024.</p>
+<p class="rubric" id="id71">Returns</p>
+<p>knn_indices : np.ndarray
+Int64 array of shape (n_samples, n_neighbors).
+knn_dists : np.ndarray
+Float32 array of shape (n_samples, n_neighbors), Euclidean distances.</p>
+</dd></dl>
+
+</section>
 <section id="helpers">
 <h2>Helpers<a class="headerlink" href="#helpers" title="Link to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="flashscenic.regulons_to_adjacency">
 <span class="sig-prename descclassname"><span class="pre">flashscenic.</span></span><span class="sig-name descname"><span class="pre">regulons_to_adjacency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regulons</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="_modules/flashscenic.html#regulons_to_adjacency"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flashscenic.regulons_to_adjacency" title="Link to this definition">#</a></dt>
 <dd><p>Convert list of regulon dicts to adjacency matrix for AUCell.</p>
-<p class="rubric" id="id64">Parameters</p>
+<p class="rubric" id="id72">Parameters</p>
 <p>regulons : list of dict
 Output from CisTargetPruner.prune_modules(), each dict has ‘genes’ key
 gene_names : list of str
 List of gene names matching columns of expression matrix</p>
-<p class="rubric" id="id65">Returns</p>
+<p class="rubric" id="id73">Returns</p>
 <p>np.ndarray
 Binary adjacency matrix of shape (n_regulons, n_genes)</p>
 </dd></dl>
@@ -1405,6 +1488,11 @@ Binary adjacency matrix of shape (n_regulons, n_genes)</p>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analysis">Analysis</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.rss.regulon_specificity_scores"><code class="docutils literal notranslate"><span class="pre">regulon_specificity_scores()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#embedding">Embedding</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.embedding.run_umap"><code class="docutils literal notranslate"><span class="pre">run_umap()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flashscenic.embedding.gpu_knn"><code class="docutils literal notranslate"><span class="pre">gpu_knn()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#helpers">Helpers</a><ul class="nav section-nav flex-column">

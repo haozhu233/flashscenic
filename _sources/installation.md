@@ -22,6 +22,12 @@ CPU fallback is available by passing `device='cpu'` to all functions.
 
 ## Optional Dependencies
 
+For GPU-accelerated UMAP embedding of the AUCell space (adds `umap-learn`):
+
+```bash
+pip install flashscenic[viz]
+```
+
 For building documentation:
 
 ```bash

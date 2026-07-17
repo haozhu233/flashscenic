@@ -41,7 +41,27 @@ print(f"Found {params['n_regulons']} regulons from {params['n_tfs']} TFs")
 
 ## Downstream Analysis
 
-After obtaining AUCell scores, you can use them for dimensionality reduction and visualization:
+After obtaining AUCell scores, a common next step is to embed them into 2D with
+UMAP. flashscenic ships a GPU-accelerated `run_umap()` that computes the
+k-nearest-neighbor graph on the GPU and runs the layout with
+[umap-learn](https://umap-learn.readthedocs.io/) -- no RAPIDS/cuML required. It
+needs the optional `viz` extra (`pip install flashscenic[viz]`):
+
+```python
+import flashscenic as fs
+
+# (n_cells, 2) embedding on the AUCell feature space
+embedding = fs.run_umap(auc_scores, n_neighbors=15, device='cuda')
+
+# Plot it (colored by a cell-type label array)
+import matplotlib.pyplot as plt
+plt.scatter(embedding[:, 0], embedding[:, 1], c=cell_type_codes, s=2)
+```
+
+Peak GPU memory for the kNN scales as roughly `knn_batch_size * n_cells * 4`
+bytes; lower `knn_batch_size` if you hit out-of-memory on very large datasets.
+
+Alternatively, run the standard CPU UMAP through scanpy:
 
 ```python
 import scanpy as sc

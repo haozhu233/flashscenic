@@ -411,7 +411,24 @@ document.write(`
 </section>
 <section id="downstream-analysis">
 <h2>Downstream Analysis<a class="headerlink" href="#downstream-analysis" title="Link to this heading">#</a></h2>
-<p>After obtaining AUCell scores, you can use them for dimensionality reduction and visualization:</p>
+<p>After obtaining AUCell scores, a common next step is to embed them into 2D with
+UMAP. flashscenic ships a GPU-accelerated <code class="docutils literal notranslate"><span class="pre">run_umap()</span></code> that computes the
+k-nearest-neighbor graph on the GPU and runs the layout with
+<a class="reference external" href="https://umap-learn.readthedocs.io/">umap-learn</a> – no RAPIDS/cuML required. It
+needs the optional <code class="docutils literal notranslate"><span class="pre">viz</span></code> extra (<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">flashscenic[viz]</span></code>):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">flashscenic</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fs</span>
+
+<span class="c1"># (n_cells, 2) embedding on the AUCell feature space</span>
+<span class="n">embedding</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">run_umap</span><span class="p">(</span><span class="n">auc_scores</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+
+<span class="c1"># Plot it (colored by a cell-type label array)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">embedding</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">embedding</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">cell_type_codes</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Peak GPU memory for the kNN scales as roughly <code class="docutils literal notranslate"><span class="pre">knn_batch_size</span> <span class="pre">*</span> <span class="pre">n_cells</span> <span class="pre">*</span> <span class="pre">4</span></code>
+bytes; lower <code class="docutils literal notranslate"><span class="pre">knn_batch_size</span></code> if you hit out-of-memory on very large datasets.</p>
+<p>Alternatively, run the standard CPU UMAP through scanpy:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">scanpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sc</span>
 
 <span class="c1"># Store AUCell scores in AnnData</span>

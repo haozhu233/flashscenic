@@ -326,6 +326,7 @@ document.write(`
     <span class="n">prune_single_module</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.rss</span><span class="w"> </span><span class="kn">import</span> <span class="n">regulon_specificity_scores</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.embedding</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_umap</span><span class="p">,</span> <span class="n">gpu_knn</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.modules</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">select_topk_targets</span><span class="p">,</span>
     <span class="n">select_threshold_targets</span><span class="p">,</span>
@@ -395,6 +396,9 @@ document.write(`
     <span class="s1">&#39;prune_single_module&#39;</span><span class="p">,</span>
     <span class="c1"># Analysis</span>
     <span class="s1">&#39;regulon_specificity_scores&#39;</span><span class="p">,</span>
+    <span class="c1"># Embedding</span>
+    <span class="s1">&#39;run_umap&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;gpu_knn&#39;</span><span class="p">,</span>
     <span class="c1"># Module selection</span>
     <span class="s1">&#39;select_topk_targets&#39;</span><span class="p">,</span>
     <span class="s1">&#39;select_threshold_targets&#39;</span><span class="p">,</span>
