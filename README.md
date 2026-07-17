@@ -155,6 +155,40 @@ print(resources.ranking_dbs)    # List of Paths to ranking databases
 print(resources.motif_annotation)  # Path to motif annotation file
 ```
 
+## Multi-Run Ensemble
+
+RegDiffusion's GRN inference is stochastic -- running it multiple times on the same data produces adjacency matrices that agree on strong edges but differ on weaker ones. `multi_run_flashscenic` runs RegDiffusion `n_runs` times, averages the resulting adjacency matrices into a consensus, optionally masks edges with high run-to-run variability, and runs the rest of the pipeline (module selection, cisTarget pruning, AUCell) once on that consensus:
+
+```python
+import flashscenic as fs
+
+result = fs.multi_run_flashscenic(
+    exp_matrix, gene_names, species='human',
+    n_runs=10,          # number of independent RegDiffusion runs to average
+    cv_threshold=None,  # default: no masking, use the raw mean (set a float to mask unstable edges)
+    seed=42,            # reduces (does not guarantee-eliminate) GPU run-to-run variation
+)
+
+auc_scores = result['auc_scores']            # same fields as run_flashscenic()
+adj_mean = result['adj_mean']                # (n_genes, n_genes) consensus adjacency
+adj_cv = result['adj_cv']                    # (n_genes, n_genes) per-edge coefficient of variation
+n_filtered = result['n_edges_cv_filtered']   # edges removed by the CV mask (0 unless cv_threshold is set)
+```
+
+This differs architecturally from post-pruning frequency aggregation (e.g. running the full pipeline `n_runs` times and majority-voting on the final regulons): it averages continuous edge weights *before* any binary thresholding occurs, so a weak-but-consistent edge and a strong-but-noisy edge are distinguished by their variability, not just their final presence or absence.
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `n_runs` | `5` | Number of independent RegDiffusion runs to average |
+| `cv_threshold` | `None` | Edges with std/&#124;mean&#124; &ge; this are zeroed in the consensus. `None` (default) disables masking and uses the raw mean; set a float to additionally mask unstable edges |
+| `seeds` | `None` | Per-run seeds (list of length `n_runs`), passed to `torch.manual_seed` before each RegDiffusion training. Takes priority over `seed` below if both are set |
+| `seed` | `None` | Single seed for the whole ensemble. If `seeds` is not set, `n_runs` per-run seeds are derived from it (via `numpy.random.SeedSequence(seed).spawn(n_runs)`) and reused for every run; also forwarded to the downstream `run_flashscenic()` call for AUCell's tie-breaking noise |
+| `return_adj_matrices` | `False` | If `True`, includes all `n_runs` raw adjacency matrices in the result under `'adj_matrices'` |
+
+Any seeding here reduces but does not guarantee-eliminate run-to-run variation on GPU, since some CUDA ops are non-deterministic regardless of seed.
+
+All other parameters (the `grn_`, `module_`, `pruning_`, `annotation_`, `aucell_`-prefixed ones, plus `device`/`verbose`) match `run_flashscenic()` and are forwarded unchanged to the downstream pipeline.
+
 ### Supported species and versions
 
 | Species | Version | Source |
@@ -170,6 +204,7 @@ print(resources.motif_annotation)  # Path to motif annotation file
 | Function | Description |
 |----------|-------------|
 | `run_flashscenic()` | Full pipeline in one call |
+| `multi_run_flashscenic()` | GRN ensemble averaging across multiple RegDiffusion runs |
 | `regulons_to_adjacency()` | Convert regulons to adjacency matrix |
 
 ### Data
