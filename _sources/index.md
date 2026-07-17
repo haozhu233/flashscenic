@@ -29,6 +29,7 @@ installation
 quickstart
 tutorial
 pipeline
+multirun
 ```
 
 ```{toctree}

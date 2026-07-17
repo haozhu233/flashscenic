@@ -154,6 +154,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Downstream Analysis with flashscenic</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pipeline.html">Pipeline Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../multirun.html">Multi-Run Ensemble</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
@@ -334,7 +335,7 @@ document.write(`
     <span class="n">species</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;human&quot;</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="c1"># --- Multi-run / aggregation ---</span>
-    <span class="n">n_runs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="n">n_runs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span>
     <span class="n">cv_threshold</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">return_adj_matrices</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">seeds</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -381,7 +382,7 @@ document.write(`
 <span class="sd">    species : str, default=&#39;human&#39;</span>
 <span class="sd">        Species for TF list and ranking databases.</span>
 
-<span class="sd">    n_runs : int, default=5</span>
+<span class="sd">    n_runs : int, default=15</span>
 <span class="sd">        Number of independent RegDiffusion GRN inference runs.</span>
 <span class="sd">    cv_threshold : float or None, default=None</span>
 <span class="sd">        Coefficient of variation threshold for edge masking. Edges with</span>
@@ -389,16 +390,15 @@ document.write(`
 <span class="sd">        None (no masking — use the raw mean; downstream `grn_sparsity_threshold`</span>
 <span class="sd">        still applies). Set to a float to additionally mask unstable edges.</span>
 
-<span class="sd">        Recommended values:</span>
-
-<span class="sd">        +-----------+--------------------------------------------------+</span>
-<span class="sd">        | threshold | effect                                           |</span>
-<span class="sd">        +===========+==================================================+</span>
-<span class="sd">        | None      | no filtering — use raw mean                      |</span>
-<span class="sd">        | 2.0       | lenient: only highly unstable edges removed      |</span>
-<span class="sd">        | 1.0       | balanced: std &gt; mean means noise-dominated       |</span>
-<span class="sd">        | 0.5       | strict: only edges with std &lt; half the mean kept |</span>
-<span class="sd">        +-----------+--------------------------------------------------+</span>
+<span class="sd">        In practice, thresholds &gt;= 1.0 rarely filter anything: edges that</span>
+<span class="sd">        survive `grn_sparsity_threshold` (Step 2) already tend to have low</span>
+<span class="sd">        run-to-run variability, so CV masking only has a visible effect</span>
+<span class="sd">        around 0.25 or lower. Robustness testing against an independent TF-</span>
+<span class="sd">        target database (CollecTRI) did not find that strict CV filtering</span>
+<span class="sd">        improves downstream regulon quality — stricter thresholds performed</span>
+<span class="sd">        no better, and sometimes worse, than the unfiltered mean. Treat this</span>
+<span class="sd">        as an available knob for your own experimentation rather than</span>
+<span class="sd">        something to enable by default.</span>
 
 <span class="sd">    return_adj_matrices : bool, default=False</span>
 <span class="sd">        If True, include all k raw adjacency matrices in the output under</span>
