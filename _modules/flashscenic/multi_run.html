@@ -320,6 +320,7 @@ document.write(`
 <span class="sd">it operates on continuous edge weights before any binary thresholding occurs.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">gc</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -514,6 +515,17 @@ document.write(`
         <span class="c1"># aggregation below isn&#39;t computed at float16 precision (numpy does</span>
         <span class="c1"># not promote float16 accumulators the way it does int/bool).</span>
         <span class="n">adj_matrices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trainer</span><span class="o">.</span><span class="n">get_adj</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>  <span class="c1"># (n_genes, n_genes)</span>
+        <span class="c1"># Each iteration&#39;s RegDiffusionTrainer holds its own model, optimizer</span>
+        <span class="c1"># state, and CUDA tensors; without an explicit release, PyTorch&#39;s</span>
+        <span class="c1"># caching allocator keeps all of it live across the loop, and peak</span>
+        <span class="c1"># memory grows roughly linearly with n_runs. Freeing it here is what</span>
+        <span class="c1"># lets n_runs=30 on a full transcriptome fit in a single A100 (this</span>
+        <span class="c1"># was silently dropped at some point -- without it, a long run OOMs</span>
+        <span class="c1"># partway through rather than at the first iteration, since it&#39;s</span>
+        <span class="c1"># genuine cross-iteration accumulation, not a single-run spike).</span>
+        <span class="k">del</span> <span class="n">trainer</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">empty_cache</span><span class="p">()</span>
         <span class="n">_log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  GRN run </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">n_runs</span><span class="si">}</span><span class="s2"> done&quot;</span><span class="p">)</span>
 
     <span class="c1"># ---- Phase 2: Aggregate adjacency matrices ----</span>
