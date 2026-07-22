@@ -9,6 +9,7 @@ This is architecturally superior to post-pruning frequency aggregation because
 it operates on continuous edge weights before any binary thresholding occurs.
 """
 
+import gc
 import warnings
 
 import numpy as np
@@ -201,6 +202,17 @@ def multi_run_flashscenic(
         # aggregation below isn't computed at float16 precision (numpy does
         # not promote float16 accumulators the way it does int/bool).
         adj_matrices.append(trainer.get_adj().astype(np.float32))  # (n_genes, n_genes)
+        # Each iteration's RegDiffusionTrainer holds its own model, optimizer
+        # state, and CUDA tensors; without an explicit release, PyTorch's
+        # caching allocator keeps all of it live across the loop, and peak
+        # memory grows roughly linearly with n_runs. Freeing it here is what
+        # lets n_runs=30 on a full transcriptome fit in a single A100 (this
+        # was silently dropped at some point -- without it, a long run OOMs
+        # partway through rather than at the first iteration, since it's
+        # genuine cross-iteration accumulation, not a single-run spike).
+        del trainer
+        gc.collect()
+        torch.cuda.empty_cache()
         _log(f"  GRN run {i + 1}/{n_runs} done")
 
     # ---- Phase 2: Aggregate adjacency matrices ----
