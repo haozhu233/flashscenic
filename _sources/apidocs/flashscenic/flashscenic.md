@@ -13,13 +13,13 @@
 :titlesonly:
 :maxdepth: 1
 
-flashscenic.aucell
-flashscenic.embedding
-flashscenic.data
 flashscenic.rss
 flashscenic.pipeline
 flashscenic.modules
+flashscenic.data
 flashscenic.multi_run
+flashscenic.aucell
+flashscenic.embedding
 flashscenic.cistarget
 ```
 

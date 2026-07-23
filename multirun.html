@@ -356,10 +356,12 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why">Why</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#aggregation-methods">Aggregation methods</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-usage">Basic Usage</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parameters">Parameters</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#choosing-cv-threshold">Choosing <code class="docutils literal notranslate"><span class="pre">cv_threshold</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#choosing-min-genes-filter">Choosing <code class="docutils literal notranslate"><span class="pre">min_genes_filter</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#choosing-cv-threshold-mean-adjacency-only">Choosing <code class="docutils literal notranslate"><span class="pre">cv_threshold</span></code> (mean_adjacency only)</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#seeding-and-reproducibility">Seeding and Reproducibility</a></li>
@@ -377,23 +379,52 @@ document.write(`
                   
   <section id="multi-run-ensemble">
 <h1>Multi-Run Ensemble<a class="headerlink" href="#multi-run-ensemble" title="Link to this heading">#</a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">multi_run_flashscenic()</span></code> runs RegDiffusion <code class="docutils literal notranslate"><span class="pre">n_runs</span></code> times, averages the resulting adjacency matrices into a consensus (optionally masking edges with high run-to-run variability), and then runs the rest of the pipeline once on that stable consensus.</p>
+<p><code class="docutils literal notranslate"><span class="pre">multi_run_flashscenic()</span></code> runs RegDiffusion <code class="docutils literal notranslate"><span class="pre">n_runs</span></code> times and aggregates the runs into a consensus set of regulons, using one of two strategies controlled by <code class="docutils literal notranslate"><span class="pre">aggregation_method</span></code>.</p>
 <section id="why">
 <h2>Why<a class="headerlink" href="#why" title="Link to this heading">#</a></h2>
-<p>RegDiffusion’s GRN inference is stochastic — running it multiple times on the same expression data produces adjacency matrices that agree on strong edges but disagree on weaker ones. A single <code class="docutils literal notranslate"><span class="pre">run_flashscenic()</span></code> call takes whatever one stochastic draw happens to give you. <code class="docutils literal notranslate"><span class="pre">multi_run_flashscenic()</span></code> averages several draws first, so the regulons that come out the other end are less sensitive to any one run’s noise.</p>
-<p>This is architecturally different from post-pruning frequency aggregation (running the full pipeline <code class="docutils literal notranslate"><span class="pre">n_runs</span></code> times and majority-voting on the final regulons): it averages continuous edge weights <em>before</em> any binary thresholding occurs, so a weak-but-consistent edge and a strong-but-noisy edge are distinguished by their variability, not just their final presence or absence.</p>
+<p>RegDiffusion’s GRN inference is stochastic — running it multiple times on the same expression data produces adjacency matrices that agree on strong edges but disagree on weaker ones. A single <code class="docutils literal notranslate"><span class="pre">run_flashscenic()</span></code> call takes whatever one stochastic draw happens to give you. <code class="docutils literal notranslate"><span class="pre">multi_run_flashscenic()</span></code> combines several draws first, so the regulons that come out the other end are less sensitive to any one run’s noise.</p>
+</section>
+<section id="aggregation-methods">
+<h2>Aggregation methods<a class="headerlink" href="#aggregation-methods" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">aggregation_method='frequency'</span></code> (default)</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">aggregation_method='mean_adjacency'</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>What it does</p></td>
+<td><p>Runs the <em>full</em> pipeline (module selection through cisTarget pruning) <code class="docutils literal notranslate"><span class="pre">n_runs</span></code> times independently, keeps a (TF, gene) edge if it survives pruning in <code class="docutils literal notranslate"><span class="pre">&gt;=</span> <span class="pre">frequency_threshold</span></code> fraction of runs, drops TFs with fewer than <code class="docutils literal notranslate"><span class="pre">min_genes_filter</span></code> retained targets, then runs AUCell once on the consensus</p></td>
+<td><p>Averages the <code class="docutils literal notranslate"><span class="pre">n_runs</span></code> adjacency matrices into a continuous consensus (optionally masking high-CV edges), then runs the rest of the pipeline (module selection → AUCell) once on that consensus</p></td>
+</tr>
+<tr class="row-odd"><td><p>Cost</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">n_runs</span></code> full pipeline passes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">n_runs</span></code> RegDiffusion-only passes + 1 full downstream pass</p></td>
+</tr>
+<tr class="row-even"><td><p>Regulon quality</p></td>
+<td><p>Validated (against CollecTRI) to have the best precision and recall of every strategy tested, including every <code class="docutils literal notranslate"><span class="pre">mean_adjacency</span></code> variant</p></td>
+<td><p>Consistently lower precision/recall than frequency aggregation in the same validation — see <code class="docutils literal notranslate"><span class="pre">experiments/robustness/</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Because the downstream pipeline runs once instead of <code class="docutils literal notranslate"><span class="pre">n_runs</span></code> times, <code class="docutils literal notranslate"><span class="pre">mean_adjacency</span></code> is meaningfully cheaper. It remains available for cases where that cost matters more than the regulon-quality difference, but <code class="docutils literal notranslate"><span class="pre">frequency</span></code> is the recommended default.</p>
 </section>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>n_runs x RegDiffusion GRN Inference
     │
-    ▼
-Average adjacency matrices → consensus          ← cv_threshold
+    ├── aggregation_method=&#39;frequency&#39; (default) ─────────────────────────
+    │       n_runs x (TF filtering → modules → cisTarget pruning)
+    │       Vote: keep (TF,gene) if freq &gt;= frequency_threshold   ← frequency_threshold
+    │       Drop TFs with &lt; min_genes_filter retained targets     ← min_genes_filter
+    │       AUCell, run once on the consensus regulons
     │
-    ▼
-Steps 2-5 (TF filtering → AUCell), run once      ← same as run_flashscenic()
-    │
-    ▼
+    └── aggregation_method=&#39;mean_adjacency&#39; ───────────────────────────────
+            Average adjacency matrices → consensus                ← cv_threshold
+            Steps 2-5 (TF filtering → AUCell), run once            ← same as run_flashscenic()
+
 Result dict (auc_scores, regulons, ..., adj_mean, adj_cv)
 </pre></div>
 </div>
@@ -402,18 +433,30 @@ Result dict (auc_scores, regulons, ..., adj_mean, adj_cv)
 <h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading">#</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">flashscenic</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fs</span>
 
+<span class="c1"># Default: frequency aggregation</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">multi_run_flashscenic</span><span class="p">(</span>
     <span class="n">exp_matrix</span><span class="p">,</span> <span class="n">gene_names</span><span class="p">,</span> <span class="n">species</span><span class="o">=</span><span class="s1">&#39;human&#39;</span><span class="p">,</span>
-    <span class="n">n_runs</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>          <span class="c1"># number of independent RegDiffusion runs to average (default)</span>
-    <span class="n">cv_threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># default: no masking, use the raw mean</span>
-    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>            <span class="c1"># reduces (does not guarantee-eliminate) GPU run-to-run variation</span>
+    <span class="n">n_runs</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>                 <span class="c1"># number of independent runs to aggregate (default)</span>
+    <span class="n">aggregation_method</span><span class="o">=</span><span class="s1">&#39;frequency&#39;</span><span class="p">,</span>  <span class="c1"># default</span>
+    <span class="n">frequency_threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>   <span class="c1"># keep (TF, gene) pairs surviving pruning in &gt;=50% of runs (default)</span>
+    <span class="n">min_genes_filter</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>        <span class="c1"># drop TFs with fewer than 5 retained target genes (default)</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>                   <span class="c1"># reduces (does not guarantee-eliminate) GPU run-to-run variation</span>
 <span class="p">)</span>
 
-<span class="c1"># Same result fields as run_flashscenic(), plus multi-run diagnostics:</span>
+<span class="c1"># Cheaper alternative: mean-adjacency aggregation</span>
+<span class="n">result_mean</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">multi_run_flashscenic</span><span class="p">(</span>
+    <span class="n">exp_matrix</span><span class="p">,</span> <span class="n">gene_names</span><span class="p">,</span> <span class="n">species</span><span class="o">=</span><span class="s1">&#39;human&#39;</span><span class="p">,</span>
+    <span class="n">n_runs</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+    <span class="n">aggregation_method</span><span class="o">=</span><span class="s1">&#39;mean_adjacency&#39;</span><span class="p">,</span>
+    <span class="n">cv_threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>         <span class="c1"># default: no masking, use the raw mean</span>
+    <span class="n">min_genes_filter</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>        <span class="c1"># still applied, composed with pruning_min_genes</span>
+<span class="p">)</span>
+
+<span class="c1"># Same result fields under both methods, plus multi-run diagnostics:</span>
 <span class="n">auc_scores</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;auc_scores&#39;</span><span class="p">]</span>            <span class="c1"># (n_cells, n_regulons)</span>
-<span class="n">adj_mean</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;adj_mean&#39;</span><span class="p">]</span>                <span class="c1"># (n_genes, n_genes) consensus adjacency</span>
+<span class="n">adj_mean</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;adj_mean&#39;</span><span class="p">]</span>                <span class="c1"># (n_genes, n_genes) mean adjacency across runs</span>
 <span class="n">adj_cv</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;adj_cv&#39;</span><span class="p">]</span>                    <span class="c1"># (n_genes, n_genes) per-edge coefficient of variation</span>
-<span class="n">n_filtered</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;n_edges_cv_filtered&#39;</span><span class="p">]</span>   <span class="c1"># edges removed by the CV mask (0 unless cv_threshold is set)</span>
+<span class="n">tf_scores</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;tf_frequency_scores&#39;</span><span class="p">]</span>    <span class="c1"># per-TF mean pair-frequency (None under mean_adjacency)</span>
 </pre></div>
 </div>
 </section>
@@ -429,34 +472,53 @@ Result dict (auc_scores, regulons, ..., adj_mean, adj_cv)
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">n_runs</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">15</span></code></p></td>
-<td><p>Number of independent RegDiffusion GRN inference runs to average</p></td>
+<td><p>Number of independent RegDiffusion GRN inference runs</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cv_threshold</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">aggregation_method</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'frequency'</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'frequency'</span></code> or <code class="docutils literal notranslate"><span class="pre">'mean_adjacency'</span></code> — see above</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">frequency_threshold</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0.5</span></code></p></td>
+<td><p>Fraction of runs (0–1) a (TF, gene) pair must survive cisTarget pruning in to be kept. Only used when <code class="docutils literal notranslate"><span class="pre">aggregation_method='frequency'</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">min_genes_filter</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">5</span></code></p></td>
+<td><p>Minimum target genes a regulon must retain. Applies to both methods — see <a class="reference internal" href="#choosing-min_genes_filter"><span class="xref myst">Choosing <code class="docutils literal notranslate"><span class="pre">min_genes_filter</span></code></span></a> below</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cv_threshold</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></td>
-<td><p>Coefficient of variation threshold for edge masking. Edges with std/|mean| ≥ this are zeroed in the consensus. <code class="docutils literal notranslate"><span class="pre">None</span></code> disables masking (raw mean only)</p></td>
+<td><p>Coefficient of variation threshold for edge masking. Edges with std/|mean| ≥ this are zeroed in the consensus. Only used when <code class="docutils literal notranslate"><span class="pre">aggregation_method='mean_adjacency'</span></code>; a warning is raised if set together with <code class="docutils literal notranslate"><span class="pre">aggregation_method='frequency'</span></code>, since it would otherwise silently have no effect</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">return_adj_matrices</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">return_adj_matrices</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p></td>
 <td><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, includes all <code class="docutils literal notranslate"><span class="pre">n_runs</span></code> raw adjacency matrices in the result under <code class="docutils literal notranslate"><span class="pre">'adj_matrices'</span></code>. Off by default to save memory on large expression matrices</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">seeds</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">seeds</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></td>
 <td><p>Per-run seeds (list of length <code class="docutils literal notranslate"><span class="pre">n_runs</span></code>), passed to <code class="docutils literal notranslate"><span class="pre">torch.manual_seed</span></code> before each RegDiffusion training. Takes priority over <code class="docutils literal notranslate"><span class="pre">seed</span></code> if both are set</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">seed</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">seed</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></td>
-<td><p>Single seed for the whole ensemble. If <code class="docutils literal notranslate"><span class="pre">seeds</span></code> is not set, <code class="docutils literal notranslate"><span class="pre">n_runs</span></code> per-run seeds are derived from it (via <code class="docutils literal notranslate"><span class="pre">numpy.random.SeedSequence(seed).spawn(n_runs)</span></code>) and used for the ensemble; also forwarded to the downstream <code class="docutils literal notranslate"><span class="pre">run_flashscenic()</span></code> call for AUCell’s tie-breaking noise</p></td>
+<td><p>Single seed for the whole ensemble. If <code class="docutils literal notranslate"><span class="pre">seeds</span></code> is not set, <code class="docutils literal notranslate"><span class="pre">n_runs</span></code> per-run seeds are derived from it (via <code class="docutils literal notranslate"><span class="pre">numpy.random.SeedSequence(seed).spawn(n_runs)</span></code>) and used for the ensemble; also forwarded to every downstream <code class="docutils literal notranslate"><span class="pre">run_flashscenic()</span></code> call for AUCell’s tie-breaking noise</p></td>
 </tr>
 </tbody>
 </table>
 </div>
-<p>All remaining parameters (the <code class="docutils literal notranslate"><span class="pre">grn_</span></code>, <code class="docutils literal notranslate"><span class="pre">module_</span></code>, <code class="docutils literal notranslate"><span class="pre">pruning_</span></code>, <code class="docutils literal notranslate"><span class="pre">annotation_</span></code>, <code class="docutils literal notranslate"><span class="pre">aucell_</span></code>-prefixed ones, plus <code class="docutils literal notranslate"><span class="pre">device</span></code>/<code class="docutils literal notranslate"><span class="pre">verbose</span></code>) match <code class="docutils literal notranslate"><span class="pre">run_flashscenic()</span></code> and are forwarded unchanged to the downstream pipeline (Steps 2-5 only — <code class="docutils literal notranslate"><span class="pre">grn_n_steps</span></code> still controls each ensemble member’s training length).</p>
-<section id="choosing-cv-threshold">
-<h3>Choosing <code class="docutils literal notranslate"><span class="pre">cv_threshold</span></code><a class="headerlink" href="#choosing-cv-threshold" title="Link to this heading">#</a></h3>
+<p>All remaining parameters (the <code class="docutils literal notranslate"><span class="pre">grn_</span></code>, <code class="docutils literal notranslate"><span class="pre">module_</span></code>, <code class="docutils literal notranslate"><span class="pre">pruning_</span></code>, <code class="docutils literal notranslate"><span class="pre">annotation_</span></code>, <code class="docutils literal notranslate"><span class="pre">aucell_</span></code>-prefixed ones, plus <code class="docutils literal notranslate"><span class="pre">device</span></code>/<code class="docutils literal notranslate"><span class="pre">verbose</span></code>) match <code class="docutils literal notranslate"><span class="pre">run_flashscenic()</span></code> and are forwarded unchanged. <code class="docutils literal notranslate"><span class="pre">grn_n_steps</span></code> still controls each ensemble member’s training length under both aggregation methods.</p>
+<section id="choosing-min-genes-filter">
+<h3>Choosing <code class="docutils literal notranslate"><span class="pre">min_genes_filter</span></code><a class="headerlink" href="#choosing-min-genes-filter" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">aggregation_method='frequency'</span></code>: applied <em>after</em> frequency aggregation — any TF whose consensus target count falls below <code class="docutils literal notranslate"><span class="pre">min_genes_filter</span></code> is dropped entirely.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">aggregation_method='mean_adjacency'</span></code>: composed with <code class="docutils literal notranslate"><span class="pre">pruning_min_genes</span></code> on the single downstream <code class="docutils literal notranslate"><span class="pre">run_flashscenic</span></code> call as <code class="docutils literal notranslate"><span class="pre">max(pruning_min_genes,</span> <span class="pre">min_genes_filter)</span></code> — whichever floor is stricter wins, so an explicit <code class="docutils literal notranslate"><span class="pre">pruning_min_genes</span></code> you pass is never silently overridden by a lower <code class="docutils literal notranslate"><span class="pre">min_genes_filter</span></code>.</p></li>
+</ul>
+</section>
+<section id="choosing-cv-threshold-mean-adjacency-only">
+<h3>Choosing <code class="docutils literal notranslate"><span class="pre">cv_threshold</span></code> (mean_adjacency only)<a class="headerlink" href="#choosing-cv-threshold-mean-adjacency-only" title="Link to this heading">#</a></h3>
 <p>In practice, thresholds <code class="docutils literal notranslate"><span class="pre">&gt;=</span> <span class="pre">1.0</span></code> rarely filter anything: edges that survive <code class="docutils literal notranslate"><span class="pre">grn_sparsity_threshold</span></code> (Step 2) already tend to have low run-to-run variability, so CV masking only has a visible effect around <code class="docutils literal notranslate"><span class="pre">0.25</span></code> or lower.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>Robustness testing against an independent TF-target database (CollecTRI) did not find that strict CV filtering improves downstream regulon quality — stricter thresholds performed no better, and sometimes worse, than the unfiltered mean (<code class="docutils literal notranslate"><span class="pre">cv_threshold=None</span></code>). Treat this as an available knob for your own experimentation rather than something to enable by default; <code class="docutils literal notranslate"><span class="pre">None</span></code> is a reasonable starting point and the current default.</p>
+<p>Robustness testing against an independent TF-target database (CollecTRI) did not find that strict CV filtering improves downstream regulon quality — stricter thresholds performed no better, and sometimes worse, than the unfiltered mean (<code class="docutils literal notranslate"><span class="pre">cv_threshold=None</span></code>). Treat this as an available knob for your own experimentation rather than something to enable by default.</p>
 </div>
 <p><strong>Tuning tips:</strong></p>
 <ul class="simple">
@@ -494,7 +556,7 @@ Result dict (auc_scores, regulons, ..., adj_mean, adj_cv)
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">adj_mean</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">(n_genes,</span> <span class="pre">n_genes)</span></code> — the consensus adjacency matrix used for Steps 2-5</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(n_genes,</span> <span class="pre">n_genes)</span></code> — mean adjacency across the <code class="docutils literal notranslate"><span class="pre">n_runs</span></code> draws (the consensus used for Steps 2-5 under <code class="docutils literal notranslate"><span class="pre">aggregation_method='mean_adjacency'</span></code>; a diagnostic only under <code class="docutils literal notranslate"><span class="pre">'frequency'</span></code>)</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">adj_cv</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">(n_genes,</span> <span class="pre">n_genes)</span></code> — per-edge coefficient of variation (std/|mean|) across the <code class="docutils literal notranslate"><span class="pre">n_runs</span></code> draws</p></td>
@@ -505,11 +567,23 @@ Result dict (auc_scores, regulons, ..., adj_mean, adj_cv)
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">n_runs</span></code></p></td>
 <td><p>The <code class="docutils literal notranslate"><span class="pre">n_runs</span></code> value used</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cv_threshold</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">aggregation_method</span></code></p></td>
+<td><p>The <code class="docutils literal notranslate"><span class="pre">aggregation_method</span></code> value used</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">frequency_threshold</span></code></p></td>
+<td><p>The <code class="docutils literal notranslate"><span class="pre">frequency_threshold</span></code> value used</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">min_genes_filter</span></code></p></td>
+<td><p>The <code class="docutils literal notranslate"><span class="pre">min_genes_filter</span></code> value used</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cv_threshold</span></code></p></td>
 <td><p>The <code class="docutils literal notranslate"><span class="pre">cv_threshold</span></code> value used</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">n_edges_cv_filtered</span></code></p></td>
-<td><p>Number of edges zeroed by the CV mask (<code class="docutils literal notranslate"><span class="pre">0</span></code> if <code class="docutils literal notranslate"><span class="pre">cv_threshold=None</span></code>)</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">n_edges_cv_filtered</span></code></p></td>
+<td><p>Number of edges zeroed by the CV mask (<code class="docutils literal notranslate"><span class="pre">0</span></code> if <code class="docutils literal notranslate"><span class="pre">cv_threshold=None</span></code> or <code class="docutils literal notranslate"><span class="pre">aggregation_method='frequency'</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">tf_frequency_scores</span></code></p></td>
+<td><p>Dict mapping each consensus TF to its mean pair-frequency among retained genes, or <code class="docutils literal notranslate"><span class="pre">None</span></code> under <code class="docutils literal notranslate"><span class="pre">aggregation_method='mean_adjacency'</span></code></p></td>
 </tr>
 </tbody>
 </table>
@@ -563,10 +637,12 @@ Result dict (auc_scores, regulons, ..., adj_mean, adj_cv)
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why">Why</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#aggregation-methods">Aggregation methods</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-usage">Basic Usage</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parameters">Parameters</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#choosing-cv-threshold">Choosing <code class="docutils literal notranslate"><span class="pre">cv_threshold</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#choosing-min-genes-filter">Choosing <code class="docutils literal notranslate"><span class="pre">min_genes_filter</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#choosing-cv-threshold-mean-adjacency-only">Choosing <code class="docutils literal notranslate"><span class="pre">cv_threshold</span></code> (mean_adjacency only)</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#seeding-and-reproducibility">Seeding and Reproducibility</a></li>

@@ -312,20 +312,110 @@ document.write(`
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Multi-run flashscenic wrapper with GRN consensus aggregation.</span>
 
-<span class="sd">Runs RegDiffusion k times, averages the resulting adjacency matrices into a</span>
-<span class="sd">consensus, optionally masks high-CV edges, and runs the rest of the pipeline</span>
-<span class="sd">(module selection, cisTarget pruning, AUCell) once on the stable consensus.</span>
+<span class="sd">Runs RegDiffusion k times, then aggregates across runs using one of two</span>
+<span class="sd">strategies (``aggregation_method``):</span>
 
-<span class="sd">This is architecturally superior to post-pruning frequency aggregation because</span>
-<span class="sd">it operates on continuous edge weights before any binary thresholding occurs.</span>
+<span class="sd">- ``&quot;frequency&quot;`` (default): runs the *full* pipeline (through cisTarget</span>
+<span class="sd">  pruning) k times independently, then keeps a (TF, gene) edge only if it</span>
+<span class="sd">  survives pruning in at least ``frequency_threshold`` fraction of runs,</span>
+<span class="sd">  dropping any TF whose surviving target count falls below</span>
+<span class="sd">  ``min_genes_filter``. AUCell is then run once on the consensus regulons.</span>
+<span class="sd">  Validated against an independent TF-target database (CollecTRI),</span>
+<span class="sd">  &quot;frequency &gt;= 50% + min 5 genes&quot; produced the best precision and recall of</span>
+<span class="sd">  every strategy tested — see ``experiments/robustness/``.</span>
+<span class="sd">- ``&quot;mean_adjacency&quot;``: averages the k adjacency matrices into a continuous</span>
+<span class="sd">  consensus (optionally masking high-CV edges) and runs the rest of the</span>
+<span class="sd">  pipeline (module selection, cisTarget pruning, AUCell) once on it. Cheaper</span>
+<span class="sd">  — the downstream steps only run once instead of k times — but empirically</span>
+<span class="sd">  infers lower-quality regulons than frequency aggregation.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">gc</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
+
+<div class="viewcode-block" id="_build_frequency_consensus">
+<a class="viewcode-back" href="../../apidocs/flashscenic/flashscenic.multi_run.html#flashscenic.multi_run._build_frequency_consensus">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_build_frequency_consensus</span><span class="p">(</span>
+    <span class="n">full_results</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span>
+    <span class="n">gene_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="n">frequency_threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">min_genes_filter</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Aggregate regulons from independent full-pipeline runs by (TF, gene)</span>
+<span class="sd">    edge frequency.</span>
+
+<span class="sd">    For each (TF, gene) pair, counts how many of the runs&#39; regulons contain</span>
+<span class="sd">    it. Keeps pairs whose count/n_runs &gt;= frequency_threshold, then drops</span>
+<span class="sd">    any TF whose surviving target-gene count is below</span>
+<span class="sd">    ``max(1, min_genes_filter)``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    consensus_regulons : list of dict</span>
+<span class="sd">        Regulon dicts in the same schema as CisTargetPruner&#39;s output</span>
+<span class="sd">        (``name``, ``tf``, ``motif``, ``n_genes``, ``genes``, ``context``,</span>
+<span class="sd">        ``nes``, ``auc``, ``database``). Empty list if nothing survives.</span>
+<span class="sd">    regulon_adj : np.ndarray</span>
+<span class="sd">        Shape (n_consensus_regulons, n_genes). Shape (0, n_genes) if</span>
+<span class="sd">        ``consensus_regulons`` is empty.</span>
+<span class="sd">    tf_frequency_scores : dict</span>
+<span class="sd">        Per-TF mean pair-frequency among its retained genes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">regulons_to_adjacency</span>
+
+    <span class="n">n_runs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">full_results</span><span class="p">)</span>
+    <span class="n">tf_gene_counts</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">tf_meta</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">full_results</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;regulons&#39;</span><span class="p">]:</span>
+            <span class="n">tf</span> <span class="o">=</span> <span class="n">reg</span><span class="p">[</span><span class="s1">&#39;tf&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">tf</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tf_meta</span><span class="p">:</span>
+                <span class="n">tf_meta</span><span class="p">[</span><span class="n">tf</span><span class="p">]</span> <span class="o">=</span> <span class="n">reg</span>
+            <span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="n">reg</span><span class="p">[</span><span class="s1">&#39;genes&#39;</span><span class="p">]:</span>
+                <span class="n">tf_gene_counts</span><span class="p">[(</span><span class="n">tf</span><span class="p">,</span> <span class="n">gene</span><span class="p">)]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">tf_genes</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">tf_freqs</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">tf</span><span class="p">,</span> <span class="n">gene</span><span class="p">),</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">tf_gene_counts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">freq</span> <span class="o">=</span> <span class="n">count</span> <span class="o">/</span> <span class="n">n_runs</span>
+        <span class="k">if</span> <span class="n">freq</span> <span class="o">&gt;=</span> <span class="n">frequency_threshold</span><span class="p">:</span>
+            <span class="n">tf_genes</span><span class="p">[</span><span class="n">tf</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gene</span><span class="p">)</span>
+            <span class="n">tf_freqs</span><span class="p">[</span><span class="n">tf</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span>
+
+    <span class="n">min_genes</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_genes_filter</span><span class="p">)</span>
+    <span class="n">consensus_regulons</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">tf_frequency_scores</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">tf</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">tf_genes</span><span class="p">):</span>
+        <span class="n">genes</span> <span class="o">=</span> <span class="n">tf_genes</span><span class="p">[</span><span class="n">tf</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">genes</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">min_genes</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">meta</span> <span class="o">=</span> <span class="n">tf_meta</span><span class="p">[</span><span class="n">tf</span><span class="p">]</span>
+        <span class="n">consensus_regulons</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tf</span><span class="si">}</span><span class="s2">(+)&quot;</span><span class="p">,</span>
+            <span class="s1">&#39;tf&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="p">,</span>
+            <span class="s1">&#39;motif&#39;</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;motif&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;n_genes&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">genes</span><span class="p">),</span>
+            <span class="s1">&#39;genes&#39;</span><span class="p">:</span> <span class="n">genes</span><span class="p">,</span>
+            <span class="s1">&#39;context&#39;</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;context&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;nes&#39;</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nes&#39;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+            <span class="s1">&#39;auc&#39;</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;auc&#39;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+            <span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+        <span class="p">})</span>
+        <span class="n">tf_frequency_scores</span><span class="p">[</span><span class="n">tf</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">tf_freqs</span><span class="p">[</span><span class="n">tf</span><span class="p">]))</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">consensus_regulons</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[],</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">gene_names</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span> <span class="p">{}</span>
+
+    <span class="n">regulon_adj</span> <span class="o">=</span> <span class="n">regulons_to_adjacency</span><span class="p">(</span><span class="n">consensus_regulons</span><span class="p">,</span> <span class="n">gene_names</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">consensus_regulons</span><span class="p">,</span> <span class="n">regulon_adj</span><span class="p">,</span> <span class="n">tf_frequency_scores</span></div>
+
 
 
 <div class="viewcode-block" id="multi_run_flashscenic">
@@ -337,6 +427,9 @@ document.write(`
     <span class="o">*</span><span class="p">,</span>
     <span class="c1"># --- Multi-run / aggregation ---</span>
     <span class="n">n_runs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span>
+    <span class="n">aggregation_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;frequency&quot;</span><span class="p">,</span>
+    <span class="n">frequency_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">min_genes_filter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
     <span class="n">cv_threshold</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">return_adj_matrices</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">seeds</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -370,8 +463,7 @@ document.write(`
     <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Run flashscenic k times, aggregate GRN adjacency matrices, then run the</span>
-<span class="sd">    downstream pipeline once on the consensus.</span>
+<span class="sd">    Run flashscenic k times and aggregate into a consensus set of regulons.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -385,11 +477,45 @@ document.write(`
 
 <span class="sd">    n_runs : int, default=15</span>
 <span class="sd">        Number of independent RegDiffusion GRN inference runs.</span>
+<span class="sd">    aggregation_method : str, default=&#39;frequency&#39;</span>
+<span class="sd">        How to combine the k runs into a consensus:</span>
+
+<span class="sd">        - ``&#39;frequency&#39;``: runs the full pipeline (module selection through</span>
+<span class="sd">          cisTarget pruning) k times independently, keeps a (TF, gene) edge</span>
+<span class="sd">          if it survives pruning in &gt;= ``frequency_threshold`` fraction of</span>
+<span class="sd">          runs, drops TFs below ``min_genes_filter`` retained targets, then</span>
+<span class="sd">          runs AUCell once on the consensus regulons. More expensive (k full</span>
+<span class="sd">          pipeline passes instead of k RegDiffusion-only passes), but</span>
+<span class="sd">          empirically the better-performing strategy (see below).</span>
+<span class="sd">        - ``&#39;mean_adjacency&#39;``: averages the k adjacency matrices (optionally</span>
+<span class="sd">          CV-masked) and runs the downstream pipeline once on the consensus.</span>
+<span class="sd">          Cheaper, but validated to infer lower-quality regulons.</span>
+
+<span class="sd">        Robustness testing against an independent TF-target database</span>
+<span class="sd">        (CollecTRI) found ``&#39;frequency&#39;`` with the defaults below</span>
+<span class="sd">        (``frequency_threshold=0.5``, ``min_genes_filter=5``) had the best</span>
+<span class="sd">        precision and recall of every strategy tested, including every</span>
+<span class="sd">        ``&#39;mean_adjacency&#39;`` variant. See ``experiments/robustness/``.</span>
+<span class="sd">    frequency_threshold : float, default=0.5</span>
+<span class="sd">        Fraction of runs (0–1) a (TF, gene) pair must survive cisTarget</span>
+<span class="sd">        pruning in to be kept in the consensus. Only used when</span>
+<span class="sd">        ``aggregation_method=&#39;frequency&#39;``.</span>
+<span class="sd">    min_genes_filter : int, default=5</span>
+<span class="sd">        Minimum number of target genes a regulon must retain to survive.</span>
+<span class="sd">        Applies to both aggregation methods:</span>
+
+<span class="sd">        - ``&#39;frequency&#39;``: applied *after* frequency aggregation — any TF</span>
+<span class="sd">          whose consensus target count is below this is dropped.</span>
+<span class="sd">        - ``&#39;mean_adjacency&#39;``: composed with ``pruning_min_genes`` on the</span>
+<span class="sd">          single downstream ``run_flashscenic`` call as</span>
+<span class="sd">          ``max(pruning_min_genes, min_genes_filter)`` — whichever floor is</span>
+<span class="sd">          stricter wins.</span>
 <span class="sd">    cv_threshold : float or None, default=None</span>
 <span class="sd">        Coefficient of variation threshold for edge masking. Edges with</span>
-<span class="sd">        std/|mean| &gt;= cv_threshold are zeroed in the consensus. Default is</span>
-<span class="sd">        None (no masking — use the raw mean; downstream `grn_sparsity_threshold`</span>
-<span class="sd">        still applies). Set to a float to additionally mask unstable edges.</span>
+<span class="sd">        std/|mean| &gt;= cv_threshold are zeroed in the consensus. Only used</span>
+<span class="sd">        when ``aggregation_method=&#39;mean_adjacency&#39;`` — a warning is raised</span>
+<span class="sd">        if set together with ``aggregation_method=&#39;frequency&#39;``, since it</span>
+<span class="sd">        would otherwise silently have no effect.</span>
 
 <span class="sd">        In practice, thresholds &gt;= 1.0 rarely filter anything: edges that</span>
 <span class="sd">        survive `grn_sparsity_threshold` (Step 2) already tend to have low</span>
@@ -413,35 +539,66 @@ document.write(`
 <span class="sd">        from ``seed`` (see below) — explicit ``seeds`` always take priority.</span>
 
 <span class="sd">    All remaining parameters are forwarded unchanged to</span>
-<span class="sd">    :func:`run_flashscenic` (Steps 2–5 only), with one exception: ``seed``</span>
-<span class="sd">    additionally seeds the ensemble itself. If ``seed`` is set and ``seeds``</span>
-<span class="sd">    is not, it is expanded into n_runs per-run seeds (via</span>
+<span class="sd">    :func:`run_flashscenic`, with one exception: ``seed`` additionally seeds</span>
+<span class="sd">    the ensemble itself. If ``seed`` is set and ``seeds`` is not, it is</span>
+<span class="sd">    expanded into n_runs per-run seeds (via</span>
 <span class="sd">    ``numpy.random.SeedSequence(seed).spawn(n_runs)``) so the whole</span>
 <span class="sd">    multi-run — GRN ensemble and the downstream AUCell tie-breaking — is</span>
 <span class="sd">    reproducible from a single seed. ``seed`` is also forwarded as-is to</span>
-<span class="sd">    the downstream ``run_flashscenic`` call for AUCell.</span>
+<span class="sd">    every downstream ``run_flashscenic`` call for AUCell.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    dict</span>
-<span class="sd">        All fields returned by :func:`run_flashscenic`, plus:</span>
+<span class="sd">        Same fields as :func:`run_flashscenic` (``auc_scores``,</span>
+<span class="sd">        ``regulon_names``, ``regulons``, ``regulon_adj``, ``parameters``),</span>
+<span class="sd">        plus:</span>
 
-<span class="sd">        - ``&#39;adj_mean&#39;``: np.ndarray (n_genes, n_genes) — consensus adjacency</span>
+<span class="sd">        - ``&#39;adj_mean&#39;``: np.ndarray (n_genes, n_genes) — mean adjacency</span>
+<span class="sd">          across the k runs (the consensus used for Steps 2-5 when</span>
+<span class="sd">          ``aggregation_method=&#39;mean_adjacency&#39;``; a diagnostic only when</span>
+<span class="sd">          ``aggregation_method=&#39;frequency&#39;``)</span>
 <span class="sd">        - ``&#39;adj_cv&#39;``: np.ndarray (n_genes, n_genes) — per-edge CV</span>
 <span class="sd">        - ``&#39;adj_matrices&#39;``: list of np.ndarray or None</span>
 <span class="sd">        - ``&#39;n_runs&#39;``: int</span>
+<span class="sd">        - ``&#39;aggregation_method&#39;``: str</span>
+<span class="sd">        - ``&#39;frequency_threshold&#39;``: float</span>
+<span class="sd">        - ``&#39;min_genes_filter&#39;``: int</span>
 <span class="sd">        - ``&#39;cv_threshold&#39;``: float or None</span>
 <span class="sd">        - ``&#39;n_edges_cv_filtered&#39;``: int — edges removed by the CV mask</span>
+<span class="sd">          (``&#39;mean_adjacency&#39;`` only, always 0 under ``&#39;frequency&#39;``)</span>
+<span class="sd">        - ``&#39;tf_frequency_scores&#39;``: dict mapping TF name to its mean</span>
+<span class="sd">          pair-frequency among retained genes, or None under</span>
+<span class="sd">          ``&#39;mean_adjacency&#39;``</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
-<span class="sd">        If seeds is provided but its length does not equal n_runs.</span>
+<span class="sd">        If seeds is provided but its length does not equal n_runs, if</span>
+<span class="sd">        ``aggregation_method`` is not one of ``&#39;mean_adjacency&#39;`` /</span>
+<span class="sd">        ``&#39;frequency&#39;``, if ``frequency_threshold`` is not in (0, 1], or if</span>
+<span class="sd">        no regulons survive frequency aggregation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">regdiffusion</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rd</span>
 
     <span class="kn">from</span><span class="w"> </span><span class="nn">.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">download_data</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_flashscenic</span>
+
+    <span class="k">if</span> <span class="n">aggregation_method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;mean_adjacency&quot;</span><span class="p">,</span> <span class="s2">&quot;frequency&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;aggregation_method must be &#39;mean_adjacency&#39; or &#39;frequency&#39;, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;got </span><span class="si">{</span><span class="n">aggregation_method</span><span class="si">!r}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;</span> <span class="n">frequency_threshold</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;frequency_threshold must be in (0, 1], got </span><span class="si">{</span><span class="n">frequency_threshold</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">cv_threshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">aggregation_method</span> <span class="o">==</span> <span class="s2">&quot;frequency&quot;</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;cv_threshold has no effect when aggregation_method=&#39;frequency&#39; &quot;</span>
+            <span class="s2">&quot;(CV masking only applies to the &#39;mean_adjacency&#39; consensus).&quot;</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">seeds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">seeds</span><span class="p">)</span> <span class="o">!=</span> <span class="n">n_runs</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -528,8 +685,8 @@ document.write(`
         <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">empty_cache</span><span class="p">()</span>
         <span class="n">_log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  GRN run </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">n_runs</span><span class="si">}</span><span class="s2"> done&quot;</span><span class="p">)</span>
 
-    <span class="c1"># ---- Phase 2: Aggregate adjacency matrices ----</span>
-    <span class="n">_log</span><span class="p">(</span><span class="s2">&quot;Aggregating adjacency matrices...&quot;</span><span class="p">)</span>
+    <span class="c1"># ---- Phase 2: Adjacency mean/CV diagnostics (always computed) ----</span>
+    <span class="n">_log</span><span class="p">(</span><span class="s2">&quot;Computing adjacency mean/CV diagnostics...&quot;</span><span class="p">)</span>
     <span class="n">A_stack</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">adj_matrices</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>   <span class="c1"># (k, n_genes, n_genes)</span>
     <span class="n">A_mean</span> <span class="o">=</span> <span class="n">A_stack</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>              <span class="c1"># (n_genes, n_genes)</span>
     <span class="n">A_std</span> <span class="o">=</span> <span class="n">A_stack</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -539,59 +696,140 @@ document.write(`
     <span class="n">A_abs_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">A_mean</span><span class="p">)</span>
     <span class="n">A_cv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">A_std</span><span class="p">,</span> <span class="n">A_abs_mean</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">A_mean</span><span class="p">),</span> <span class="n">where</span><span class="o">=</span><span class="n">A_abs_mean</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">cv_threshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">A_consensus</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">A_cv</span> <span class="o">&lt;</span> <span class="n">cv_threshold</span><span class="p">,</span> <span class="n">A_mean</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-        <span class="n">n_filtered</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">A_abs_mean</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">A_cv</span> <span class="o">&gt;=</span> <span class="n">cv_threshold</span><span class="p">)))</span>
-        <span class="n">_log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  CV filter (threshold=</span><span class="si">{</span><span class="n">cv_threshold</span><span class="si">}</span><span class="s2">) removed </span><span class="si">{</span><span class="n">n_filtered</span><span class="si">}</span><span class="s2"> edges&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">A_consensus</span> <span class="o">=</span> <span class="n">A_mean</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-        <span class="n">n_filtered</span> <span class="o">=</span> <span class="mi">0</span>
-
-    <span class="c1"># ---- Phase 3: Run Steps 2–5 once on consensus ----</span>
-    <span class="n">_log</span><span class="p">(</span><span class="s2">&quot;Running downstream pipeline on consensus adjacency...&quot;</span><span class="p">)</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">run_flashscenic</span><span class="p">(</span>
-        <span class="n">exp_matrix</span><span class="p">,</span>
-        <span class="n">gene_names</span><span class="p">,</span>
-        <span class="n">species</span><span class="p">,</span>
-        <span class="n">adj_matrix</span><span class="o">=</span><span class="n">A_consensus</span><span class="p">,</span>
-        <span class="n">datasource</span><span class="o">=</span><span class="n">datasource</span><span class="p">,</span>
-        <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">,</span>
-        <span class="n">cache_dir</span><span class="o">=</span><span class="n">cache_dir</span><span class="p">,</span>
-        <span class="n">tf_list_path</span><span class="o">=</span><span class="n">tf_list_path</span><span class="p">,</span>
-        <span class="n">ranking_db_paths</span><span class="o">=</span><span class="n">ranking_db_paths</span><span class="p">,</span>
+    <span class="n">shared_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">datasource</span><span class="o">=</span><span class="n">datasource</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">,</span> <span class="n">cache_dir</span><span class="o">=</span><span class="n">cache_dir</span><span class="p">,</span>
+        <span class="n">tf_list_path</span><span class="o">=</span><span class="n">tf_list_path</span><span class="p">,</span> <span class="n">ranking_db_paths</span><span class="o">=</span><span class="n">ranking_db_paths</span><span class="p">,</span>
         <span class="n">motif_annotation_path</span><span class="o">=</span><span class="n">motif_annotation_path</span><span class="p">,</span>
-        <span class="n">grn_n_steps</span><span class="o">=</span><span class="n">grn_n_steps</span><span class="p">,</span>
-        <span class="n">grn_sparsity_threshold</span><span class="o">=</span><span class="n">grn_sparsity_threshold</span><span class="p">,</span>
-        <span class="n">module_k</span><span class="o">=</span><span class="n">module_k</span><span class="p">,</span>
-        <span class="n">module_percentile_thresholds</span><span class="o">=</span><span class="n">module_percentile_thresholds</span><span class="p">,</span>
+        <span class="n">grn_n_steps</span><span class="o">=</span><span class="n">grn_n_steps</span><span class="p">,</span> <span class="n">grn_sparsity_threshold</span><span class="o">=</span><span class="n">grn_sparsity_threshold</span><span class="p">,</span>
+        <span class="n">module_k</span><span class="o">=</span><span class="n">module_k</span><span class="p">,</span> <span class="n">module_percentile_thresholds</span><span class="o">=</span><span class="n">module_percentile_thresholds</span><span class="p">,</span>
         <span class="n">module_top_n_per_target</span><span class="o">=</span><span class="n">module_top_n_per_target</span><span class="p">,</span>
-        <span class="n">module_min_targets</span><span class="o">=</span><span class="n">module_min_targets</span><span class="p">,</span>
-        <span class="n">module_min_fraction</span><span class="o">=</span><span class="n">module_min_fraction</span><span class="p">,</span>
+        <span class="n">module_min_targets</span><span class="o">=</span><span class="n">module_min_targets</span><span class="p">,</span> <span class="n">module_min_fraction</span><span class="o">=</span><span class="n">module_min_fraction</span><span class="p">,</span>
         <span class="n">module_include_tf</span><span class="o">=</span><span class="n">module_include_tf</span><span class="p">,</span>
         <span class="n">pruning_rank_threshold</span><span class="o">=</span><span class="n">pruning_rank_threshold</span><span class="p">,</span>
         <span class="n">pruning_auc_threshold</span><span class="o">=</span><span class="n">pruning_auc_threshold</span><span class="p">,</span>
         <span class="n">pruning_nes_threshold</span><span class="o">=</span><span class="n">pruning_nes_threshold</span><span class="p">,</span>
-        <span class="n">pruning_min_genes</span><span class="o">=</span><span class="n">pruning_min_genes</span><span class="p">,</span>
         <span class="n">pruning_merge_strategy</span><span class="o">=</span><span class="n">pruning_merge_strategy</span><span class="p">,</span>
         <span class="n">annotation_motif_similarity_fdr</span><span class="o">=</span><span class="n">annotation_motif_similarity_fdr</span><span class="p">,</span>
         <span class="n">annotation_orthologous_identity</span><span class="o">=</span><span class="n">annotation_orthologous_identity</span><span class="p">,</span>
-        <span class="n">aucell_k</span><span class="o">=</span><span class="n">aucell_k</span><span class="p">,</span>
-        <span class="n">aucell_auc_threshold</span><span class="o">=</span><span class="n">aucell_auc_threshold</span><span class="p">,</span>
+        <span class="n">aucell_k</span><span class="o">=</span><span class="n">aucell_k</span><span class="p">,</span> <span class="n">aucell_auc_threshold</span><span class="o">=</span><span class="n">aucell_auc_threshold</span><span class="p">,</span>
         <span class="n">aucell_batch_size</span><span class="o">=</span><span class="n">aucell_batch_size</span><span class="p">,</span>
-        <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
-        <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
-        <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+        <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
     <span class="p">)</span>
+
+    <span class="n">n_filtered</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">tf_frequency_scores</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">aggregation_method</span> <span class="o">==</span> <span class="s2">&quot;mean_adjacency&quot;</span><span class="p">:</span>
+        <span class="c1"># ---- Phase 3 (mean_adjacency): run Steps 2-5 once on the consensus ----</span>
+        <span class="k">if</span> <span class="n">cv_threshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">A_consensus</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">A_cv</span> <span class="o">&lt;</span> <span class="n">cv_threshold</span><span class="p">,</span> <span class="n">A_mean</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">n_filtered</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">A_abs_mean</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">A_cv</span> <span class="o">&gt;=</span> <span class="n">cv_threshold</span><span class="p">)))</span>
+            <span class="n">_log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  CV filter (threshold=</span><span class="si">{</span><span class="n">cv_threshold</span><span class="si">}</span><span class="s2">) removed </span><span class="si">{</span><span class="n">n_filtered</span><span class="si">}</span><span class="s2"> edges&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">A_consensus</span> <span class="o">=</span> <span class="n">A_mean</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+        <span class="n">effective_min_genes</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pruning_min_genes</span><span class="p">,</span> <span class="n">min_genes_filter</span><span class="p">)</span>
+        <span class="n">_log</span><span class="p">(</span><span class="s2">&quot;Running downstream pipeline on consensus adjacency...&quot;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">run_flashscenic</span><span class="p">(</span>
+            <span class="n">exp_matrix</span><span class="p">,</span> <span class="n">gene_names</span><span class="p">,</span> <span class="n">species</span><span class="p">,</span>
+            <span class="n">adj_matrix</span><span class="o">=</span><span class="n">A_consensus</span><span class="p">,</span>
+            <span class="n">pruning_min_genes</span><span class="o">=</span><span class="n">effective_min_genes</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">shared_kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># ---- Phase 3 (frequency): run Steps 2-5 k times, vote, AUCell once ----</span>
+        <span class="c1"># Reuses Phase 1&#39;s adjacency draws (paired design — same n_runs GRN</span>
+        <span class="c1"># samples as the mean_adjacency path would use), so no extra</span>
+        <span class="c1"># RegDiffusion runs are required. Each run&#39;s own AUCell pass is</span>
+        <span class="c1"># discarded; only its regulons are kept for frequency voting.</span>
+        <span class="n">_log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running full pipeline </span><span class="si">{</span><span class="n">n_runs</span><span class="si">}</span><span class="s2"> times for frequency aggregation...&quot;</span><span class="p">)</span>
+        <span class="n">full_results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_runs</span><span class="p">):</span>
+            <span class="n">full_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run_flashscenic</span><span class="p">(</span>
+                <span class="n">exp_matrix</span><span class="p">,</span> <span class="n">gene_names</span><span class="p">,</span> <span class="n">species</span><span class="p">,</span>
+                <span class="n">adj_matrix</span><span class="o">=</span><span class="n">adj_matrices</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                <span class="n">pruning_min_genes</span><span class="o">=</span><span class="n">pruning_min_genes</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">shared_kwargs</span><span class="p">,</span>
+            <span class="p">))</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">empty_cache</span><span class="p">()</span>
+            <span class="n">_log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Full pipeline run </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">n_runs</span><span class="si">}</span><span class="s2"> done &quot;</span>
+                 <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">full_results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;regulons&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2"> regulons)&quot;</span><span class="p">)</span>
+
+        <span class="n">_log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Aggregating regulons by frequency &quot;</span>
+             <span class="sa">f</span><span class="s2">&quot;(threshold=</span><span class="si">{</span><span class="n">frequency_threshold</span><span class="si">}</span><span class="s2">, min_genes=</span><span class="si">{</span><span class="n">min_genes_filter</span><span class="si">}</span><span class="s2">)...&quot;</span><span class="p">)</span>
+        <span class="n">consensus_regulons</span><span class="p">,</span> <span class="n">regulon_adj</span><span class="p">,</span> <span class="n">tf_frequency_scores</span> <span class="o">=</span> <span class="n">_build_frequency_consensus</span><span class="p">(</span>
+            <span class="n">full_results</span><span class="p">,</span> <span class="n">gene_names</span><span class="p">,</span> <span class="n">frequency_threshold</span><span class="p">,</span> <span class="n">min_genes_filter</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">consensus_regulons</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;No regulons survived frequency aggregation. Consider &quot;</span>
+                <span class="s2">&quot;lowering frequency_threshold or min_genes_filter.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">_log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">consensus_regulons</span><span class="p">)</span><span class="si">}</span><span class="s2"> consensus regulons&quot;</span><span class="p">)</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.aucell</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_aucell</span>
+        <span class="n">resolved_aucell_k</span> <span class="o">=</span> <span class="n">aucell_k</span> <span class="k">if</span> <span class="n">aucell_k</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">module_k</span>
+        <span class="n">_log</span><span class="p">(</span><span class="s2">&quot;Computing AUCell scores on consensus regulons...&quot;</span><span class="p">)</span>
+        <span class="n">auc_scores</span> <span class="o">=</span> <span class="n">get_aucell</span><span class="p">(</span>
+            <span class="n">exp_float32</span><span class="p">,</span> <span class="n">regulon_adj</span><span class="p">,</span>
+            <span class="n">k</span><span class="o">=</span><span class="n">resolved_aucell_k</span><span class="p">,</span>
+            <span class="n">auc_threshold</span><span class="o">=</span><span class="n">aucell_auc_threshold</span><span class="p">,</span>
+            <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">aucell_batch_size</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;auc_scores&quot;</span><span class="p">:</span> <span class="n">auc_scores</span><span class="p">,</span>
+            <span class="s2">&quot;regulon_names&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">reg</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">consensus_regulons</span><span class="p">],</span>
+            <span class="s2">&quot;regulons&quot;</span><span class="p">:</span> <span class="n">consensus_regulons</span><span class="p">,</span>
+            <span class="s2">&quot;regulon_adj&quot;</span><span class="p">:</span> <span class="n">regulon_adj</span><span class="p">,</span>
+            <span class="s2">&quot;parameters&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;species&quot;</span><span class="p">:</span> <span class="n">species</span><span class="p">,</span>
+                <span class="s2">&quot;datasource&quot;</span><span class="p">:</span> <span class="n">datasource</span><span class="p">,</span>
+                <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">version</span><span class="p">,</span>
+                <span class="s2">&quot;grn_n_steps&quot;</span><span class="p">:</span> <span class="n">grn_n_steps</span><span class="p">,</span>
+                <span class="s2">&quot;grn_sparsity_threshold&quot;</span><span class="p">:</span> <span class="n">grn_sparsity_threshold</span><span class="p">,</span>
+                <span class="s2">&quot;module_k&quot;</span><span class="p">:</span> <span class="n">module_k</span><span class="p">,</span>
+                <span class="s2">&quot;module_percentile_thresholds&quot;</span><span class="p">:</span> <span class="n">module_percentile_thresholds</span><span class="p">,</span>
+                <span class="s2">&quot;module_top_n_per_target&quot;</span><span class="p">:</span> <span class="n">module_top_n_per_target</span><span class="p">,</span>
+                <span class="s2">&quot;module_min_targets&quot;</span><span class="p">:</span> <span class="n">module_min_targets</span><span class="p">,</span>
+                <span class="s2">&quot;module_min_fraction&quot;</span><span class="p">:</span> <span class="n">module_min_fraction</span><span class="p">,</span>
+                <span class="s2">&quot;module_include_tf&quot;</span><span class="p">:</span> <span class="n">module_include_tf</span><span class="p">,</span>
+                <span class="s2">&quot;pruning_rank_threshold&quot;</span><span class="p">:</span> <span class="n">pruning_rank_threshold</span><span class="p">,</span>
+                <span class="s2">&quot;pruning_auc_threshold&quot;</span><span class="p">:</span> <span class="n">pruning_auc_threshold</span><span class="p">,</span>
+                <span class="s2">&quot;pruning_nes_threshold&quot;</span><span class="p">:</span> <span class="n">pruning_nes_threshold</span><span class="p">,</span>
+                <span class="s2">&quot;pruning_min_genes&quot;</span><span class="p">:</span> <span class="n">pruning_min_genes</span><span class="p">,</span>
+                <span class="s2">&quot;pruning_merge_strategy&quot;</span><span class="p">:</span> <span class="n">pruning_merge_strategy</span><span class="p">,</span>
+                <span class="s2">&quot;annotation_motif_similarity_fdr&quot;</span><span class="p">:</span> <span class="n">annotation_motif_similarity_fdr</span><span class="p">,</span>
+                <span class="s2">&quot;annotation_orthologous_identity&quot;</span><span class="p">:</span> <span class="n">annotation_orthologous_identity</span><span class="p">,</span>
+                <span class="s2">&quot;aucell_k&quot;</span><span class="p">:</span> <span class="n">resolved_aucell_k</span><span class="p">,</span>
+                <span class="s2">&quot;aucell_auc_threshold&quot;</span><span class="p">:</span> <span class="n">aucell_auc_threshold</span><span class="p">,</span>
+                <span class="s2">&quot;aucell_batch_size&quot;</span><span class="p">:</span> <span class="n">aucell_batch_size</span><span class="p">,</span>
+                <span class="s2">&quot;device&quot;</span><span class="p">:</span> <span class="n">device</span><span class="p">,</span>
+                <span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="n">seed</span><span class="p">,</span>
+                <span class="s2">&quot;n_cells&quot;</span><span class="p">:</span> <span class="n">exp_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s2">&quot;n_genes&quot;</span><span class="p">:</span> <span class="n">n_genes</span><span class="p">,</span>
+                <span class="s2">&quot;n_modules&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">&quot;n_regulons&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">consensus_regulons</span><span class="p">),</span>
+            <span class="p">},</span>
+        <span class="p">}</span>
 
     <span class="c1"># ---- Phase 4: Attach multi-run diagnostics ----</span>
     <span class="n">result</span><span class="p">[</span><span class="s1">&#39;adj_mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">A_mean</span>
     <span class="n">result</span><span class="p">[</span><span class="s1">&#39;adj_cv&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">A_cv</span>
     <span class="n">result</span><span class="p">[</span><span class="s1">&#39;adj_matrices&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adj_matrices</span> <span class="k">if</span> <span class="n">return_adj_matrices</span> <span class="k">else</span> <span class="kc">None</span>
     <span class="n">result</span><span class="p">[</span><span class="s1">&#39;n_runs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_runs</span>
+    <span class="n">result</span><span class="p">[</span><span class="s1">&#39;aggregation_method&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">aggregation_method</span>
+    <span class="n">result</span><span class="p">[</span><span class="s1">&#39;frequency_threshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frequency_threshold</span>
+    <span class="n">result</span><span class="p">[</span><span class="s1">&#39;min_genes_filter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">min_genes_filter</span>
     <span class="n">result</span><span class="p">[</span><span class="s1">&#39;cv_threshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cv_threshold</span>
     <span class="n">result</span><span class="p">[</span><span class="s1">&#39;n_edges_cv_filtered&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_filtered</span>
+    <span class="n">result</span><span class="p">[</span><span class="s1">&#39;tf_frequency_scores&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tf_frequency_scores</span>
     <span class="n">result</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
         <span class="s1">&#39;n_runs&#39;</span><span class="p">:</span> <span class="n">n_runs</span><span class="p">,</span>
+        <span class="s1">&#39;aggregation_method&#39;</span><span class="p">:</span> <span class="n">aggregation_method</span><span class="p">,</span>
+        <span class="s1">&#39;frequency_threshold&#39;</span><span class="p">:</span> <span class="n">frequency_threshold</span><span class="p">,</span>
+        <span class="s1">&#39;min_genes_filter&#39;</span><span class="p">:</span> <span class="n">min_genes_filter</span><span class="p">,</span>
         <span class="s1">&#39;cv_threshold&#39;</span><span class="p">:</span> <span class="n">cv_threshold</span><span class="p">,</span>
         <span class="s1">&#39;seeds&#39;</span><span class="p">:</span> <span class="n">seeds</span><span class="p">,</span>
     <span class="p">})</span>
